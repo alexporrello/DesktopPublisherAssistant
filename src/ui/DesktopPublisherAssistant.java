@@ -3,14 +3,19 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -63,6 +68,41 @@ public class DesktopPublisherAssistant extends JFrame {
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(scroll, BorderLayout.CENTER);
+
+		addWindowListener(new WindowAdapter() {			
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				String s = getCopiedText();
+				
+				//TODO Make more robust.
+				
+				if(s.startsWith("32")) {
+					mainWindow.set32PartNumber(s);
+				} else if(s.startsWith("37")) {
+					mainWindow.set37PartNumber(s);
+				} else if(s.startsWith("//")) {
+					mainWindow.setPerforcePath(s);
+				} else if(s.startsWith("GUID")) {
+					mainWindow.setGUID(s);
+				} else if(s.contains("nijira")) {
+					mainWindow.setJiraTicketURL(s);
+				} else if(s.contains("Prepare") || s.contains("Apply")) {
+					mainWindow.setJiraTicketSummary(s);
+				} else if(s.contains("apex.natinst")) {
+					mainWindow.setTCIS(s);
+				}
+			}
+		});
+	}
+
+	public String getCopiedText() {
+		try {
+			return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);	 
+		} catch (HeadlessException | UnsupportedFlavorException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 
 	/**
@@ -118,7 +158,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			setLayout(new GridBagLayout());
 			createFields();
 		}
-		
+
 		/** Adds all of the fields to the GUI **/
 		private void createFields() {
 
