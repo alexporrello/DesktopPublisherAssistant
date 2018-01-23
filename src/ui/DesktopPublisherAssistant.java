@@ -69,12 +69,12 @@ public class DesktopPublisherAssistant extends JFrame {
 		scroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		add(scroll, BorderLayout.CENTER);
 
+		// When the window is activated, check if the copied string is
+		// one of the fields.
 		addWindowListener(new WindowAdapter() {			
 			@Override
 			public void windowActivated(WindowEvent arg0) {
 				String s = getCopiedText();
-				
-				//TODO Make more robust.
 				
 				if(s.startsWith("32")) {
 					mainWindow.set32PartNumber(s);
@@ -82,7 +82,7 @@ public class DesktopPublisherAssistant extends JFrame {
 					mainWindow.set37PartNumber(s);
 				} else if(s.startsWith("//")) {
 					mainWindow.setPerforcePath(s);
-				} else if(s.startsWith("GUID")) {
+				} else if(s.contains("GUID")) {
 					mainWindow.setGUID(s);
 				} else if(s.contains("nijira")) {
 					mainWindow.setJiraTicketURL(s);
@@ -95,6 +95,10 @@ public class DesktopPublisherAssistant extends JFrame {
 		});
 	}
 
+	/**
+	 * Gets text that was copied by the user.
+	 * @return a string of the copied text.
+	 */
 	public String getCopiedText() {
 		try {
 			return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);	 
