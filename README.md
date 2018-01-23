@@ -1,12 +1,12 @@
 # Desktop Publisher Assistant
 
-Desktop Publisher Assistant is a powerful organization tool for Desktop Publishers at National Instruments. This tol has been created to minimize mistakes, and because all of the information is stored locally on each user's machine, there is no security risk to National Instruments.
+Desktop Publisher Assistant is a powerful organization tool for Desktop Publishers at National Instruments. This tool has been created to minimize mistakes, and because the information is stored locally on each user's machine, there is no security risk to National Instruments.
 
 ![](readme-images/program.PNG)
 
 ## Running Desktop Publisher Assistant
 
-Since the program is an executable .jar, the software does not require installation. In order to run the .jar, however, the Java Runtime Environment (JRE) must be installed on your system. In-depth instructions for installing the latest JRE can be found [here](https://www.ntu.edu.sg/home/ehchua/programming/howto/JDK_HowTo.html#jdk-install).
+Since the program is an executable .jar, the software does not require installation. To run the .jar, however, the Java Runtime Environment (JRE) must be installed on your system. In-depth instructions for installing the latest JRE can be found [here](https://www.ntu.edu.sg/home/ehchua/programming/howto/JDK_HowTo.html#jdk-install).
 
 Once you have installed the JRE:
 
@@ -14,7 +14,7 @@ Once you have installed the JRE:
 2. Download the latest release, found at the top of the page. (If you have trouble finding it, search the page for "Desktop.Publisher.Assistant.jar.")
 3. Once the file has downloaded, move it out of your downloads folder to a convenient location on your computer.
 4. Assuming you installed the JRE correctly, double-clicking the .jar file should open the application. If you would like to create a desktop shortcut, right-click on the .jar file and select *Send To* >> *Desktop (Create Shortcut)*.
-5. If you have any problems running the application, don't hesistate to create an issue on the [Desktop Publisher Assistant's issue page on Github](https://github.com/alexporrello/DesktopPublisherAssistant/issues).
+5. If you have any problems running the application, create an issue on the [Desktop Publisher Assistant's issue page on Github](https://github.com/alexporrello/DesktopPublisherAssistant/issues).
 
 ## Program Overview
 
@@ -34,7 +34,7 @@ The PDFs folder has been created to hold the online document, the print document
 
 This button goes hand-in-hand with the _Create Working Directory_ button.
 
-To copy a blank print specification document into _Desktop_ >> _DOC-TITLE_ >> _PDFs_, the user must enter the 32 part number and press the _Copy Pring Spec Doc_ button. Not only will a blank print spec document be copied into the _PDFs_ folder, but it will automatically be named correctly.
+To copy a blank print specification document into _Desktop_ >> _DOC-TITLE_ >> _PDFs_, the user must enter the 32 part number and press the _Copy Print Spec Doc_ button. Not only will a blank print spec document be copied into the _PDFs_ folder, but it will automatically be named correctly.
 
 #### _Copy Doc Pro Publishing Group Email_
 
@@ -97,4 +97,4 @@ The Log Dialog is a list of the ticket files saved to the default folder in %APP
 ### Text Fields
 
 1. **Auto-select-all:** Whenever a user selects a text area, the entire text area's contents is highlighted.
-2. **Auto-paste:** Any recognizeable item that has been copied to the desktop publisher's clipboard (for example, part numbers or GUIDs) will be auto-pasted into the correct text area.
+2. **Auto-paste:** Any recognizable item that has been copied to the desktop publisher's clipboard (for example, part numbers or GUIDs) will be auto-pasted into the correct text area.
