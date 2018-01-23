@@ -1,8 +1,0 @@
-= Desktop Publisher Assistant
-:toc:
-
-Both the web and desktop version of _Desktop Publisher Assistant_ was developed by Alexander Porrello during his time at National Instruments.
-
-== Features
-
-The desktop app and the web app have many features in common.
