@@ -20,6 +20,31 @@ Once you have installed the JRE:
 
 Desktop Publisher Assistant is a simple enough application, but many features have been included to speed up the PPM process. To use this program to the fullest, it is recommended that you read through the whole (short) guide.
 
+### Button Functions
+
+#### _Create Working Directory_
+
+As part of the PPM process, a desktop publisher will often be working with four files: (1) the print file, (2) the print specification document, (3) the online file, and (4) a doc pro checklist document. The _Create Working Directory_ button greatly simplifies the process of managing these files.
+
+If the desktop publisher has entered the ticket's _Doc Title_, pressing the _Create Working Directory_ button will duplicate Perforce's file structure on the user's desktop. It creates a folder (which gets its name from the _Doc Title_ text area) that contains two folders: _Checklists_ and _PDFs_.
+
+The PDFs folder has been created to hold the online document, the print document, and the print specification document. A blank doc pro checklist is automatically copied into the _Checklists_ folder.
+
+#### _Copy Print Spec Doc_
+
+This button goes hand-in-hand with the _Create Working Directory_ button.
+
+To copy a blank print specification document into _Desktop_ >> _DOC-TITLE_ >> _PDFs_, the user must enter the 32 part number and press the _Copy Pring Spec Doc_ button. Not only will a blank print spec document be copied into the _PDFs_ folder, but it will automatically be named correctly.
+
+#### _Copy Doc Pro Publishing Group Email_
+
+Copies the doc pro publishing group's email to the system's clipboard.
+
+#### _Generate Doc Pro Publishing Group Email Body_
+
+When desktop publishers finish a PPM, they send an email to the doc pro publishing group to get the PPM approved. If the correct text fields have been filled out, pressing the button will generate the email's body and subject, and it will copy the generated text to the system's clipboard. 
+
+
 ### Logging
 
 Desktop Publisher Assistant's logging functionality is simple and user-friendly.
