@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry excluding="itextpdf-5/5/12-javadoc/|itextpdf-5.5.12-javadoc/" kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="itextpdf-5.5.12/itextpdf-5.5.12.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/D:/users/aporrell/Git/DesktopPublisherAssistant/itextpdf-5.5.12/itextpdf-5.5.12-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

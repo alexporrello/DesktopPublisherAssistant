@@ -1,18 +1,33 @@
 package main;
 
+import java.io.IOException;
+
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import ui.DesktopPublisherAssistant;
+import com.itextpdf.text.DocumentException;
+
+import pdf.XMPWork;
 
 public class Runner {
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			setLookAndFeel();
-			new DesktopPublisherAssistant().setVisible(true);
+			//new DesktopPublisherAssistant().setVisible(true);
 			//new LogDialog().setVisible(true);
+			
+			//for(ParagraphTag tagType : ParagraphTag.TAG_TYPES) {
+			//new ParagraphTagsDialog().setVisible(true);
+			//}
+				
+				try {
+					new XMPWork();
+				} catch (DocumentException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		});
 	}
 

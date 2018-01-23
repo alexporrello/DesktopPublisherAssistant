@@ -3,6 +3,9 @@ package ui;
 import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.Insets;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -31,7 +34,7 @@ public class Tools {
 
 		return gbc;
 	}
-	
+
 	/**
 	 * Checks if a given JTextField has any inputted text.
 	 * @param text the JTextField to check 
@@ -40,7 +43,7 @@ public class Tools {
 	public static boolean isEmpty(JTextField text) {
 		return (text.getText().length() == 0);
 	}
-	
+
 	/**
 	 * Appends a new line of text with a return to an original line of text.
 	 * @param original the text to which the new line will be appended
@@ -50,7 +53,7 @@ public class Tools {
 	public static String appendToNewLine(String original, String newLine) {
 		return original + "\n" + newLine;
 	}
-	
+
 	/** Creates the image icons that will be displayed on the app's taskbar **/
 	public static ArrayList<Image> imageIcon() {
 		ArrayList<Image> icons = new ArrayList<Image>();
@@ -61,11 +64,37 @@ public class Tools {
 		icons.add(loadImage("NI-Icon_32x32.png"));
 		icons.add(loadImage("NI-Icon_24x24.png"));
 		icons.add(loadImage("NI-Icon_16x16.png"));
-		
+
 		return icons;
 	}
-	
+
 	private static Image loadImage(String url) {		
 		return new ImageIcon(Tools.class.getClassLoader().getResource(url)).getImage();
+	}
+
+	/**
+	 * Loads a plain text file and returns an ArrayList<String> of its content.
+	 * @param url the URL of the plain text file.
+	 * @return an ArrayList<String>, each of which is a line in the plain text file.
+	 */
+	public static ArrayList<String> loadPlainTextFile(String url) {
+		ArrayList<String> toReturn = new ArrayList<String>();
+		
+		try {
+			FileReader fr = new FileReader(url);
+			BufferedReader br = new BufferedReader(fr);
+
+			String thisLine;
+
+			while ((thisLine = br.readLine()) != null) {
+				toReturn.add(thisLine);
+			}
+
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return toReturn;
 	}
 }
