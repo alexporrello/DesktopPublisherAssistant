@@ -1,6 +1,6 @@
 # Desktop Publisher Assistant
 
-Desktop Publisher Assistant is a powerful organization tool for Desktop Publishers at National Instruments. This tool has been created to minimize mistakes, and because the information is stored locally on each user's machine, there is no security risk to National Instruments.
+Desktop Publisher Assistant is a powerful organization tool for Desktop Publishers at National Instruments. It was created to minimize mistakes during PPMs and other desktop publishing procedures.
 
 ![](readme-images/program.PNG)
 
@@ -66,6 +66,12 @@ Navigating to _File_ >> _View Log_ (or using the keyboard shortcut ctrl+l) will 
 The Log Dialog is a list of the ticket files saved to the default folder in %APPDATA%. To the left of the window is the _Jira Ticket Summary_, and to the right are each ticket's _Status_. Clicking on a ticket will open it in a new window.
 
 **TIP:** If the status of a ticket changes and you would like to update the ticket file, open the Log Dialog and click on the ticket's status. This action will cycle through the four options (_Not Started_, _In Progress_, _Sent for Approval_, and _Done_). Each click will automatically update the correct ticket file.
+
+### PDF XMP Updater
+
+Navigate to _Tools_ >> _Open XMP Updater Dialog_. Drag and drop the PDF and the XMP into the window one at a time or both at once. Once you have loaded both the PDF and the XMP, click the "Update" button, and a tagged file will be placed in the same directory as the original PDF.
+
+![](readme-images/pdf-dialog.PNG)
 
 ### Menu
 
