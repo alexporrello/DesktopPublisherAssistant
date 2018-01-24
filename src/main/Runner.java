@@ -13,6 +13,8 @@ public class Runner {
 			setLookAndFeel();
 			new DesktopPublisherAssistant().setVisible(true);
 			
+			//new XMPUpdateDialog().setVisible(true);
+			
 			//for(ParagraphTag tagType : ParagraphTag.TAG_TYPES) {
 			//new ParagraphTagsDialog().setVisible(true);
 			//}

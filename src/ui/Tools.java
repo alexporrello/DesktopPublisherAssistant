@@ -120,7 +120,7 @@ public class Tools {
 	 * @return the URL of the selected file as a string
 	 * @throws NoSuchFileException if the user does not choose a file.
 	 */
-	public static String openFile(String name, File openToURL) throws NoSuchFileException {
+	public static String loadFile(String name, File openToURL) throws NoSuchFileException {
 		JFileChooser jfc = new JFileChooser(openToURL);
 		
 		jfc.setDialogTitle(name);

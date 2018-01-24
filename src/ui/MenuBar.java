@@ -15,6 +15,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import log.LogDialog;
+import pdf.XMPUpdateDialog;
 import ticket.Ticket;
 import ui.DesktopPublisherAssistant.MainWindow;
 
@@ -79,6 +80,14 @@ public class MenuBar extends JMenuBar {
 				clpbrd.setContents(stringSelection, null);
 			});
 			add(copyTemplate);
+			
+			addSeparator();
+			
+			JMenuItem openXMPUpdateDialog = new JMenuItem("Open XMP Updater Dialog");
+			openXMPUpdateDialog.addActionListener(e -> {
+				new XMPUpdateDialog().setVisible(true);
+			});
+			add(openXMPUpdateDialog);
 		}
 		
 		/**
@@ -171,7 +180,7 @@ public class MenuBar extends JMenuBar {
 		public JMenuItem open() {
 			open.addActionListener(e -> {
 				try {
-					Ticket.readLogFile(Tools.openFile("Select Ticket", Ticket.TICKET_URL), mainWindow);
+					Ticket.readLogFile(Tools.loadFile("Select Ticket", Ticket.TICKET_URL), mainWindow);
 				} catch (NoSuchFileException e1) {
 					System.out.println("No file was selected.");
 				} catch (IOException e1) {
