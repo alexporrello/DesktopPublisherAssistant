@@ -5,12 +5,15 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
 public class Tools {
@@ -110,5 +113,25 @@ public class Tools {
 		}
 		
 		return toReturn;
+	}
+	
+	/**
+	 * Opens a new JFileChooser so the user can open a file.
+	 * @return the URL of the selected file as a string
+	 * @throws NoSuchFileException if the user does not choose a file.
+	 */
+	public static String openFile(String name, File openToURL) throws NoSuchFileException {
+		JFileChooser jfc = new JFileChooser(openToURL);
+		
+		jfc.setDialogTitle(name);
+		
+		int returnValue = jfc.showOpenDialog(null);
+
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = jfc.getSelectedFile();
+			return selectedFile.getAbsolutePath();
+		}
+		
+		throw new NoSuchFileException("No file was selected.");
 	}
 }

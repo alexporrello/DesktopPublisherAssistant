@@ -75,7 +75,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			@Override
 			public void windowActivated(WindowEvent arg0) {
 				String s = getCopiedText();
-				
+
 				if(s.startsWith("32")) {
 					mainWindow.set32PartNumber(s);
 				} else if(s.startsWith("37")) {
@@ -103,7 +103,7 @@ public class DesktopPublisherAssistant extends JFrame {
 		try {
 			return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);	 
 		} catch (HeadlessException | UnsupportedFlavorException | IOException e) {
-			e.printStackTrace();
+			System.err.println("The current contents of the clipboard could not be auto-pasted.");
 		}
 
 		return "";
@@ -184,7 +184,8 @@ public class DesktopPublisherAssistant extends JFrame {
 			add(createJLabel("37 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
 			add(setUpText(partNum37), Tools.createGBC(1, y, 1.0, insets));
 			y++;
-
+			y++;
+			
 			add(createJLabel("Doc Date: "), Tools.createGBC(0, y, 0.0, insets));
 			add(setUpText(date), Tools.createGBC(1, y, 1.0, insets));
 			y++;
@@ -301,7 +302,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			add(setUpText(partNum32), Tools.createGBC(1, yPosn, 1.0, insets));
 			add(cpsd, Tools.createGBC(2, yPosn, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		}
-
+		
 		/**
 		 * Sets up the button to copy the Doc Pro Publishing Group's email address.
 		 * @param y the y position of the button

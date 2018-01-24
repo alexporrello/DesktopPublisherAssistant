@@ -12,12 +12,6 @@ import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.xml.xmp.XmpWriter;
 
 public class XMPWork {
-
-	public XMPWork() throws DocumentException, IOException {
-		String path = "D:\\users\\aporrell\\Desktop\\Maintaining NI CMS-9036 Hardware for an NI InsightCM System\\PDFs";
-		updatePDFXMP(path + "\\376911c.pdf", path + "\\376627B-01.xmp");
-	}
-
 	/**
 	 * Updates a PDFs XMP, given the PDF's path, the path to the updated PDF, and the path to the XMP.
 	 * @param pathToPDF the original PDF

@@ -108,7 +108,9 @@ public class XMPReader extends HashMap<String, String> {
 					String value = s.split(">")[1].split("<")[0];
 					String key   = s.split(">")[0].replace("<", "");
 
-					this.put(key, value);
+					if(!value.equals("")) {
+						this.put(key, value);
+					}
 				}
 			}
 		}
