@@ -4,7 +4,9 @@ import java.awt.GridBagConstraints;
 import java.awt.Image;
 import java.awt.Insets;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -70,6 +72,18 @@ public class Tools {
 
 	private static Image loadImage(String url) {		
 		return new ImageIcon(Tools.class.getClassLoader().getResource(url)).getImage();
+	}
+	
+	public static void writeToFile(String url, String content) {
+		try {
+			FileWriter     fw = new FileWriter(url);
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			bw.write(content);
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 
 	/**
