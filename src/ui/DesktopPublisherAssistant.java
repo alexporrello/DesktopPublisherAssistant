@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
@@ -14,10 +15,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -102,7 +106,7 @@ public class DesktopPublisherAssistant extends JFrame {
 	 */
 	public class MainWindow extends JMPanel {
 		private static final long serialVersionUID = 8053959756132135670L;
-		
+
 		/** The title of the document **/
 		private JTextField title = new JTextField();
 
@@ -331,6 +335,7 @@ public class DesktopPublisherAssistant extends JFrame {
 		 * @return a setup JTextField
 		 */
 		private JTextField setUpText(JTextField toSetup) {
+			/** When a JTextFields get focus, select all of the text **/
 			toSetup.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusGained(FocusEvent arg0) {
@@ -343,6 +348,7 @@ public class DesktopPublisherAssistant extends JFrame {
 				}
 			});
 
+			/** If the user enters a string that has a blank character at the end, delete it. **/
 			toSetup.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent arg0) {
@@ -351,7 +357,23 @@ public class DesktopPublisherAssistant extends JFrame {
 					}
 				}
 			});
-			
+
+			/** If user triple-clicks and the JTextField contains a URL, open it. **/
+			toSetup.addMouseListener(new MouseAdapter() {				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					try {
+						if(e.getClickCount() == 3) {
+							if(toSetup.getText().contains("https:")) {
+								Desktop.getDesktop().browse(new URI(toSetup.getText()));
+							}
+						}
+					} catch (IOException | URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+
 			return toSetup;
 		}
 
@@ -406,7 +428,7 @@ public class DesktopPublisherAssistant extends JFrame {
 				setTextIfEmpty(tcisURL, s);
 			}
 		}
-		
+
 		/**
 		 * Sets a given JTextField's text only if it is empty.
 		 * @param field the field to be set
@@ -417,7 +439,7 @@ public class DesktopPublisherAssistant extends JFrame {
 				field.setText(s);
 			}
 		}
-		
+
 		/**
 		 * @return The name of the file if it will be returned.
 		 */
