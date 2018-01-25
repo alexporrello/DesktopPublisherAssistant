@@ -18,7 +18,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -185,7 +188,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			add(setUpText(partNum37), Tools.createGBC(1, y, 1.0, insets));
 			y++;
 			y++;
-			
+
 			add(createJLabel("Doc Date: "), Tools.createGBC(0, y, 0.0, insets));
 			add(setUpText(date), Tools.createGBC(1, y, 1.0, insets));
 			y++;
@@ -216,12 +219,6 @@ public class DesktopPublisherAssistant extends JFrame {
 
 			add(createJLabel("Status: "), Tools.createGBC(0, y, 0.0, insets));
 			add(status, Tools.createGBC(1, y, 1.0,insets));
-			y++;
-
-			setupEmail(y, insets);
-			y++;
-
-			setupEmailBodyGenerator(y, insets);
 			y++;
 		}
 
@@ -302,36 +299,8 @@ public class DesktopPublisherAssistant extends JFrame {
 			add(setUpText(partNum32), Tools.createGBC(1, yPosn, 1.0, insets));
 			add(cpsd, Tools.createGBC(2, yPosn, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		}
-		
-		/**
-		 * Sets up the button to copy the Doc Pro Publishing Group's email address.
-		 * @param y the y position of the button
-		 * @param inset the inset of the grid bag layout
-		 */
-		private void setupEmail(int y, Insets inset) {
-			JButton email = new JButton("Copy Doc Pro Publishing Group Email");
-			email.addActionListener(e -> {
-				StringSelection stringSelection = new StringSelection("Doc.Pro.Publishing.Group@ni.com");
-				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clpbrd.setContents(stringSelection, null);
-			});
-			add(email, Tools.createGBC(1, y, 1.0, inset));
-		}
 
-		/**
-		 * Sets up the button that copies the email that will be sent to Doc Pro Publishing Group.
-		 * @param y the y position of the button
-		 * @param inset the inset of the grid bag layout
-		 */
-		private void setupEmailBodyGenerator(int y, Insets inset) {
-			JButton emailBody = new JButton("Generate Doc Pro Publishing Group Email Body");
-			emailBody.addActionListener(e -> {
-				copyEmailBody();
-			});
-			add(emailBody, Tools.createGBC(1, y, 1.0, inset));
-		}
-
-		public void copyEmailBody() {
+		public void emailDocProPublishingGroup() {
 			String docTitle = "Document Title";
 			String tcisURL = "TCIS (APEX) URL";
 			String checklistURL = "Path to DocProChecklist.pdf in Perforce";
@@ -356,15 +325,19 @@ public class DesktopPublisherAssistant extends JFrame {
 				pdfsURL      = perforce.getText() + "PDFs";
 			}
 
-			String body = "PUBLISHING: " + docTitle + "\n" +
-					checklistURL + "\n" +
-					pdfsURL + "\n" +
-					"\n"+
-					tcisURL;
+			String subject = "PUBLISHING: " + docTitle;
+			String body    = checklistURL + "\n" + pdfsURL + "\n\n"+ tcisURL;
 
-			StringSelection stringSelection = new StringSelection(body);
-			Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-			clpbrd.setContents(stringSelection, null);
+			List<String> recips = new ArrayList<String>();
+			recips.add("Doc.Pro.Publishing.Group@ni.com");
+
+			try {
+				MailTo.mailto(recips, subject, body);
+			} catch (IOException | URISyntaxException e1) {
+				StringSelection stringSelection = new StringSelection(subject + "\n\n" + body);
+				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clpbrd.setContents(stringSelection, null);
+			}			
 		}
 
 		/**

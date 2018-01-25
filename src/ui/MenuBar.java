@@ -59,16 +59,13 @@ public class MenuBar extends JMenuBar {
 
 	public class ToolsMenu extends JMenu {
 		private static final long serialVersionUID = 255591321997575423L;
-
-		JMenuItem copyEmail = new JMenuItem("Copy Doc Pro Publishing Group Email");
 		
 		/** Generates the email to be sent out to Doc Pro Publishing Group to approve PPMs. **/
-		JMenuItem copyEmailBody = new JMenuItem("Generate Doc Pro Publishing Group Email Body");		
+		JMenuItem copyEmailBody = new JMenuItem("Email Doc Pro Publishing Group");		
 				
 		public ToolsMenu() {
 			super("Tools");
 			
-			add(copyEmail());
 			add(copyEmailBody());
 			
 			addSeparator();
@@ -89,20 +86,6 @@ public class MenuBar extends JMenuBar {
 			});
 			add(openXMPUpdateDialog);
 		}
-		
-		/**
-		 * Sets up the {@link #copyEmail} menu item.
-		 * @return {@link #copyEmail} set up.
-		 */
-		public JMenuItem copyEmail() {
-			copyEmail.addActionListener(e -> {
-				StringSelection stringSelection = new StringSelection("Doc.Pro.Publishing.Group@ni.com");
-				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clpbrd.setContents(stringSelection, null);
-			});
-			copyEmail.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-			return copyEmail;
-		}
 
 		/**
 		 * Sets up the {@link #copyEmail} menu item.
@@ -110,12 +93,10 @@ public class MenuBar extends JMenuBar {
 		 */
 		public JMenuItem copyEmailBody() {
 			copyEmailBody.addActionListener(e -> {
-				mainWindow.copyEmailBody();
+				mainWindow.emailDocProPublishingGroup();
 			});
 			copyEmailBody.setAccelerator(
-					KeyStroke.getKeyStroke(KeyEvent.VK_E, (
-							java.awt.event.InputEvent.SHIFT_DOWN_MASK | 
-							(Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()))));
+					KeyStroke.getKeyStroke(KeyEvent.VK_E, (Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())));
 			return copyEmailBody;
 		}
 	}
