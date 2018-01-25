@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -54,14 +55,21 @@ public class LogDialog extends JDialog {
 	}
 
 	/** Locates all tickets, adds them to {@link #shortLogs}, and adds them to {@link #logEntryPanel}. **/
-	public void addAllToLogEntryPanel() {		
+	public void addAllToLogEntryPanel() {
+		logEntryPanel.removeAll();
+		shortLogs.clear();
+		
 		try {
-			logEntryPanel.removeAll();
-			shortLogs.clear();
-
 			for(File f : Ticket.TICKET_URL.listFiles()) {
 				ShortLog sl = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath());
-				sl.popupOptions.delete.addActionListener(e -> {
+				
+				sl.popupOptions.delete.addActionListener(e -> {					
+					try {
+						Files.deleteIfExists(new File(sl.ticketURL).toPath());
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					
 					addAllToLogEntryPanel();
 				});
 				sl.popupOptions.openH.addActionListener(e -> {
@@ -92,11 +100,11 @@ public class LogDialog extends JDialog {
 
 				y++;
 			}
+			
+			logEntryPanel.revalidate();
+			logEntryPanel.repaint();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		revalidate();
-		repaint();
 	}
 }

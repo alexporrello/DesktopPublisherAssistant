@@ -20,9 +20,9 @@ public class Runner {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			setLookAndFeel();
-			//runMainProgram();
+			runMainProgram();
 			
-			testLogDialog();
+			//testLogDialog();
 			//testXMPUpdateDialog();
 			//testParagraphTagsDialog();
 			//testPDFProperties();
