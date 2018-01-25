@@ -10,6 +10,7 @@ import com.itextpdf.text.DocumentException;
 
 import fm.ParagraphTag;
 import fm.ParagraphTagsDialog;
+import log.LogDialog;
 import pdf.PDFPropertiesUpdater;
 import pdf.XMPUpdateDialog;
 import ui.DesktopPublisherAssistant;
@@ -19,8 +20,9 @@ public class Runner {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			setLookAndFeel();
-			runMainProgram();
+			//runMainProgram();
 			
+			testLogDialog();
 			//testXMPUpdateDialog();
 			//testParagraphTagsDialog();
 			//testPDFProperties();
@@ -33,6 +35,10 @@ public class Runner {
 
 	public static void testXMPUpdateDialog() {
 		new XMPUpdateDialog().setVisible(true);
+	}
+	
+	public static void testLogDialog() {
+		new LogDialog(new DesktopPublisherAssistant().mainWindow).setVisible(true);
 	}
 	
 	public static void testParagraphTagsDialog() {

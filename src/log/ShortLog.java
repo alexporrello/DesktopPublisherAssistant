@@ -2,11 +2,16 @@ package log;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import ticket.Ticket;
 import ticket.TicketInfo;
@@ -29,24 +34,51 @@ public class ShortLog implements Comparable<ShortLog> {
 	/** The URL of the ticket, for opening purposes **/
 	public String ticketURL;
 
+	public LeftClickOptions popupOptions;
+	
 	public ShortLog(String[] ticket2, String ticketURL) {
 		this.ticket    = ticket2;
 		this.ticketURL = ticketURL;
+		this.popupOptions = new LeftClickOptions(this.ticketURL);
+		
+		setupOpenTicket();
+		setupStatus();
+	}
 
+	private void setupOpenTicket() {
 		openTicket = new JLabel(this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
 		openTicket.addMouseListener(new MouseAdapter() {			
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				new DesktopPublisherAssistant(ticketURL);
+				if(SwingUtilities.isLeftMouseButton(arg0)) {
+					new DesktopPublisherAssistant(ticketURL);
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e){
+				if(e.isPopupTrigger()) {
+					popupOptions.show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e){
+				if(e.isPopupTrigger()) {
+					popupOptions.show(e.getComponent(), e.getX(), e.getY());
+				}
 			}
 		});
 		openTicket.setBorder(BorderFactory.createEmptyBorder(5,10,5,5));
 		openTicket.setOpaque(true);
-
+	}
+	
+	public void setupStatus() {
 		status.setSelectedIndex(Integer.parseInt(this.ticket[TicketInfo.STATUS.i]));
 		status.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+
 				ticket[TicketInfo.STATUS.i] = status.getSelectedIndex() + "";
 
 				try {
@@ -84,4 +116,36 @@ public class ShortLog implements Comparable<ShortLog> {
 		}
 	}
 
+	class LeftClickOptions extends JPopupMenu {
+		private static final long serialVersionUID = -4929695537157281490L;
+
+		public JMenuItem openH  = new JMenuItem("Open in Current Window");
+		public JMenuItem open   = new JMenuItem("Open in New Window");
+		public JMenuItem delete = new JMenuItem("Delete Ticket");
+
+		public LeftClickOptions(String ticketURL){
+			add(setupMenuItem(openH));
+			open.addActionListener(e -> {
+				new DesktopPublisherAssistant(ticketURL);
+			});
+			add(setupMenuItem(open));
+
+			addSeparator();
+
+			delete.addActionListener(e -> {
+				try {
+					Files.deleteIfExists(new File(ticketURL).toPath());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			});
+			add(setupMenuItem(delete));
+		}
+		
+		public JMenuItem setupMenuItem(JMenuItem tosetup) {
+			tosetup.setBorder(BorderFactory.createEmptyBorder(-4,-5,-2,-5));
+			
+			return tosetup;
+		}
+	}
 }

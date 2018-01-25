@@ -27,6 +27,7 @@ public class ClickLabel<E> extends JLabel {
 		setText(items[itemDisplayed] + "");
 		addMouseListener();
 		setOpaque(true);
+		
 	}
 	
 	/**
@@ -52,6 +53,8 @@ public class ClickLabel<E> extends JLabel {
 				} else {
 					setSelectedIndex(0);
 				}
+				
+				System.out.println(getSize());
 			}
 		});
 	}

@@ -148,7 +148,7 @@ public class MenuBar extends JMenuBar {
 		 */
 		public JMenuItem openLog() {
 			openLog.addActionListener(e -> {
-				new LogDialog().setVisible(true);
+				new LogDialog(mainWindow).setVisible(true);
 			});
 			openLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 			return openLog;

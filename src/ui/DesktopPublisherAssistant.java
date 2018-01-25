@@ -42,7 +42,7 @@ import ticket.Ticket;
 public class DesktopPublisherAssistant extends JFrame {
 	private static final long serialVersionUID = 1165657274713594230L;
 
-	MainWindow mainWindow = new MainWindow();
+	public MainWindow mainWindow = new MainWindow();
 
 	public DesktopPublisherAssistant() {
 		setup();
@@ -388,6 +388,26 @@ public class DesktopPublisherAssistant extends JFrame {
 			localChecklistsURL = "";
 			setTitle("Desktop Publisher Assistant");
 			title.requestFocus();
+		}
+		
+		public void setAll(String title, String partNum32, String partNum37, String date, String GUID, String perforce,
+				String jiraSummary, String author, String jiraURL, String tcisURL, int status) {
+			
+			clearAll();
+			
+			setTitle(title);
+			
+			this.title.setText(title);
+			this.partNum37.setText(partNum37);
+			this.partNum32.setText(partNum32);
+			this.date.setText(date);
+			this.GUID.setText(GUID);
+			this.perforce.setText(perforce);
+			this.jiraSummary.setText(jiraSummary);
+			this.author.setText(author);
+			this.jiraURL.setText(jiraURL);
+			this.tcisURL.setText(tcisURL);
+			this.status.setSelectedIndex(status);
 		}
 
 		/**
