@@ -77,23 +77,7 @@ public class DesktopPublisherAssistant extends JFrame {
 		addWindowListener(new WindowAdapter() {			
 			@Override
 			public void windowActivated(WindowEvent arg0) {
-				String s = getCopiedText();
-
-				if(s.startsWith("32")) {
-					mainWindow.set32PartNumber(s);
-				} else if(s.startsWith("37")) {
-					mainWindow.set37PartNumber(s);
-				} else if(s.startsWith("//")) {
-					mainWindow.setPerforcePath(s);
-				} else if(s.contains("GUID")) {
-					mainWindow.setGUID(s);
-				} else if(s.contains("nijira")) {
-					mainWindow.setJiraTicketURL(s);
-				} else if(s.contains("Prepare") || s.contains("Apply")) {
-					mainWindow.setJiraTicketSummary(s);
-				} else if(s.contains("apex.natinst")) {
-					mainWindow.setTCIS(s);
-				}
+				mainWindow.autoAddString(getCopiedText());
 			}
 		});
 	}
@@ -118,7 +102,7 @@ public class DesktopPublisherAssistant extends JFrame {
 	 */
 	public class MainWindow extends JMPanel {
 		private static final long serialVersionUID = 8053959756132135670L;
-
+		
 		/** The title of the document **/
 		private JTextField title = new JTextField();
 
@@ -367,7 +351,7 @@ public class DesktopPublisherAssistant extends JFrame {
 					}
 				}
 			});
-
+			
 			return toSetup;
 		}
 
@@ -402,6 +386,39 @@ public class DesktopPublisherAssistant extends JFrame {
 		}
 
 		/**
+		 * If a given string is recognized, it is auto-added to empty fields.
+		 * @param s the string to be auto-added.
+		 */
+		public void autoAddString(String s) {
+			if(s.startsWith("32")) {
+				setTextIfEmpty(partNum32, s);
+			} else if(s.startsWith("37")) {
+				setTextIfEmpty(partNum37, s);
+			} else if(s.startsWith("//")) {
+				setTextIfEmpty(perforce, s);
+			} else if(s.contains("GUID")) {
+				setTextIfEmpty(GUID, s);
+			} else if(s.contains("nijira")) {
+				setTextIfEmpty(jiraURL, s);
+			} else if(s.contains("Prepare") || s.contains("Apply")) {
+				setTextIfEmpty(jiraSummary, s);
+			} else if(s.contains("apex.natinst")) {
+				setTextIfEmpty(tcisURL, s);
+			}
+		}
+		
+		/**
+		 * Sets a given JTextField's text only if it is empty.
+		 * @param field the field to be set
+		 * @param s the string to set
+		 */
+		private void setTextIfEmpty(JTextField field, String s) {
+			if(field.getText().length() == 0) {
+				field.setText(s);
+			}
+		}
+		
+		/**
 		 * @return The name of the file if it will be returned.
 		 */
 		public String getSaveFileName() {
@@ -410,50 +427,6 @@ public class DesktopPublisherAssistant extends JFrame {
 			} else {
 				return "untitledPPM.log";
 			}
-		}
-
-		public String getDocTitle() {
-			return title.getText();
-		}
-
-		public String get32PartNumber() {
-			return partNum32.getText();
-		}
-
-		public String get37PartNumber() {
-			return partNum37.getText();
-		}
-
-		public String getDocDate() {
-			return date.getText();
-		}
-
-		public String getGUID() {
-			return GUID.getText();
-		}
-
-		public String getPerforcePath() {
-			return perforce.getText();
-		}
-
-		public String getJiraTicketSummary() {
-			return jiraSummary.getText();
-		}
-
-		public String getJiraTicketURL() {
-			return jiraURL.getText();
-		}
-
-		public String getTCIS() {
-			return tcisURL.getText();
-		}
-
-		public int getStatus() {
-			return status.getSelectedIndex();
-		}
-
-		public String getAuthor(String toSet) {
-			return author.getText();
 		}
 
 		public void setDocTitle(String toSet) {
