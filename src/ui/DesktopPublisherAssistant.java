@@ -4,13 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -81,23 +78,9 @@ public class DesktopPublisherAssistant extends JFrame {
 		addWindowListener(new WindowAdapter() {			
 			@Override
 			public void windowActivated(WindowEvent arg0) {
-				mainWindow.autoAddString(getCopiedText());
+				mainWindow.autoAddString(Tools.getCopiedText());
 			}
 		});
-	}
-
-	/**
-	 * Gets text that was copied by the user.
-	 * @return a string of the copied text.
-	 */
-	public String getCopiedText() {
-		try {
-			return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);	 
-		} catch (HeadlessException | UnsupportedFlavorException | IOException e) {
-			System.err.println("The current contents of the clipboard could not be auto-pasted.");
-		}
-
-		return "";
 	}
 
 	/**

@@ -1,8 +1,12 @@
 package ui;
 
 import java.awt.GridBagConstraints;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -133,5 +137,19 @@ public class Tools {
 		}
 		
 		throw new NoSuchFileException("No file was selected.");
+	}
+	
+	/**
+	 * Gets text that was copied by the user.
+	 * @return a string of the copied text.
+	 */
+	public static String getCopiedText() {
+		try {
+			return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);	 
+		} catch (HeadlessException | UnsupportedFlavorException | IOException e) {
+			System.err.println("The current contents of the clipboard could not be auto-pasted.");
+		}
+
+		return "";
 	}
 }
