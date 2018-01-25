@@ -6,9 +6,10 @@ import java.awt.Insets;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
@@ -98,8 +99,7 @@ public class Tools {
 		ArrayList<String> toReturn = new ArrayList<String>();
 		
 		try {
-			FileReader fr = new FileReader(url);
-			BufferedReader br = new BufferedReader(fr);
+			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(url), "UTF-8"));
 
 			String thisLine;
 
