@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileSystemView;
 
@@ -51,9 +52,15 @@ public class XMPUpdateDialog extends JDialog {
 	/** The button that kicks off the action **/
 	JButton go = new JButton("Update");
 
+	/** When selected, the initial view properties of the PDF are updated along with the tags **/
+	JRadioButton rb = new JRadioButton("Update PDF Initial View Properties");
+	
 	public XMPUpdateDialog() {
 		add(setupDropArea(), BorderLayout.CENTER);
 		add(setUpLowerPanel(), BorderLayout.SOUTH);
+		
+		rb.setFocusPainted(false);
+		rb.setSelected(true);
 		
 		setIconImages(Tools.imageIcon());
 		setLocationByPlatform(true);
@@ -140,7 +147,9 @@ public class XMPUpdateDialog extends JDialog {
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 5, 5));	
 		toReturn.add(xmp, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 5, 5));	
-		toReturn.add(go,  new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
+		toReturn.add(rb,  new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 5), 5, 5));
+		toReturn.add(go,  new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 5, 5));	
 
 		setupGoButton();
@@ -204,8 +213,12 @@ public class XMPUpdateDialog extends JDialog {
 	private void setupGoButton() {
 		go.setFocusPainted(false);
 		go.addActionListener(e -> {
-			try {
+			try {				
 				XMPUpdater.updatePDFXMP(pdfFile.getAbsolutePath(), xmpFile.getAbsolutePath());
+				
+				if(rb.isSelected()) {
+					PDFPropertiesUpdater.updateOpenProperties(pdfFile.getAbsolutePath());
+				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			} catch (DocumentException e1) {
