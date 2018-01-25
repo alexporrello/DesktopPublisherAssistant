@@ -1,9 +1,12 @@
 package pdf;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 
 import com.itextpdf.text.DocumentException;
@@ -21,19 +24,20 @@ public class XMPUpdater {
 	 * @throws DocumentException
 	 */
 	public static void updatePDFXMP(String pathToPDF, String pathToOutputPDF, String pathToXMP) throws IOException, DocumentException {
-		PdfReader  reader  = new PdfReader(pathToPDF);
+		PdfReader reader = new PdfReader(new FileInputStream(pathToPDF));
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(pathToOutputPDF));
-		
+
 		HashMap<String, String> info = new XMPReader(pathToXMP);
 		stamper.setMoreInfo(info);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
+
 		XmpWriter xmp = new XmpWriter(baos);
 		xmp.close();
-		
+
 		stamper.setXmpMetadata(baos.toByteArray());
 		stamper.close();
+		reader.close();
 	}
 
 	/**
@@ -46,5 +50,8 @@ public class XMPUpdater {
 	public static void updatePDFXMP(String pathToPDF, String pathToXMP) throws IOException, DocumentException {
 		String pathToOutputPDF = pathToPDF.replace(".pdf", "_tagged.pdf");
 		updatePDFXMP(pathToPDF, pathToOutputPDF, pathToXMP);
+		
+		Files.copy(new File(pathToOutputPDF).toPath(), new File(pathToPDF).toPath(), StandardCopyOption.REPLACE_EXISTING);
+		Files.deleteIfExists(new File(pathToOutputPDF).toPath());
 	}
 }

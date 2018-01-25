@@ -4,6 +4,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import pdf.XMPUpdateDialog;
 import ui.DesktopPublisherAssistant;
 
 public class Runner {
@@ -13,7 +14,7 @@ public class Runner {
 			setLookAndFeel();
 			new DesktopPublisherAssistant().setVisible(true);
 			
-			//new XMPUpdateDialog().setVisible(true);
+			new XMPUpdateDialog().setVisible(true);
 			
 			//for(ParagraphTag tagType : ParagraphTag.TAG_TYPES) {
 			//new ParagraphTagsDialog().setVisible(true);
