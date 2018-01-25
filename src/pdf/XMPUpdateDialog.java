@@ -110,22 +110,8 @@ public class XMPUpdateDialog extends JDialog {
 					String[] urls = url.split(", ");
 
 					for(String s : urls) {
-						if(s.endsWith(".xmp")) {
-							xmpFile = new File(s);
-
-							xmp.setText("XMP:  " + s);
-							xmp.setForeground(Color.BLACK);
-							xmp.setToolTipText(s);
-						} else if(s.endsWith(".pdf")) {
-							pdfFile = new File(s);
-
-							pdf.setText("PDF:  " + s);
-							pdf.setForeground(Color.BLACK);
-							pdf.setToolTipText(s);
-						}
+						isURLValid(s);
 					}
-
-					enableGoButton();
 				} catch (UnsupportedFlavorException | IOException e1) {
 					e1.printStackTrace();
 				}
@@ -133,6 +119,24 @@ public class XMPUpdateDialog extends JDialog {
 		}));
 		
 		return display;
+	}
+	
+	private void isURLValid(String url) {
+		if(url.endsWith(".xmp")) {
+			xmpFile = new File(url);
+
+			xmp.setText("XMP:  " + url);
+			xmp.setForeground(Color.BLACK);
+			xmp.setToolTipText(url);
+		} else if(url.endsWith(".pdf")) {
+			pdfFile = new File(url);
+
+			pdf.setText("PDF:  " + url);
+			pdf.setForeground(Color.BLACK);
+			pdf.setToolTipText(url);
+		}
+		
+		enableGoButton();
 	}
 	
 	/**
