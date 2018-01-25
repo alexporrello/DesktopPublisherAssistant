@@ -6,7 +6,7 @@ Desktop Publisher Assistant is a powerful organization tool for Desktop Publishe
 
 ## Running Desktop Publisher Assistant
 
-Since the program is an executable .jar, the software does not require installation. To run the .jar, however, the Java Runtime Environment (JRE) must be installed on your system. In-depth instructions for installing the latest JRE can be found [here](https://www.ntu.edu.sg/home/ehchua/programming/howto/JDK_HowTo.html#jdk-install).
+Since the program is an executable .jar, the software does not require installation. To run the .jar, however, the Java Runtime Environment (JRE) must be installed on your system. In-depth instructions for installing the latest JRE can be found [here](https://docs.oracle.com/goldengate/1212/gg-winux/GDRAD/java.htm#BGBFJHAB).
 
 Once you have installed the JRE:
 
@@ -22,7 +22,7 @@ While desktop publisher appears to be a simple application, many features have b
 
 ### Button Functions
 
-There are four buttons in the application's main window: two to the top left (_Create Working Directory_ and _Copy Print Spec Doc_) and two at the bottom (_Copy Doc Pro Publishing Group Email_ and _Generate Doc Pro Publishing Group Email Body_). The following describes their functions.
+There are two buttons in the top right of the application's main window: _Create Working Directory_ and _Copy Print Spec Doc_. The following describes their functions.
 
 #### _Create Working Directory_
 
@@ -37,14 +37,6 @@ The PDFs folder has is created to contain the online document, the print documen
 This button goes hand-in-hand with the _Create Working Directory_ button.
 
 To copy a blank print specification document into _Desktop_ >> _DOC-TITLE_ >> _PDFs_, the user must enter the 32 part number and press the _Copy Print Spec Doc_ button. Not only will a blank print spec document be copied into the _PDFs_ folder, but it will automatically be named correctly (assuming that the 32 part number was entered correctly).
-
-#### _Copy Doc Pro Publishing Group Email_
-
-Copies the doc pro publishing group's email to the system's clipboard.
-
-#### _Generate Doc Pro Publishing Group Email Body_
-
-If information has been entered in the _Perforce Path_ text area, clicking on this button will generate the publishing email sent to the Doc Pro Publishing Team and copy it to the system's clipboard.
 
 ### Logging
 
@@ -90,8 +82,7 @@ If you leave the "Update PDF Initial View Properties" radio button selected, the
 
 #### Tools Menu
 
-* **Copy Doc Pro Publishing Group Email**: Copies the Doc Pro Publishing Group email to your clipboard.
-* **Generate Doc Pro Publishing Group Email Body**: Generates the body of the publishing email to be sent to the Doc Pro Publishing Group.
+* **Email Doc Pro Publishing Group**: Sends the boilerplate email needed to publish PPMs.
 * **Copy Print Template Perforce Path**: Copies the path to the print templates in Perforce.
 
 ### Keyboard Shortcuts
