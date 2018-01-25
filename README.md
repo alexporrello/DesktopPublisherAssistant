@@ -60,6 +60,14 @@ The Log Dialog is a list of the ticket files saved to the default folder in %APP
 
 **TIP:** If the status of a ticket changes and you would like to update the ticket file, open the Log Dialog and click on the ticket's status. This action will cycle through the four options (_Not Started_, _In Progress_, _Sent for Approval_, and _Done_). Each click will automatically update the correct ticket file.
 
+Right-clicking on a Log entry will display a context menu with three options:
+
+![](readme-images/context-menu.PNG)
+
+1. _Open in Current Window_: Resets the current main window and populates it with the selected ticket file's information.
+2. _Open in New Window_: Opens the ticket file in a new winow and leaves the current window untouched.
+3. _Delete Ticket_: Deletes the ticket file from _%APPDATA%/Desktop Publisher Assistant_. Use with caution, as deleted files cannot be recovered.
+
 ### PDF XMP Updater
 
 The PDF XMP Updater dialog is a convenient way to update a PDF's XMP. To open the dialog, navigate to _Tools_ >> _Open XMP Updater Dialog_. Drag and drop the PDF and the XMP into the window one a time or both at once. (Alternately, if you would rather navigate to the files with a file explorer, click on the empty text fields.) When you have added both documents, click the "Update" button to update the PDF's metadata.
@@ -91,10 +99,10 @@ If you leave the "Update PDF Initial View Properties" radio button selected, the
 * **ctrl+o**: opens a ticket file in the current window.
 * **ctrl+s**: saves the current ticket file to default location (%APPDATA%/Desktop Publisher Assistant)
 * **ctrl+shift+x**: clears all of the text fields
-* **ctrl+e**: copies the Doc Pro Publishing group's email to your clipboard
-* **ctrl+shift+e**: generates the body of the email to be sent to Doc Pro Publishing Group
+* **ctrl+e**: generates the boilerplate publishing email and opens it in your default email client.
 
 ### Text Fields
 
-1. **Auto-select-all:** Whenever a user selects a text area, the entire text area's contents is highlighted.
-2. **Auto-paste:** Any recognizable item that has been copied to the desktop publisher's clipboard (for example, part numbers or GUIDs) will be auto-pasted into the correct text area.
+* **Auto-select-all:** When a user clicks into a text area, its contents are highlighted.
+* **Auto-paste:** Any recognizable item that has been copied to the system's clipboard (for example, part numbers or GUIDs) will be auto-pasted into the correct text area.
+* **Triple-click:** If you triple click on a text field that has a URL, the page will open in your default web browser.
