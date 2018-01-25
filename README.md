@@ -13,28 +13,30 @@ Once you have installed the JRE:
 1. Visit the [Desktop Publisher Assistant release page on GitHub](https://github.com/alexporrello/DesktopPublisherAssistant/releases).
 2. Download the latest release, found at the top of the page. (If you have trouble finding it, search the page for "Desktop.Publisher.Assistant.jar.")
 3. Once the file has downloaded, move it out of your downloads folder to a convenient location on your computer.
-4. Assuming you installed the JRE correctly, double-clicking the .jar file should open the application. If you would like to create a desktop shortcut, right-click on the .jar file and select *Send To* >> *Desktop (Create Shortcut)*.
+4. Assuming you installed the JRE correctly, double-clicking the .jar file should open the application. (If you would like to create a desktop shortcut, right-click on the .jar file and select *Send To* >> *Desktop (Create Shortcut)*.)
 5. If you have any problems running the application, create an issue on the [Desktop Publisher Assistant's issue page on Github](https://github.com/alexporrello/DesktopPublisherAssistant/issues).
 
 ## Program Overview
 
-Desktop Publisher Assistant is a simple enough application, but many features have been included to speed up the PPM process. To use this program to the fullest, it is recommended that you read through the whole (short) guide.
+While desktop publisher appears to be a simple application, many features have been implemented to speed up Desktop Publishing procedures. To use this program to its fullest, it is recommended that you read through the entirety of this short guide.
 
 ### Button Functions
 
+There are four buttons in the application's main window: two to the top left (_Create Working Directory_ and _Copy Print Spec Doc_) and two at the bottom (_Copy Doc Pro Publishing Group Email_ and _Generate Doc Pro Publishing Group Email Body_). The following describes their functions.
+
 #### _Create Working Directory_
 
-As part of the PPM process, a desktop publisher will often be working with four files: (1) the print file, (2) the print specification document, (3) the online file, and (4) a doc pro checklist document. The _Create Working Directory_ button greatly simplifies the process of managing these files.
+As part of the PPM process, a desktop publisher will often be working with four files: (1) the print (32) file, (2) the print specification document, (3) the online (37) file, and (4) a doc pro checklist document. The _Create Working Directory_ button greatly simplifies the process of managing these files.
 
 If the desktop publisher has entered the ticket's _Doc Title_, pressing the _Create Working Directory_ button will duplicate Perforce's file structure on the user's desktop. It creates a folder (which gets its name from the _Doc Title_ text area) that contains two folders: _Checklists_ and _PDFs_.
 
-The PDFs folder has been created to hold the online document, the print document, and the print specification document. A blank doc pro checklist is automatically copied into the _Checklists_ folder.
+The PDFs folder has is created to contain the online document, the print document, and the print specification document. A blank doc pro checklist is automatically copied into the _Checklists_ folder.
 
 #### _Copy Print Spec Doc_
 
 This button goes hand-in-hand with the _Create Working Directory_ button.
 
-To copy a blank print specification document into _Desktop_ >> _DOC-TITLE_ >> _PDFs_, the user must enter the 32 part number and press the _Copy Print Spec Doc_ button. Not only will a blank print spec document be copied into the _PDFs_ folder, but it will automatically be named correctly.
+To copy a blank print specification document into _Desktop_ >> _DOC-TITLE_ >> _PDFs_, the user must enter the 32 part number and press the _Copy Print Spec Doc_ button. Not only will a blank print spec document be copied into the _PDFs_ folder, but it will automatically be named correctly (assuming that the 32 part number was entered correctly).
 
 #### _Copy Doc Pro Publishing Group Email_
 
@@ -42,8 +44,7 @@ Copies the doc pro publishing group's email to the system's clipboard.
 
 #### _Generate Doc Pro Publishing Group Email Body_
 
-When desktop publishers finish a PPM, they send an email to the doc pro publishing group to get the PPM approved. If the correct text fields have been filled out, pressing the button will generate the email's body and subject, and it will copy the generated text to the system's clipboard. 
-
+If information has been entered in the _Perforce Path_ text area, clicking on this button will generate the publishing email sent to the Doc Pro Publishing Team and copy it to the system's clipboard.
 
 ### Logging
 
@@ -51,7 +52,7 @@ Desktop Publisher Assistant's logging functionality is simple and user-friendly.
 
 #### Ticket Files
 
-A ticket file is essentially a project file. A ticket file contains the following information: the project's _Doc Title_, _32_ and _37 Part Numbers_, _Doc Date_, _GUID_, _Perforce Path_, _Jira Ticket Summary_, _Jira Ticket Reporter_, _Jira Ticket URL_, _TCIS URL_, and the _Status_ (whether it is _Not Started_, _In Progress_, _Sent for Approval_, or _Done_).
+A ticket file is essentially a project file. A ticket file contains the following information: the project's _Doc Title_, _32_ and _37 Part Numbers_, _Doc Date_, _GUID_, _Perforce Path_, _Jira Ticket Summary_, _Jira Ticket Reporter_, _Jira Ticket URL_, _TCIS URL_, and the _Status_ (which could be _Not Started_, _In Progress_, _Sent for Approval_, or _Done_).
 
 When a user opens Desktop Publisher Assistant for the first time, it creates a folder in %APPDATA% called _Desktop Publisher Assistant_, to which all tickets are automatically saved. 
 
@@ -69,7 +70,9 @@ The Log Dialog is a list of the ticket files saved to the default folder in %APP
 
 ### PDF XMP Updater
 
-Navigate to _Tools_ >> _Open XMP Updater Dialog_. Drag and drop the PDF and the XMP into the window one at a time or both at once. Once you have loaded both the PDF and the XMP, click the "Update" button, and a tagged file will be placed in the same directory as the original PDF.
+The PDF XMP Updater dialog is a convenient way to update a PDF's XMP. To open the dialog, navigate to _Tools_ >> _Open XMP Updater Dialog_. Drag and drop the PDF and the XMP into the window one a time or both at once. (Alternately, if you would rather navigate to the files with a file explorer, click on the empty text fields.) When you have added both documents, click the "Update" button to update the PDF's metadata.
+
+If you leave the "Update PDF Initial View Properties" radio button selected, the output PDF's initial view will conform to NI Desktop Publishing standards. Deselecting the radio button will leave the PDF's initial view properties untouched.
 
 ![](readme-images/pdf-dialog.PNG)
 
