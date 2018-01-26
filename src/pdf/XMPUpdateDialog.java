@@ -39,13 +39,13 @@ public class XMPUpdateDialog extends JDialog {
 
 	/** The path to the PDF File **/
 	File pdfFile;
-	
+
 	/** The path to the XMP File **/
 	File xmpFile;
 
 	/** The label on which the PDF Path will be displayed **/
 	JLabel pdf = new JLabel("Path to PDF...");
-	
+
 	/** The label on which the XMP Path will be displayed **/
 	JLabel xmp = new JLabel("Path to XMP...");
 
@@ -54,21 +54,21 @@ public class XMPUpdateDialog extends JDialog {
 
 	/** When selected, the initial view properties of the PDF are updated along with the tags **/
 	JRadioButton rb = new JRadioButton("Update PDF Initial View Properties");
-	
+
 	public XMPUpdateDialog() {
 		add(setupDropArea(), BorderLayout.CENTER);
 		add(setUpLowerPanel(), BorderLayout.SOUTH);
-		
+
 		rb.setFocusPainted(false);
 		rb.setSelected(true);
-		
+
 		setIconImages(Tools.imageIcon());
 		setLocationByPlatform(true);
 		setTitle("PDF XMP Updater");
 		setResizable(false);
 		pack();
 	}
-	
+
 	/**
 	 * Sets up the area where files can be dropped.
 	 * @return a setup JLabel to be added to the gui.
@@ -117,10 +117,10 @@ public class XMPUpdateDialog extends JDialog {
 				}
 			}
 		}));
-		
+
 		return display;
 	}
-	
+
 	private void isURLValid(String url) {
 		if(url.endsWith(".xmp")) {
 			xmpFile = new File(url);
@@ -135,10 +135,10 @@ public class XMPUpdateDialog extends JDialog {
 			pdf.setForeground(Color.BLACK);
 			pdf.setToolTipText(url);
 		}
-		
+
 		enableGoButton();
 	}
-	
+
 	/**
 	 * Sets up the JLabels that display the paths and the action button.
 	 * @return a setup JPanel to be added to the project.
@@ -178,39 +178,27 @@ public class XMPUpdateDialog extends JDialog {
 		label.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.LIGHT_GRAY), 
 				BorderFactory.createEmptyBorder(0, 5, 0, 5)));
-		
+
 		String dialogName;
-		
+
 		if(isPDF) {
 			dialogName = "Locate PDF File";
 		} else {
 			dialogName = "Locate XMP File";
 		}
-		
+
 		label.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				try {
-					String url = Tools.loadFile(dialogName, FileSystemView.getFileSystemView().getHomeDirectory());
-					
-					if(url.endsWith(".pdf")) {
-						pdfFile = new File(url);
-						pdf.setText(url);
-						pdf.setToolTipText(url);
-					} else if(url.endsWith(".xmp")) {
-						xmpFile = new File(url);
-						xmp.setText(url);
-						xmp.setToolTipText(url);
-					}
-					
-					 enableGoButton();
+					isURLValid(Tools.loadFile(dialogName, FileSystemView.getFileSystemView().getHomeDirectory()));
 				} catch (NoSuchFileException e) {
 					System.err.println("The user did not open a file.");
 				}
 			}
 		});	
 	}
-	
+
 	/**
 	 * Sets up the button that kicks off the action.
 	 */
@@ -219,7 +207,7 @@ public class XMPUpdateDialog extends JDialog {
 		go.addActionListener(e -> {
 			try {				
 				XMPUpdater.updatePDFXMP(pdfFile.getAbsolutePath(), xmpFile.getAbsolutePath());
-				
+
 				if(rb.isSelected()) {
 					PDFPropertiesUpdater.updateOpenProperties(pdfFile.getAbsolutePath());
 				}
@@ -230,7 +218,7 @@ public class XMPUpdateDialog extends JDialog {
 			}
 		});
 	}
-	
+
 	/**
 	 * Checks if the go button should be enabled to disabled.
 	 */

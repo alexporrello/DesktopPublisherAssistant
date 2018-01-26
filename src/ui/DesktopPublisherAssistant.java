@@ -208,14 +208,29 @@ public class DesktopPublisherAssistant extends JFrame {
 				@Override
 				public void focusLost(FocusEvent arg0) {
 					if(title.getText().length() > 0) {
-						setTitle(title.getText());			
+						setTitle(title.getText());
+						replaceCommaWithDash();
 					}
+				}
+			});
+			title.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent arg0) {
+					replaceCommaWithDash();
 				}
 			});
 
 			add(createJLabel("Doc Title: "), Tools.createGBC(0, yPosn, 0.0, insets));
 			add(setUpText(title), Tools.createGBC(1, yPosn, 1.0, insets));
 			add(cwd, Tools.createGBC(2, yPosn, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));
+		}
+
+		private void replaceCommaWithDash() {
+			if(title.getText().contains(",")) {
+				int caret = title.getCaretPosition();
+				title.setText(title.getText().replace(",", "-"));
+				title.setCaretPosition(caret);
+			}
 		}
 
 		public void createWorkingDirectory() {
@@ -389,14 +404,14 @@ public class DesktopPublisherAssistant extends JFrame {
 			setTitle("Desktop Publisher Assistant");
 			title.requestFocus();
 		}
-		
+
 		public void setAll(String title, String partNum32, String partNum37, String date, String GUID, String perforce,
 				String jiraSummary, String author, String jiraURL, String tcisURL, int status) {
-			
+
 			clearAll();
-			
+
 			setTitle(title);
-			
+
 			this.title.setText(title);
 			this.partNum37.setText(partNum37);
 			this.partNum32.setText(partNum32);
@@ -458,6 +473,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			title.setText(toSet);
 			title.setCaretPosition(0);
 			setTitle(toSet);
+			replaceCommaWithDash();
 		}
 
 		public void set32PartNumber(String toSet) {
