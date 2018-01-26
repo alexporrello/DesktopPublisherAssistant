@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -42,8 +44,11 @@ public class LogWindow extends JMPanel {
 
 	private MainWindow mw;
 
-	JScrollPane logDialogScroll = new JScrollPane(new LogsInWindow());
+	LogsInWindow liw = new LogsInWindow();
+	JScrollPane logDialogScroll = new JScrollPane(liw);
 
+	Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
+	
 	public LogWindow(MainWindow mw) {
 		this.mw = mw;
 
@@ -98,6 +103,42 @@ public class LogWindow extends JMPanel {
 		labels[3].setPreferredSize(new Dimension(100, 24));
 		labels[4].setPreferredSize(new Dimension(110, 24));
 		labels[5].setPreferredSize(new Dimension(25, 24));
+		
+		labels[0].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				compare = Compare.JIRA_TICKET_DESCRIPTION;
+				liw.addAllToLogEntryPanel();
+			}
+		});
+		labels[1].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				compare = Compare.JIRA_REPORT;
+				liw.addAllToLogEntryPanel();
+			}
+		});
+		labels[2].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				compare = Compare.PART_NUM_32;
+				liw.addAllToLogEntryPanel();
+			}
+		});
+		labels[3].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				compare = Compare.PART_NUM_37;
+				liw.addAllToLogEntryPanel();
+			}
+		});
+		labels[4].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				compare = Compare.STATUS;
+				liw.addAllToLogEntryPanel();
+			}
+		});
 		
 		labelsPanel.add(labels[0], Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
 		labelsPanel.add(labels[1], Tools.createGBC(2, y, 0.0, new Insets(0,0,-1,0)));
@@ -220,7 +261,7 @@ public class LogWindow extends JMPanel {
 		 * @throws IOException
 		 */
 		private ShortLog setUpNewShortLog(File f) throws IOException {
-			ShortLog toReturn = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath());
+			ShortLog toReturn = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath(), compare);
 
 			toReturn.popupOptions.delete.addActionListener(e -> {					
 				try {

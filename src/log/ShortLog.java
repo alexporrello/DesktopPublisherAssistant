@@ -15,8 +15,7 @@ import ticket.TicketInfo;
 
 public class ShortLog implements Comparable<ShortLog> {
 	
-	/** Determines whether ShortLog is compared by status or the Jira ticket description **/
-	private boolean sortByStatus = true;
+	public Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
 
 	/** Makes it so the user can change a ticket's status without opening the ticket **/
 	public ClickLabel<String> status = new ClickLabel<String>(Ticket.STATUS_OPTIONS, SwingConstants.LEFT);
@@ -32,8 +31,9 @@ public class ShortLog implements Comparable<ShortLog> {
 	/** The context menu that appears when the user left clicks **/
 	public LeftClickOptions popupOptions;
 	
-	public ShortLog(String[] ticket, String ticketURL) {
+	public ShortLog(String[] ticket, String ticketURL, Compare compare) {
 		this.ticket    = ticket;
+		this.compare   = compare;
 		this.ticketURL = ticketURL;
 		this.popupOptions = new LeftClickOptions(this.ticketURL);
 		
@@ -107,29 +107,19 @@ public class ShortLog implements Comparable<ShortLog> {
 	public JLabel getLabel(ShortLogLabel sll) {
 		return labels[sll.i];
 	}
-	
-	/**
-	 * Sets the log sortable by its status.
-	 * @param sbs true if the log is sortable by status; else, false.
-	 */
-	public void sortByStatus(Boolean sbs) {
-		this.sortByStatus = sbs;
-	}
-
-	/**
-	 * Sets the log sortable by its Jira ticket number.
-	 * @param sbs true if the log is sortable by its Jira ticket number; else, false.
-	 */
-	public void sortByTicket(Boolean sbs) {
-		this.sortByStatus = !sbs;
-	}
 
 	@Override
 	public int compareTo(ShortLog e) {
-		if(sortByStatus) {
-			return ticket[TicketInfo.STATUS.i].compareTo(e.ticket[TicketInfo.STATUS.i]);
-		} else {
+		if(compare == Compare.JIRA_TICKET_DESCRIPTION) {
 			return ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i].compareTo(e.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
+		} else if(compare == Compare.JIRA_REPORT) {
+			return ticket[TicketInfo.REPORT.i].compareTo(e.ticket[TicketInfo.REPORT.i]);
+		} else if(compare == Compare.PART_NUM_32) {
+			return ticket[TicketInfo.PART_NUM_32.i].compareTo(e.ticket[TicketInfo.PART_NUM_32.i]);
+		} else if(compare == Compare.PART_NUM_37){
+			return ticket[TicketInfo.PART_NUM_37.i].compareTo(e.ticket[TicketInfo.PART_NUM_37.i]);
+		} else {
+			return ticket[TicketInfo.STATUS.i].compareTo(e.ticket[TicketInfo.STATUS.i]);
 		}
 	}
 }
