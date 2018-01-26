@@ -23,7 +23,6 @@ import java.nio.file.NoSuchFileException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -34,7 +33,7 @@ import com.itextpdf.text.DocumentException;
 
 import ui.Tools;
 
-public class XMPUpdateDialog extends JDialog {
+public class XMPUpdateWindow extends JPanel {
 	private static final long serialVersionUID = -6561591979054929701L;
 
 	/** The path to the PDF File **/
@@ -55,25 +54,22 @@ public class XMPUpdateDialog extends JDialog {
 	/** When selected, the initial view properties of the PDF are updated along with the tags **/
 	JRadioButton rb = new JRadioButton("Update PDF Initial View Properties");
 
-	public XMPUpdateDialog() {
-		add(setupDropArea(), BorderLayout.CENTER);
+	public XMPUpdateWindow() {
+		setPreferredSize(new Dimension(300, 50));
+		setLayout(new BorderLayout());
+		
+		add(setUpDropArea(), BorderLayout.CENTER);
 		add(setUpLowerPanel(), BorderLayout.SOUTH);
 
 		rb.setFocusPainted(false);
 		rb.setSelected(true);
-
-		setIconImages(Tools.imageIcon());
-		setLocationByPlatform(true);
-		setTitle("PDF XMP Updater");
-		setResizable(false);
-		pack();
 	}
 
 	/**
 	 * Sets up the area where files can be dropped.
 	 * @return a setup JLabel to be added to the gui.
 	 */
-	public JLabel setupDropArea() {
+	public JLabel setUpDropArea() {
 		JLabel display = new JLabel("Drag and Drop Your PDF And/Or Your XMP Here") {
 			private static final long serialVersionUID = -5684161364815869904L;
 

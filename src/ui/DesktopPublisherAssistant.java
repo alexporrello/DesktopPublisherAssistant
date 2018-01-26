@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -31,8 +32,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileSystemView;
 
+import log.LogWindow;
+import pdf.XMPUpdateWindow;
 import ticket.Ticket;
 
 /**
@@ -44,6 +48,11 @@ public class DesktopPublisherAssistant extends JFrame {
 
 	public MainWindow mainWindow = new MainWindow();
 
+	//JScrollPane 
+	LogWindow logDialogScroll = new LogWindow(mainWindow);// new JScrollPane(new LogWindow(mainWindow));
+	
+	XMPUpdateWindow xmpUpdate = new XMPUpdateWindow();
+	
 	public DesktopPublisherAssistant() {
 		setup();
 	}
@@ -60,19 +69,18 @@ public class DesktopPublisherAssistant extends JFrame {
 	}
 
 	private void setup() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Desktop Publisher Assistant");
-		setJMenuBar(new MenuBar(mainWindow));
+		setJMenuBar(new MenuBar(mainWindow, logDialogScroll, xmpUpdate));
 		setIconImages(Tools.imageIcon());
-		setSize(new Dimension(700, 320));
+		setSize(new Dimension(1000, 525));
 		setLayout(new BorderLayout());
 		setLocationByPlatform(true);
 
-		JScrollPane scroll = new JScrollPane(mainWindow);
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		add(scroll, BorderLayout.CENTER);
-
+		addMainWindow();
+		addXMPUpdateWindow();
+		addLogDialog();
+		
 		// When the window is activated, check if the copied string is
 		// one of the fields.
 		addWindowListener(new WindowAdapter() {			
@@ -81,6 +89,32 @@ public class DesktopPublisherAssistant extends JFrame {
 				mainWindow.autoAddString(Tools.getCopiedText());
 			}
 		});
+	}
+	
+	public void addXMPUpdateWindow() {
+		Border inside = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		Border outside = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5,0,0,5), inside);
+		
+		xmpUpdate.setBorder(outside);
+		
+		add(xmpUpdate, BorderLayout.EAST);
+	}
+	
+	public void addMainWindow() {
+		JScrollPane scroll = new JScrollPane(mainWindow);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		add(scroll, BorderLayout.CENTER);
+
+		Border inside = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		Border outside = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5,5,0,-1), inside);
+		scroll.setBorder(outside);
+	}
+	
+	public void addLogDialog() {
+		
+		
+		add(logDialogScroll, BorderLayout.SOUTH);
 	}
 
 	/**
@@ -117,6 +151,9 @@ public class DesktopPublisherAssistant extends JFrame {
 		/** The URL to the Jira ticket **/
 		private JTextField jiraURL = new JTextField();
 
+		/** The URL to the Jira ticket **/
+		private JTextField jiraKey = new JTextField();
+		
 		/** The URL to the document in TCIS **/
 		private JTextField tcisURL = new JTextField();
 
@@ -176,6 +213,10 @@ public class DesktopPublisherAssistant extends JFrame {
 			add(setUpText(jiraSummary), Tools.createGBC(1, y, 1.0, insets));
 			y++;
 
+			//add(createJLabel("Jira Ticket Key: "), Tools.createGBC(0, y, 0.0, insets));
+			//add(setUpText(jiraKey), Tools.createGBC(1, y, 1.0, insets));
+			//y++;
+			
 			add(createJLabel("Jira Ticket Reporter: "), Tools.createGBC(0, y, 0.0, insets));
 			add(setUpText(author), Tools.createGBC(1, y, 1.0, insets));
 			y++;
@@ -398,6 +439,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			jiraURL.setText("");
 			tcisURL.setText("");
 			status.setSelectedIndex(0);
+			jiraKey.setText("");
 			workingDirectory = "";
 			localPDFsURL = "";
 			localChecklistsURL = "";
@@ -406,7 +448,7 @@ public class DesktopPublisherAssistant extends JFrame {
 		}
 
 		public void setAll(String title, String partNum32, String partNum37, String date, String GUID, String perforce,
-				String jiraSummary, String author, String jiraURL, String tcisURL, int status) {
+				String jiraSummary, String author, String jiraURL, String tcisURL, int status, String jiraKey) {
 
 			clearAll();
 
@@ -423,6 +465,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			this.jiraURL.setText(jiraURL);
 			this.tcisURL.setText(tcisURL);
 			this.status.setSelectedIndex(status);
+			this.jiraKey.setText(jiraKey);
 		}
 
 		/**
@@ -444,6 +487,8 @@ public class DesktopPublisherAssistant extends JFrame {
 				setTextIfEmpty(jiraSummary, s);
 			} else if(s.contains("apex.natinst")) {
 				setTextIfEmpty(tcisURL, s);
+			} else if(s.contains("TCIS-")) {
+				setTextIfEmpty(jiraKey, s);
 			}
 		}
 
@@ -523,6 +568,10 @@ public class DesktopPublisherAssistant extends JFrame {
 		public void setAuthor(String toSet) {
 			author.setText(toSet);
 		}
+		
+		public void setJiraKey(String toSet) {
+			jiraKey.setText(toSet);
+		}
 
 		@Override
 		public String toString() {
@@ -540,6 +589,7 @@ public class DesktopPublisherAssistant extends JFrame {
 			toReturn = Tools.appendToNewLine(toReturn, tcisURL.getText());
 			toReturn = Tools.appendToNewLine(toReturn, status.getSelectedIndex() + "");
 			toReturn = Tools.appendToNewLine(toReturn, author.getText());
+			toReturn = Tools.appendToNewLine(toReturn, jiraKey.getText());
 
 			return toReturn;
 		}

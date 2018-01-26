@@ -7,9 +7,10 @@ public enum TicketInfo {
 	JIRA_TICKET_DESCRIPTION(6), JIRA_TICKET_URL(7),
 	TCIS_URL(8),
 	STATUS(9),
-	REPORT(10);
+	REPORT(10),
+	JIRA_TICKET_KEY(11);
 
-	public static final int NUM_ENTRIES = 11;
+	public static final int NUM_ENTRIES = 12;
 	
 	public int i;
 

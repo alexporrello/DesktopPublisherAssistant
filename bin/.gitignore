@@ -1,6 +1,5 @@
-/main/
 /ui/
-/pdf/
 /log/
-
-.gitignore
+/ticket/
+/pdf/
+/main/

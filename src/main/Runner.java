@@ -10,9 +10,9 @@ import com.itextpdf.text.DocumentException;
 
 import fm.ParagraphTag;
 import fm.ParagraphTagsDialog;
-import log.LogDialog;
+import log.LogWindow;
 import pdf.PDFPropertiesUpdater;
-import pdf.XMPUpdateDialog;
+import pdf.XMPUpdateWindow;
 import ui.DesktopPublisherAssistant;
 
 public class Runner {
@@ -34,11 +34,11 @@ public class Runner {
 	}
 
 	public static void testXMPUpdateDialog() {
-		new XMPUpdateDialog().setVisible(true);
+		new XMPUpdateWindow().setVisible(true);
 	}
 	
 	public static void testLogDialog() {
-		new LogDialog(new DesktopPublisherAssistant().mainWindow).setVisible(true);
+		new LogWindow(new DesktopPublisherAssistant().mainWindow).setVisible(true);
 	}
 	
 	public static void testParagraphTagsDialog() {
