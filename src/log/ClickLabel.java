@@ -53,8 +53,6 @@ public class ClickLabel<E> extends JLabel {
 				} else {
 					setSelectedIndex(0);
 				}
-				
-				System.out.println(getSize());
 			}
 		});
 	}

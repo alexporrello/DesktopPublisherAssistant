@@ -69,7 +69,7 @@ public class LogWindow extends JMPanel {
 						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
 					}
 				},
-				new JLabel("32 Part Num") {
+				new JLabel("32 Part Number") {
 					private static final long serialVersionUID = -2564660927510249777L;
 					public void paintComponent(Graphics g) {
 						super.paintComponent(g);
@@ -77,7 +77,7 @@ public class LogWindow extends JMPanel {
 						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
 					}
 				},
-				new JLabel("37 Part Num") {
+				new JLabel("37 Part Number") {
 					private static final long serialVersionUID = -2564660927510249778L;
 					public void paintComponent(Graphics g) {
 						super.paintComponent(g);
@@ -93,21 +93,32 @@ public class LogWindow extends JMPanel {
 		JMPanel labelsPanel = new JMPanel();
 		labelsPanel.setLayout(new GridBagLayout());
 
+		labels[1].setPreferredSize(new Dimension(130, 24));
+		labels[2].setPreferredSize(new Dimension(100, 24));
+		labels[3].setPreferredSize(new Dimension(100, 24));
+		labels[4].setPreferredSize(new Dimension(110, 24));
+		labels[5].setPreferredSize(new Dimension(25, 24));
+		
 		labelsPanel.add(labels[0], Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[1], Tools.createGBC(2, y, 0.1, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[2], Tools.createGBC(3, y, 0.1, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[3], Tools.createGBC(4, y, 0.1, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[1], Tools.createGBC(2, y, 0.0, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[2], Tools.createGBC(3, y, 0.0, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[3], Tools.createGBC(4, y, 0.0, new Insets(0,0,-1,0)));
 		labelsPanel.add(labels[4], Tools.createGBC(5, y, 0.0, new Insets(0,0,-1,0)));
 		labelsPanel.add(labels[5], Tools.createGBC(6, y, 0.0, new Insets(0,0,-1,0)));
 		
 		for(JLabel label : labels) {
 			label.setHorizontalAlignment(SwingConstants.LEFT);
 			label.setOpaque(true);
-			label.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		}
 		
-		labels[4].setPreferredSize(new Dimension(105,24));
-		labels[1].setPreferredSize(new Dimension(100, 24));
+		for(int i = 1; i < labels.length; i++) {
+			labels[i].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
+		}
+		
+		labels[0].setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+		
+		//labels[4].setPreferredSize(new Dimension(105,24));
+		//labels[1].setPreferredSize(new Dimension(100, 24));
 		
 		setLayout(new GridBagLayout());
 		setBorder(
@@ -164,10 +175,10 @@ public class LogWindow extends JMPanel {
 		 * Locates all tickets, adds them to {@link #shortLogs}, and adds them to {@link #logEntryPanel}.
 		 */
 		public void addAllToLogEntryPanel() {
+			this.removeAll();
+			shortLogs.clear();
+			
 			try {
-				this.removeAll();
-				shortLogs.clear();
-
 				for(File f : Ticket.TICKET_URL.listFiles()) {
 					shortLogs.add(setUpNewShortLog(f));
 				}
@@ -175,7 +186,7 @@ public class LogWindow extends JMPanel {
 
 				int y = 0;
 
-				for(ShortLog sl : shortLogs) {				
+				for(ShortLog sl : shortLogs) {
 					if(y%2 == 0) {
 						sl.getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION).setBackground(Color.WHITE);
 						sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER).setBackground(Color.WHITE);
@@ -187,10 +198,10 @@ public class LogWindow extends JMPanel {
 					int space = 0;
 
 					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION), Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER), Tools.createGBC(2, y, 0.1, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.PART_NUM_32), Tools.createGBC(3, y, 0.1, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.PART_NUM_37), Tools.createGBC(4, y, 0.1, new Insets(0,space,-1,0)));
-					this.add(sl.status,  Tools.createGBC(5, y, 0.0, new Insets(0,0,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER),    Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.PART_NUM_32),             Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.PART_NUM_37),             Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.status,                                          Tools.createGBC(5, y, 0.0, new Insets(0,0,-1,0)));
 
 					y++;
 				}
@@ -217,8 +228,6 @@ public class LogWindow extends JMPanel {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-
-				addAllToLogEntryPanel();
 			});
 
 			toReturn.popupOptions.openH.addActionListener(e -> {

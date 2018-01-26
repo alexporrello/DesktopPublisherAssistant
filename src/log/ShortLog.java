@@ -1,7 +1,9 @@
 package log;
 
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
@@ -35,14 +37,29 @@ public class ShortLog implements Comparable<ShortLog> {
 		this.ticketURL = ticketURL;
 		this.popupOptions = new LeftClickOptions(this.ticketURL);
 		
-		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i]  = new JLabel(this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
-		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i]     = new JLabel(this.ticket[TicketInfo.REPORT.i]);
-		labels[ShortLogLabel.PART_NUM_32.i]              = new JLabel(this.ticket[TicketInfo.PART_NUM_32.i]);
-		labels[ShortLogLabel.PART_NUM_37.i]              = new JLabel(this.ticket[TicketInfo.PART_NUM_37.i]);
-				
+		status.setPreferredSize(new Dimension(110,24));
+
+		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i] = new JLabel(this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
+		
+		labels[ShortLogLabel.PART_NUM_32.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_32.i]);
+		labels[ShortLogLabel.PART_NUM_32.i].setPreferredSize(new Dimension(100, 24));
+		
+		labels[ShortLogLabel.PART_NUM_37.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_37.i]);
+		labels[ShortLogLabel.PART_NUM_37.i].setPreferredSize(new Dimension(100, 24));
+
+		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i] = new JLabel(this.ticket[TicketInfo.REPORT.i]);
+		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i].setPreferredSize(new Dimension(130, 24));
+		
+		
 		for(JLabel label : labels) {
 			label.setOpaque(true);
-			label.setBorder(BorderFactory.createEmptyBorder(2,10,2,10));
+			label.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+			label.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					System.out.println(label.getSize());
+				}
+			});
 		}
 		
 		setUpOpenTicket();
@@ -65,7 +82,7 @@ public class ShortLog implements Comparable<ShortLog> {
 				}
 			}
 		});
-		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setBorder(BorderFactory.createEmptyBorder(5,10,5,5));
+		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
 		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setOpaque(true);
 	}
 	
@@ -84,7 +101,7 @@ public class ShortLog implements Comparable<ShortLog> {
 				} 
 			}
 		});
-		status.setBorder(BorderFactory.createEmptyBorder(5,5,5,10));
+		status.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
 	}
 
 	public JLabel getLabel(ShortLogLabel sll) {
