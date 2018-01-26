@@ -26,7 +26,7 @@ import java.nio.file.WatchService;
 
 import ticket.Ticket;
 import ticket.TicketInfo;
-import ui.DesktopPublisherAssistant.MainWindow;
+import ui.MainWindow;
 import ui.JMPanel;
 import ui.Tools;
 

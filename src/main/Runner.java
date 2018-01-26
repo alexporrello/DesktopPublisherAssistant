@@ -1,18 +1,11 @@
 package main;
 
-import java.io.IOException;
-
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.itextpdf.text.DocumentException;
-
 import fm.ParagraphTag;
 import fm.ParagraphTagsDialog;
-import log.LogWindow;
-import pdf.PDFPropertiesUpdater;
-import pdf.XMPUpdateWindow;
 import ui.DesktopPublisherAssistant;
 
 public class Runner {
@@ -21,11 +14,8 @@ public class Runner {
 		SwingUtilities.invokeLater(() -> {
 			setLookAndFeel();
 			runMainProgram();
-			
-			//testLogDialog();
-			//testXMPUpdateDialog();
+
 			//testParagraphTagsDialog();
-			//testPDFProperties();
 		});
 	}
 	
@@ -33,32 +23,10 @@ public class Runner {
 		new DesktopPublisherAssistant().setVisible(true);
 	}
 
-	public static void testXMPUpdateDialog() {
-		new XMPUpdateWindow().setVisible(true);
-	}
-	
-	public static void testLogDialog() {
-		new LogWindow(new DesktopPublisherAssistant().mainWindow).setVisible(true);
-	}
-	
 	public static void testParagraphTagsDialog() {
 		for(ParagraphTag tagType : ParagraphTag.TAG_TYPES) {
 			System.out.println(tagType);
 			new ParagraphTagsDialog().setVisible(true);
-		}
-	}
-
-	public static void testPDFProperties() {
-		String path = "D:\\users\\aporrell\\Desktop\\Demonstration";
-		String pathToPDF = path + "\\01.pdf";
-		//String pathToOutputPDF = path + "\\376627b_updated.pdf";
-
-		try {
-			PDFPropertiesUpdater.updateOpenProperties(pathToPDF);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
 		}
 	}
 

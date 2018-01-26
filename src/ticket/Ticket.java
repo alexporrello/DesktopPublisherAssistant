@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import ui.Tools;
-import ui.DesktopPublisherAssistant.MainWindow;
+import ui.MainWindow;
 
 public class Ticket {
 

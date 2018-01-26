@@ -18,7 +18,7 @@ import javax.swing.KeyStroke;
 import log.LogWindow;
 import pdf.XMPUpdateWindow;
 import ticket.Ticket;
-import ui.DesktopPublisherAssistant.MainWindow;
+import ui.MainWindow;
 
 public class MenuBar extends JMenuBar {
 	private static final long serialVersionUID = 3492580614560658292L;
