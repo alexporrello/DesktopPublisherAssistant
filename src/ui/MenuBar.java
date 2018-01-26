@@ -55,7 +55,7 @@ public class MenuBar extends JMenuBar {
 		});
 		view.add(showXMPUpdate);
 
-		add(view);
+		//add(view);
 	}
 
 	public class EditMenu extends JMenu {
@@ -102,14 +102,6 @@ public class MenuBar extends JMenuBar {
 				clpbrd.setContents(stringSelection, null);
 			});
 			add(copyTemplate);
-
-			addSeparator();
-
-			JMenuItem openXMPUpdateDialog = new JMenuItem("Open XMP Updater Dialog");
-			openXMPUpdateDialog.addActionListener(e -> {
-				new XMPUpdateWindow().setVisible(true);
-			});
-			add(openXMPUpdateDialog);
 		}
 
 		/**
@@ -130,9 +122,6 @@ public class MenuBar extends JMenuBar {
 		private static final long serialVersionUID = -754503798159404299L;
 
 
-		/** Opens the log file that shows all the logs **/
-		JMenuItem openLog   = new JMenuItem("View Log");
-
 		/** Saves the currently open project to a .log file **/
 		JMenuItem saveToLog = new JMenuItem("Save Ticket");
 
@@ -141,10 +130,6 @@ public class MenuBar extends JMenuBar {
 
 		FileMenu() {
 			super("File");
-
-			add(openLog());
-
-			addSeparator();
 
 			add(open());
 			add(save());
@@ -165,18 +150,6 @@ public class MenuBar extends JMenuBar {
 			saveToLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
 			return saveToLog;
-		}
-
-		/**
-		 * Sets up the {@link #openLog} menu item.
-		 * @return {@link #openLog} set up.
-		 */
-		public JMenuItem openLog() {
-			openLog.addActionListener(e -> {
-				new LogWindow(mainWindow).setVisible(true);
-			});
-			openLog.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-			return openLog;
 		}
 
 		/**
