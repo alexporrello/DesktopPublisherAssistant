@@ -17,7 +17,7 @@ public class ShortLog implements Comparable<ShortLog> {
 	private boolean sortByStatus = true;
 
 	/** Makes it so the user can change a ticket's status without opening the ticket **/
-	public ClickLabel<String> status = new ClickLabel<String>(Ticket.STATUS_OPTIONS, SwingConstants.RIGHT);
+	public ClickLabel<String> status = new ClickLabel<String>(Ticket.STATUS_OPTIONS, SwingConstants.LEFT);
 
 	/** All of the fields in the ticket **/
 	public String[] ticket;	

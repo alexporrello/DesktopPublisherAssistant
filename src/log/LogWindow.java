@@ -1,8 +1,9 @@
 package log;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
@@ -16,10 +17,8 @@ import java.util.Collections;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 import java.nio.file.WatchKey;
@@ -52,33 +51,54 @@ public class LogWindow extends JMPanel {
 		logDialogScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		logDialogScroll.setPreferredSize(new Dimension(900,150));
 		logDialogScroll.setBorder(BorderFactory.createEmptyBorder());
-		
-		setBorder(
-				BorderFactory.createCompoundBorder(
-						BorderFactory.createEmptyBorder(-1,5,5,5),
-						BorderFactory.createCompoundBorder(
-								BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-								BorderFactory.createEmptyBorder(5, 5, 5, 5))));
 
-		
-		
 		JLabel[] labels = {
-				new JLabel("Jira Ticket Description"),
-				new JLabel("Jira Report"),
-				new JLabel("32 Part Num"),
-				new JLabel("37 Part Num"),
-				new JLabel("Status")};
-		
+				new JLabel("Jira Ticket Description") {
+					private static final long serialVersionUID = -2564660927510249775L;
+					public void paintComponent(Graphics g) {
+						super.paintComponent(g);
+						g.setColor(Color.LIGHT_GRAY);
+						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
+					}
+				},
+				new JLabel("Jira Report") {
+					private static final long serialVersionUID = -2564660927510249776L;
+					public void paintComponent(Graphics g) {
+						super.paintComponent(g);
+						g.setColor(Color.LIGHT_GRAY);
+						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
+					}
+				},
+				new JLabel("32 Part Num") {
+					private static final long serialVersionUID = -2564660927510249777L;
+					public void paintComponent(Graphics g) {
+						super.paintComponent(g);
+						g.setColor(Color.LIGHT_GRAY);
+						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
+					}
+				},
+				new JLabel("37 Part Num") {
+					private static final long serialVersionUID = -2564660927510249778L;
+					public void paintComponent(Graphics g) {
+						super.paintComponent(g);
+						g.setColor(Color.LIGHT_GRAY);
+						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
+					}
+				},
+				new JLabel("Status"),
+				new JLabel("")};
+
 		int y = 0;
-		
+
 		JMPanel labelsPanel = new JMPanel();
 		labelsPanel.setLayout(new GridBagLayout());
-		
-		labelsPanel.add(labels[0], Tools.createGBC(1, y, 1.0, new Insets(0,1,-1,0)));
-		labelsPanel.add(labels[1], Tools.createGBC(2, y, 0.1, new Insets(0,1,-1,0)));
-		labelsPanel.add(labels[2], Tools.createGBC(3, y, 0.1, new Insets(0,1,-1,0)));
-		labelsPanel.add(labels[3], Tools.createGBC(4, y, 0.1, new Insets(0,1,-1,0)));
-		labelsPanel.add(labels[4], Tools.createGBC(5, y, 0.0, new Insets(0,1,-1,0)));
+
+		labelsPanel.add(labels[0], Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[1], Tools.createGBC(2, y, 0.1, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[2], Tools.createGBC(3, y, 0.1, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[3], Tools.createGBC(4, y, 0.1, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[4], Tools.createGBC(5, y, 0.0, new Insets(0,0,-1,0)));
+		labelsPanel.add(labels[5], Tools.createGBC(6, y, 0.0, new Insets(0,0,-1,0)));
 		
 		for(JLabel label : labels) {
 			label.setHorizontalAlignment(SwingConstants.LEFT);
@@ -86,10 +106,18 @@ public class LogWindow extends JMPanel {
 			label.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		}
 		
+		labels[4].setPreferredSize(new Dimension(105,24));
+		labels[1].setPreferredSize(new Dimension(100, 24));
 		
-		setLayout(new BorderLayout());
-		add(labelsPanel, BorderLayout.NORTH);
-		add(logDialogScroll, BorderLayout.CENTER);
+		setLayout(new GridBagLayout());
+		setBorder(
+				BorderFactory.createCompoundBorder(
+						BorderFactory.createEmptyBorder(-1,5,5,5),
+						BorderFactory.createCompoundBorder(
+								BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
+								BorderFactory.createEmptyBorder(5, 5, 5, 5))));
+		add(labelsPanel,     new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		add(logDialogScroll, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH,       new Insets(0, 0, 0, 0), 0, 0));
 	}
 
 	public class LogsInWindow extends JMPanel {
