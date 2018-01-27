@@ -220,6 +220,10 @@ public class LogWindow extends JMPanel {
 			shortLogs.clear();
 			
 			try {
+				if(!Ticket.TICKET_URL.exists()) {
+					Ticket.TICKET_URL.mkdir();
+				}
+				
 				for(File f : Ticket.TICKET_URL.listFiles()) {
 					shortLogs.add(setUpNewShortLog(f));
 				}
