@@ -194,16 +194,18 @@ public class LogWindow extends JMPanel {
 						Path dir = Ticket.TICKET_URL.toPath();
 
 						dir.register(watcher, ENTRY_MODIFY, ENTRY_CREATE, ENTRY_DELETE);
-
-						for (;;) {
+						
+						for(;;) {
 							WatchKey key = watcher.take();
 							for (WatchEvent<?> event : key.pollEvents()) {
-								if (event.kind() == ENTRY_CREATE || event.kind() == ENTRY_DELETE) {
+								if (event.kind() == ENTRY_CREATE || event.kind() == ENTRY_DELETE || event.kind() == ENTRY_MODIFY) {
 									System.out.println("true");
 									addAllToLogEntryPanel();
 									continue;
 								}
 							}
+							
+							key.reset();
 						}
 					} catch(InterruptedException | IOException e) {
 						e.printStackTrace();
