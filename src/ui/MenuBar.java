@@ -161,7 +161,7 @@ public class MenuBar extends JMenuBar {
 				try {
 					Ticket.readLogFile(Tools.loadFile("Select Ticket", Ticket.TICKET_URL), mainWindow);
 				} catch (NoSuchFileException e1) {
-					System.out.println("No file was selected.");
+					System.err.println("No file was selected.");
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

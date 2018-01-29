@@ -54,12 +54,6 @@ public class ShortLog implements Comparable<ShortLog> {
 		for(JLabel label : labels) {
 			label.setOpaque(true);
 			label.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-			label.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(MouseEvent arg0) {
-					System.out.println(label.getSize());
-				}
-			});
 		}
 		
 		setUpOpenTicket();
