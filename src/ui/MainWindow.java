@@ -28,6 +28,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
+import com.itextpdf.text.DocumentException;
+
+import pdf.PDFPropertiesUpdater;
 import ticket.Ticket;
 
 /**
@@ -183,6 +186,7 @@ public class MainWindow extends JMPanel {
 		add(cwd, Tools.createGBC(2, yPosn, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));
 	}
 
+	/** Fixes bug where URLs with dashes could not be parsed **/
 	private void replaceCommaWithDash() {
 		if(title.getText().contains(",")) {
 			int caret = title.getCaretPosition();
@@ -204,12 +208,17 @@ public class MainWindow extends JMPanel {
 			new File(localChecklistsURL).mkdir();
 
 			try {
-				Files.copy(
+				Files.copy(						
 						DesktopPublisherAssistant.class.getClassLoader().getResourceAsStream("DocProChecklist.pdf"), 
 						new File(localChecklistsURL + "\\DocProChecklist.pdf").toPath(), 
 						StandardCopyOption.REPLACE_EXISTING);
+				
+				PDFPropertiesUpdater.autoFillDocProChecklist(localChecklistsURL + "\\DocProChecklist.pdf", 
+						title.getText(), partNum32.getText(), date.getText());				
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (DocumentException e) {
+				System.err.println("The copied DocProChecklist.pdf could not be auto-filled.");
 			}
 		}
 	}
