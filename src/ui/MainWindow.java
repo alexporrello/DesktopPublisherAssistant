@@ -8,16 +8,14 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,9 +65,6 @@ public class MainWindow extends JMPanel {
 	/** The URL to the Jira ticket **/
 	private JTextField jiraURL = new JTextField();
 
-	/** The URL to the Jira ticket **/
-	private JTextField jiraKey = new JTextField();
-	
 	/** The URL to the document in TCIS **/
 	private JTextField tcisURL = new JTextField();
 
@@ -86,10 +81,14 @@ public class MainWindow extends JMPanel {
 	private String localChecklistsURL = "";
 
 	private JFrame parent;
-	
+
+	JButton cwd  = new JButton("Create Working Directory");
+	JButton cps  = new JButton("Copy Print Spec Doc");
+	JButton cdpc = new JButton("Copy DocProChecklist.pdf");
+
 	public MainWindow(JFrame parent) {
 		this.parent = parent;
-		
+
 		setLayout(new GridBagLayout());
 		createFields();
 	}
@@ -106,15 +105,21 @@ public class MainWindow extends JMPanel {
 
 		int y = 0;
 
-		setupDocTitleField(y, insets);
+		makeAllButtons();
+
+		add(createJLabel("Doc Title: "), Tools.createGBC(0, y, 0.0, insets));
+		add(setUpText(title), Tools.createGBC(1, y, 1.0, insets));
+		add(cwd, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));
 		y++;
 
-		setupPrintSpecField(y, insets);
+		add(createJLabel("32 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
+		add(setUpText(partNum32), Tools.createGBC(1, y, 1.0, insets));
+		add(cps, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		y++;
 
 		add(createJLabel("37 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(partNum37), Tools.createGBC(1, y, 1.0, insets));
-		y++;
+		add(cdpc, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		y++;
 
 		add(createJLabel("Doc Date: "), Tools.createGBC(0, y, 0.0, insets));
@@ -133,10 +138,6 @@ public class MainWindow extends JMPanel {
 		add(setUpText(jiraSummary), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
-		//add(createJLabel("Jira Ticket Key: "), Tools.createGBC(0, y, 0.0, insets));
-		//add(setUpText(jiraKey), Tools.createGBC(1, y, 1.0, insets));
-		//y++;
-		
 		add(createJLabel("Jira Ticket Reporter: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(author), Tools.createGBC(1, y, 1.0, insets));
 		y++;
@@ -154,143 +155,102 @@ public class MainWindow extends JMPanel {
 		y++;
 	}
 
-	/**
-	 * Sets up an adds the "Create Working Directory" button and set the window title once the 
-	 * doc name is added.
-	 * @param yPosn the y position of the field.
+	/** 
+	 * Sets up the three JButtons in the main body of the program.
 	 */
-	private void setupDocTitleField(int yPosn, Insets insets) {		
-		JButton cwd = new JButton("Create Working Directory");
-		cwd.addActionListener(e -> {
+	private void makeAllButtons() {
+		// Create the "Create Working Directory" Button
+		cwd.setToolTipText("Enable this button by entering the doc title.");
+		cwd.setEnabled(false);
+		cwd.addActionListener(e -> createWorkingDirectory());
+
+		// Create the "Copy Print Spec Doc" Button
+		cps.setToolTipText("Enable button by entering the 32 part number and the doc title.");
+		cps.setEnabled(false);
+		cps.addActionListener(e -> copyPrintSpecDocument());
+		
+		//Create the "Copy DocProChecklist.pdf" Button
+		cdpc.setToolTipText("Enable button by entering the 37 part number, doc title, and date.");
+		cdpc.setEnabled(false);
+		cdpc.addActionListener(e -> copyDocProChecklist());
+	}
+
+	/**
+	 * Creates a local directory on the desktop that mirrors directory structure in Perforce.
+	 */
+	private void createWorkingDirectory() {
+		String url = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+
+		workingDirectory   = url + "\\" + title.getText();
+		localPDFsURL       = workingDirectory + "\\" + "PDFs";
+
+		new File(workingDirectory).mkdir();
+		new File(localPDFsURL).mkdir();
+	}
+
+	/**
+	 * Copies the Print Spec Document to the directory created in {@link #createWorkingDirectory()}.
+	 */
+	private void copyPrintSpecDocument() {
+		if(!new File(localPDFsURL).exists()) {
 			createWorkingDirectory();
-		});
-
-		title.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				if(title.getText().length() > 0) {
-					parent.setTitle(title.getText());
-					replaceCommaWithDash();
-				}
-			}
-		});
-		title.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				replaceCommaWithDash();
-			}
-		});
-
-		add(createJLabel("Doc Title: "), Tools.createGBC(0, yPosn, 0.0, insets));
-		add(setUpText(title), Tools.createGBC(1, yPosn, 1.0, insets));
-		add(cwd, Tools.createGBC(2, yPosn, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));
-	}
-
-	/** Fixes bug where URLs with dashes could not be parsed **/
-	private void replaceCommaWithDash() {
-		if(title.getText().contains(",")) {
-			int caret = title.getCaretPosition();
-			title.setText(title.getText().replace(",", "-"));
-			title.setCaretPosition(caret);
-		}
-	}
-
-	public void createWorkingDirectory() {
-		if(!title.getText().equals("")) {
-			String url = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
-
-			workingDirectory   = url + "\\" + title.getText();
-			localPDFsURL       = workingDirectory + "\\" + "PDFs";
-			localChecklistsURL = workingDirectory + "\\Checklists";
-
-			new File(workingDirectory).mkdir();
-			new File(localPDFsURL).mkdir();
-			new File(localChecklistsURL).mkdir();
-
-			try {
-				Files.copy(						
-						DesktopPublisherAssistant.class.getClassLoader().getResourceAsStream("DocProChecklist.pdf"), 
-						new File(localChecklistsURL + "\\DocProChecklist.pdf").toPath(), 
-						StandardCopyOption.REPLACE_EXISTING);
-				
-				PDFPropertiesUpdater.autoFillDocProChecklist(localChecklistsURL + "\\DocProChecklist.pdf", 
-						title.getText(), partNum32.getText(), date.getText());				
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (DocumentException e) {
-				System.err.println("The copied DocProChecklist.pdf could not be auto-filled.");
-			}
-		}
-	}
-
-	/**
-	 * Sets up the "Copy Print Spec Doc" button and adds the 37 part fields.
-	 * @param yPosn the y position of the field.
-	 */
-	private void setupPrintSpecField(int yPosn, Insets insets) {
-		JButton cpsd = new JButton("Copy Print Spec Doc");
-		cpsd.addActionListener(e -> {
-			if(!partNum32.getText().equals("") && new File(localPDFsURL).exists()) {
-				String modifiedNumber = partNum32.getText().toLowerCase();
-				String[] split = modifiedNumber.split("-");
-				if(split.length > 1) {
-					modifiedNumber = split[0];
-				}
-
-				try {
-					Files.copy(
-							DesktopPublisherAssistant.class.getClassLoader().getResourceAsStream("TCIS-Print-Specification_Template.pdf"), 
-							new File(localPDFsURL + "\\S" + modifiedNumber + ".pdf").toPath(), 
-							StandardCopyOption.REPLACE_EXISTING);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		add(createJLabel("32 Part Number: "), Tools.createGBC(0, yPosn, 0.0, insets));
-		add(setUpText(partNum32), Tools.createGBC(1, yPosn, 1.0, insets));
-		add(cpsd, Tools.createGBC(2, yPosn, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
-	}
-
-	public void emailDocProPublishingGroup() {
-		String docTitle = "Document Title";
-		String tcisURL = "TCIS (APEX) URL";
-		String checklistURL = "Path to DocProChecklist.pdf in Perforce";
-		String pdfsURL = "Path to PDFs folder in Perforce";
-
-		if(!Tools.isEmpty(partNum32)) {
-			if(!Tools.isEmpty(partNum37)) {
-				docTitle = partNum32.getText() + ", " + partNum37.getText();
-			} else {
-				docTitle = partNum32.getText();
-			}
-		} else if(!Tools.isEmpty(partNum37)) {
-			docTitle = partNum37.getText();
 		}
 
-		if(!Tools.isEmpty(this.tcisURL)) {
-			tcisURL = this.tcisURL.getText();
+		String modifiedNumber = partNum32.getText().toLowerCase();
+		String[] split = modifiedNumber.split("-");
+		if(split.length > 1) {
+			modifiedNumber = split[0];
 		}
-
-		if(!Tools.isEmpty(perforce)) {
-			checklistURL = perforce.getText() + "Checklists/DocProChecklist.pdf";
-			pdfsURL      = perforce.getText() + "PDFs";
-		}
-
-		String subject = "PUBLISHING: " + docTitle;
-		String body    = checklistURL + "\n" + pdfsURL + "\n\n"+ tcisURL;
-
-		List<String> recips = new ArrayList<String>();
-		recips.add("Doc.Pro.Publishing.Group@ni.com");
 
 		try {
-			MailTo.mailto(recips, subject, body);
-		} catch (IOException | URISyntaxException e1) {
-			StringSelection stringSelection = new StringSelection(subject + "\n\n" + body);
-			Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-			clpbrd.setContents(stringSelection, null);
-		}			
+			Tools.copyOutResource("TCIS-Print-Specification_Template.pdf", localPDFsURL + "\\S" + modifiedNumber + ".pdf");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Copies the DocProChecklist to the directory created in {@link #createWorkingDirectory()}.
+	 */
+	private void copyDocProChecklist() {
+		if(!new File(localChecklistsURL).exists()) {
+			createWorkingDirectory();
+		}
+
+		try {
+			String output =  workingDirectory + "\\Checklists\\DocProChecklist.pdf";
+			Tools.copyOutResource("DocProChecklist.pdf", output);
+			PDFPropertiesUpdater.autoFillDocProChecklist(output, title.getText(), getPartNumbers(), date.getText());				
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (DocumentException e1) {
+			System.err.println("DocProChecklist.pdf could not be auto-filled.");
+		}
+	}
+	
+	/**
+	 * Enables and disables buttons if conditions are met.
+	 */
+	private void enableButton() {
+		if(!Tools.isEmpty(title)) {
+			if(!Tools.isEmpty(partNum32)) {
+				cps.setEnabled(true);
+			} else {
+				cps.setEnabled(false);
+			}
+
+			if(!Tools.isEmpty(date) && (!Tools.isEmpty(partNum37) || !Tools.isEmpty(partNum32))) {
+				cdpc.setEnabled(true);
+			} else {
+				cdpc.setEnabled(false);
+			}
+
+			cwd.setEnabled(true);
+		} else {
+			cwd.setEnabled(false);
+			cdpc.setEnabled(false);
+			cps.setEnabled(false);
+		}
 	}
 
 	/**
@@ -300,7 +260,6 @@ public class MainWindow extends JMPanel {
 	 * @return a setup JTextField
 	 */
 	private JTextField setUpText(JTextField toSetup) {
-		/** When a JTextFields get focus, select all of the text **/
 		toSetup.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
@@ -313,17 +272,29 @@ public class MainWindow extends JMPanel {
 			}
 		});
 
-		/** If the user enters a string that has a blank character at the end, delete it. **/
-		toSetup.addKeyListener(new KeyAdapter() {
+		toSetup.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				enableButton();
+			}
+
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				if(toSetup.getText().endsWith(" ")) {
-					toSetup.setText(toSetup.getText().substring(0, toSetup.getText().length()-1));
+					if(arg0.isControlDown()) {
+						toSetup.setText(toSetup.getText().substring(0, toSetup.getText().length()-1));
+					}
 				}
+
+				enableButton();
+			}
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {				
+				enableButton();
 			}
 		});
 
-		/** If user triple-clicks and the JTextField contains a URL, open it. **/
 		toSetup.addMouseListener(new MouseAdapter() {				
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -352,6 +323,62 @@ public class MainWindow extends JMPanel {
 		return label;
 	}
 
+	/**
+	 * Gathers information from the fields and sends the publishing email to 
+	 * Doc Pro Publishing group.
+	 */
+	public void emailDocProPublishingGroup() {
+		String partNumbers = "Document Title";
+		String tcisURL = "TCIS (APEX) URL";
+		String checklistURL = "Path to DocProChecklist.pdf in Perforce";
+		String pdfsURL = "Path to PDFs folder in Perforce";
+
+		partNumbers = getPartNumbers();
+
+		if(!Tools.isEmpty(this.tcisURL)) {
+			tcisURL = this.tcisURL.getText();
+		}
+
+		if(!Tools.isEmpty(perforce)) {
+			checklistURL = perforce.getText() + "Checklists/DocProChecklist.pdf";
+			pdfsURL      = perforce.getText() + "PDFs";
+		}
+
+		String subject = "PUBLISHING: " + partNumbers;
+		String body    = checklistURL + "\n" + pdfsURL + "\n\n"+ tcisURL;
+
+		List<String> recips = new ArrayList<String>();
+		recips.add("Doc.Pro.Publishing.Group@ni.com");
+
+		try {
+			MailTo.mailto(recips, subject, body);
+		} catch (IOException | URISyntaxException e1) {
+			StringSelection stringSelection = new StringSelection(subject + "\n\n" + body);
+			Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clpbrd.setContents(stringSelection, null);
+		}			
+	}
+
+	/**
+	 * Returns the title of the document from info gathered in {@link #partNum32} and {@link #partNum37}.
+	 * @return a string of the document title.
+	 */
+	private String getPartNumbers() {
+		String docTitle = "Document Title";
+
+		if(!Tools.isEmpty(partNum32)) {
+			if(!Tools.isEmpty(partNum37)) {
+				docTitle = partNum32.getText() + ", " + partNum37.getText();
+			} else {
+				docTitle = partNum32.getText();
+			}
+		} else if(!Tools.isEmpty(partNum37)) {
+			docTitle = partNum37.getText();
+		}
+
+		return docTitle;
+	}
+
 	/** Sets everything back to default **/
 	public void clearAll() {
 		title.setText("");
@@ -365,33 +392,11 @@ public class MainWindow extends JMPanel {
 		jiraURL.setText("");
 		tcisURL.setText("");
 		status.setSelectedIndex(0);
-		jiraKey.setText("");
 		workingDirectory = "";
 		localPDFsURL = "";
 		localChecklistsURL = "";
 		parent.setTitle("Desktop Publisher Assistant");
 		title.requestFocus();
-	}
-
-	public void setAll(String title, String partNum32, String partNum37, String date, String GUID, String perforce,
-			String jiraSummary, String author, String jiraURL, String tcisURL, int status, String jiraKey) {
-
-		clearAll();
-
-		parent.setTitle(title);
-
-		this.title.setText(title);
-		this.partNum37.setText(partNum37);
-		this.partNum32.setText(partNum32);
-		this.date.setText(date);
-		this.GUID.setText(GUID);
-		this.perforce.setText(perforce);
-		this.jiraSummary.setText(jiraSummary);
-		this.author.setText(author);
-		this.jiraURL.setText(jiraURL);
-		this.tcisURL.setText(tcisURL);
-		this.status.setSelectedIndex(status);
-		this.jiraKey.setText(jiraKey);
 	}
 
 	/**
@@ -413,8 +418,6 @@ public class MainWindow extends JMPanel {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {
 			setTextIfEmpty(tcisURL, s);
-		} else if(s.contains("TCIS-")) {
-			setTextIfEmpty(jiraKey, s);
 		}
 	}
 
@@ -424,8 +427,9 @@ public class MainWindow extends JMPanel {
 	 * @param s the string to set
 	 */
 	private void setTextIfEmpty(JTextField field, String s) {
-		if(field.getText().length() == 0) {
+		if(Tools.isEmpty(field)) {
 			field.setText(s);
+			enableButton();
 		}
 	}
 
@@ -433,70 +437,115 @@ public class MainWindow extends JMPanel {
 	 * @return The name of the file if it will be returned.
 	 */
 	public String getSaveFileName() {
-		if(jiraSummary.getText().length() > 0) {
+		if(Tools.isEmpty(jiraSummary)) {
 			return jiraSummary.getText() + ".log";
 		} else {
 			return "untitledPPM.log";
 		}
 	}
 
+	/**
+	 * Populates all of the fields in the program's body.
+	 * @param title the ticket's title
+	 * @param partNum32 the ticket document's 32 part number
+	 * @param partNum37 the ticket document's 37 part number
+	 * @param date the ticket document's date
+	 * @param GUID the ticket document's GUID
+	 * @param perforce the ticket document's Perforce path
+	 * @param jiraSummary the ticket's summary
+	 * @param author the ticket's author
+	 * @param jiraURL the ticket's URL
+	 * @param tcisURL the ticket document's URL in TCIS
+	 * @param status the ticket's status
+	 */
+	public void setAll(String title, String partNum32, String partNum37, String date, String GUID, String perforce,
+			String jiraSummary, String author, String jiraURL, String tcisURL, int status) {
+
+		clearAll();
+
+		this.parent.setTitle(title);
+		this.title.setText(title);
+		this.partNum37.setText(partNum37);
+		this.partNum32.setText(partNum32);
+		this.date.setText(date);
+		this.GUID.setText(GUID);
+		this.perforce.setText(perforce);
+		this.jiraSummary.setText(jiraSummary);
+		this.author.setText(author);
+		this.jiraURL.setText(jiraURL);
+		this.tcisURL.setText(tcisURL);
+		this.status.setSelectedIndex(status);
+
+		enableButton();
+	}
+
+	/** Populates the document title field with a given string **/
 	public void setDocTitle(String toSet) {
 		title.setText(toSet);
 		title.setCaretPosition(0);
 		parent.setTitle(toSet);
-		replaceCommaWithDash();
+		enableButton();
 	}
 
+	/** Populates the 32 part number field with a given string **/
 	public void set32PartNumber(String toSet) {
 		partNum32.setText(toSet);
 		partNum32.setCaretPosition(0);
+		enableButton();
 	}
 
+	/** Populates the 37 part number field with a given string **/
 	public void set37PartNumber(String toSet) {
 		partNum37.setText(toSet);
 		partNum37.setCaretPosition(0);
+		enableButton();
 	}
 
+	/** Populates the date field with a given string **/
 	public void setDocDate(String toSet) {
 		date.setText(toSet);
 		date.setCaretPosition(0);
+		enableButton();
 	}
 
+	/** Populates the GUID field with a given string **/
 	public void setGUID(String toSet) {
 		GUID.setText(toSet);
 		GUID.setCaretPosition(0);
 	}
 
+	/** Populates the Perforce path field with a given string **/
 	public void setPerforcePath(String toSet) {
 		perforce.setText(toSet);
 		perforce.setCaretPosition(0);
 	}
 
+	/** Populates the Jira Ticket Summary field with a given string **/
 	public void setJiraTicketSummary(String toSet) {
 		jiraSummary.setText(toSet);
 		jiraSummary.setCaretPosition(0);
 	}
 
+	/** Populates the Jira ticket URL field with a given string **/
 	public void setJiraTicketURL(String toSet) {
 		jiraURL.setText(toSet);
 		jiraURL.setCaretPosition(0);
 	}
 
+	/** Populates the tcisURL field with a given string **/
 	public void setTCIS(String toSet) {
 		tcisURL.setText(toSet);
 		tcisURL.setCaretPosition(0);
 	}
 
+	/** Populates the status combo box with a given int **/
 	public void setStatus(int i) {
 		status.setSelectedIndex(i);
 	}
 
+	/** Populates the author field with a given string **/
 	public void setAuthor(String toSet) {
 		author.setText(toSet);
-	}
-	
-	public void setJiraKey(String toSet) {
-		jiraKey.setText(toSet);
 	}
 
 	@Override
@@ -515,7 +564,6 @@ public class MainWindow extends JMPanel {
 		toReturn = Tools.appendToNewLine(toReturn, tcisURL.getText());
 		toReturn = Tools.appendToNewLine(toReturn, status.getSelectedIndex() + "");
 		toReturn = Tools.appendToNewLine(toReturn, author.getText());
-		toReturn = Tools.appendToNewLine(toReturn, jiraKey.getText());
 
 		return toReturn;
 	}

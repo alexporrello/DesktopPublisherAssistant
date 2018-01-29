@@ -288,8 +288,7 @@ public class LogWindow extends JMPanel {
 						toReturn.ticket[TicketInfo.REPORT.i],
 						toReturn.ticket[TicketInfo.JIRA_TICKET_URL.i], 
 						toReturn.ticket[TicketInfo.TCIS_URL.i],
-						Integer.parseInt(toReturn.ticket[TicketInfo.STATUS.i]),
-						toReturn.ticket[TicketInfo.JIRA_TICKET_KEY.i]);
+						Integer.parseInt(toReturn.ticket[TicketInfo.STATUS.i]));
 			});
 
 			return toReturn;

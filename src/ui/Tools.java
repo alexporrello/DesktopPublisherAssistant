@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -203,5 +205,21 @@ public class Tools {
 		}
 
 		return "";
+	}
+	
+	/**
+	 * Copies a resource from inside the jar outside of the jar.
+	 * @param resourceName the name of the file in the jar.
+	 * @param output the location to which the file will be copied.
+	 * @throws IOException
+	 */
+	public static void copyOutResource(String resourceName, String output) throws IOException {
+		if(!new File(output).exists()) {
+			new File(output).mkdirs();
+		}
+		
+		Files.copy(
+				Tools.class.getClassLoader().getResourceAsStream(resourceName), 
+				new File(output).toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 }
