@@ -14,15 +14,72 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 public class Tools {
 
+	public static final String currentVersion = "v3.0.1";
+	
+	public static final String ONLINE_VERSION_URL = "https://raw.githubusercontent.com/alexporrello/DesktopPublisherAssistant/master/resources/version-history.txt";
+	
+	/**
+	 * Checks for an update by comparing version-history.txt in the local .jar to the version
+	 * history maintained on GitHub.
+	 * @param versionHistoryURL the URL of the file within the .jar.
+	 * @return true if there is an update; else, false.
+	 */
+	public static Boolean doesUpdateExist(String versionHistoryURL) {
+		try {
+			URL url = new URL(Tools.ONLINE_VERSION_URL);
+			
+			Scanner scanner = new Scanner(url.openStream());
+			String onlineVersion = scanner.nextLine();
+			scanner.close();
+			
+			ArrayList<String> string = Tools.loadPlainTextFile(versionHistoryURL);
+
+			if(string.size() > 0) {				
+				return !onlineVersion.equals(string.get(0));
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Sets a JDialog's position to be exactly centered in its parent JFrame's position.
+	 * @param parent the JDialog's parent JFrame.
+	 * @param dialog the JDialg to be centered.
+	 * @param setVisible determines if the JDialog be set visible after its location is updated.
+	 */
+	public static void setDialogLocationFromParent(JFrame parent, JDialog dialog, Boolean setVisible) {
+		int parentX = parent.getX();
+		int parentY = parent.getY();
+
+		int parentW = parent.getWidth();
+		int parentH = parent.getHeight();
+
+		int dialogW = dialog.getWidth();
+		int dialogH = dialog.getHeight();
+
+		dialog.setLocation(parentX + ((parentW/2)-(dialogW/2)), parentY + ((parentH/2)-(dialogH/2)));
+		dialog.setVisible(true);
+	}
+	
 	/**
 	 * Creates a GridBagConstraint given the following parameters:
 	 * @param x the constraint's x position

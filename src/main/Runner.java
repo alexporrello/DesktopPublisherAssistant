@@ -9,7 +9,7 @@ import fm.ParagraphTagsDialog;
 import ui.DesktopPublisherAssistant;
 
 public class Runner {
-
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			setLookAndFeel();
@@ -18,6 +18,8 @@ public class Runner {
 			//testParagraphTagsDialog();
 		});
 	}
+
+	
 	
 	public static void runMainProgram() {
 		new DesktopPublisherAssistant().setVisible(true);

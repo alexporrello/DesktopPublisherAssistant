@@ -1,15 +1,23 @@
 package ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.NoSuchFileException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -29,11 +37,11 @@ public class MenuBar extends JMenuBar {
 	Boolean xmpUpdateVisible = true;
 
 	XMPUpdateWindow xmpUpdate;
-	
-	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate) {
+
+	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate, JFrame parent) {
 		this.mainWindow = mainWindow;
 		this.xmpUpdate  = xmpUpdate;
-		
+
 		this.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
 		add(new FileMenu());
@@ -60,6 +68,55 @@ public class MenuBar extends JMenuBar {
 		view.add(showXMPUpdate);
 
 		//add(view);
+
+		JMenu help = new JMenu("Help");
+		JMenuItem update = new JMenuItem("Check for Updates");
+		update.addActionListener(e -> {
+			JDialog updateDialog = new JDialog();
+
+			updateDialog.setLocationByPlatform(true);
+			updateDialog.setLayout(new BorderLayout());
+			updateDialog.setTitle("Update Dialog");
+			updateDialog.setIconImages(Tools.imageIcon());
+			updateDialog.setModal(true);
+
+			Boolean doesUpdateExist = Tools.doesUpdateExist(getClass().getResource("../version-history.txt").getFile());
+
+			JLabel updateLabel;
+
+			if(doesUpdateExist) {
+				updateLabel = new JLabel("An Update is Available");
+			} else {
+				updateLabel = new JLabel("No Update is Available");
+			}
+
+			updateLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
+
+			updateDialog.add(updateLabel, BorderLayout.CENTER);
+
+			if(doesUpdateExist) {
+				JButton updateButton = new JButton("Download Update");
+				updateButton.setFocusPainted(false);
+				updateButton.setBorder(BorderFactory.createEmptyBorder(7, 15, 7, 15));
+				updateButton.addActionListener(f -> {
+					if (Desktop.isDesktopSupported()) {
+						try {
+							Desktop.getDesktop().browse(new URI("https://github.com/alexporrello/DesktopPublisherAssistant/releases"));
+						} catch (IOException | URISyntaxException e1) {
+							updateLabel.setText("Update Page Could Not Be Opened.");
+						}
+					}
+				});
+				updateDialog.add(updateButton, BorderLayout.SOUTH);
+			}
+
+			updateDialog.pack();
+			Tools.setDialogLocationFromParent(parent, updateDialog, true);
+		});
+		help.add(update);
+		add(help);
+
+
 	}
 
 	public class EditMenu extends JMenu {

@@ -47,7 +47,7 @@ public class DesktopPublisherAssistant extends JFrame {
 	private void setup() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Desktop Publisher Assistant");
-		setJMenuBar(new MenuBar(mainWindow, logDialogScroll, xmpUpdate));
+		setJMenuBar(new MenuBar(mainWindow, logDialogScroll, xmpUpdate, this));
 		setIconImages(Tools.imageIcon());
 		setSize(new Dimension(1000, 525));
 		setLayout(new BorderLayout());
