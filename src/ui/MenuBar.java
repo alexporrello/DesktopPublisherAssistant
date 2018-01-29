@@ -37,10 +37,13 @@ public class MenuBar extends JMenuBar {
 	Boolean xmpUpdateVisible = true;
 
 	XMPUpdateWindow xmpUpdate;
+	
+	JFrame parent;
 
 	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate, JFrame parent) {
 		this.mainWindow = mainWindow;
 		this.xmpUpdate  = xmpUpdate;
+		this.parent     = parent;
 
 		this.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
@@ -68,20 +71,25 @@ public class MenuBar extends JMenuBar {
 		view.add(showXMPUpdate);
 
 		//add(view);
-
+		
+		addHelpMenu();
+	}
+	
+	public void addHelpMenu() {
 		JMenu help = new JMenu("Help");
+		
 		JMenuItem update = new JMenuItem("Check for Updates");
 		update.addActionListener(e -> {
 			JDialog updateDialog = new JDialog();
 
-			updateDialog.setLocationByPlatform(true);
-			updateDialog.setLayout(new BorderLayout());
-			updateDialog.setTitle("Update Dialog");
 			updateDialog.setIconImages(Tools.imageIcon());
+			updateDialog.setLayout(new BorderLayout());
+			updateDialog.setLocationByPlatform(true);
+			updateDialog.setTitle("Update Dialog");
 			updateDialog.setModal(true);
-
-			Boolean doesUpdateExist = Tools.doesUpdateExist(getClass().getResource("../version-history.txt").getFile());
-
+			
+			Boolean doesUpdateExist = Tools.doesUpdateExist();
+			
 			JLabel updateLabel;
 
 			if(doesUpdateExist) {
@@ -114,9 +122,8 @@ public class MenuBar extends JMenuBar {
 			Tools.setDialogLocationFromParent(parent, updateDialog, true);
 		});
 		help.add(update);
+		
 		add(help);
-
-
 	}
 
 	public class EditMenu extends JMenu {

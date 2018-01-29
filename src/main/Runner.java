@@ -10,8 +10,11 @@ import ui.DesktopPublisherAssistant;
 
 public class Runner {
 	
+	
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
+			
 			setLookAndFeel();
 			runMainProgram();
 

@@ -28,38 +28,33 @@ import javax.swing.JTextField;
 
 public class Tools {
 
-	public static final String currentVersion = "v3.0.1";
-	
+	/** The URL where the current version number is stored **/
 	public static final String ONLINE_VERSION_URL = "https://raw.githubusercontent.com/alexporrello/DesktopPublisherAssistant/master/resources/version-history.txt";
-	
+
 	/**
 	 * Checks for an update by comparing version-history.txt in the local .jar to the version
 	 * history maintained on GitHub.
-	 * @param versionHistoryURL the URL of the file within the .jar.
 	 * @return true if there is an update; else, false.
 	 */
-	public static Boolean doesUpdateExist(String versionHistoryURL) {
+	public static Boolean doesUpdateExist() {
 		try {
-			URL url = new URL(Tools.ONLINE_VERSION_URL);
-			
-			Scanner scanner = new Scanner(url.openStream());
+			Scanner scanner = new Scanner(new URL(Tools.ONLINE_VERSION_URL).openStream());
 			String onlineVersion = scanner.nextLine();
 			scanner.close();
-			
-			ArrayList<String> string = Tools.loadPlainTextFile(versionHistoryURL);
 
-			if(string.size() > 0) {				
-				return !onlineVersion.equals(string.get(0));
-			}
+			String topLine = new BufferedReader(new InputStreamReader(
+					Tools.class.getClassLoader().getResourceAsStream("version-history.txt"))).readLine();
+			
+			return !onlineVersion.equals(topLine);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Sets a JDialog's position to be exactly centered in its parent JFrame's position.
 	 * @param parent the JDialog's parent JFrame.
@@ -79,7 +74,7 @@ public class Tools {
 		dialog.setLocation(parentX + ((parentW/2)-(dialogW/2)), parentY + ((parentH/2)-(dialogH/2)));
 		dialog.setVisible(true);
 	}
-	
+
 	/**
 	 * Creates a GridBagConstraint given the following parameters:
 	 * @param x the constraint's x position
@@ -138,12 +133,12 @@ public class Tools {
 	private static Image loadImage(String url) {		
 		return new ImageIcon(Tools.class.getClassLoader().getResource(url)).getImage();
 	}
-	
+
 	public static void writeToFile(String url, String content) {
 		try {
 			FileWriter     fw = new FileWriter(url);
 			BufferedWriter bw = new BufferedWriter(fw);
-			
+
 			bw.write(content);
 			bw.close();
 		} catch (IOException e) {
@@ -158,7 +153,7 @@ public class Tools {
 	 */
 	public static ArrayList<String> loadPlainTextFile(String url) {
 		ArrayList<String> toReturn = new ArrayList<String>();
-		
+
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(url), "UTF-8"));
 
@@ -172,10 +167,10 @@ public class Tools {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return toReturn;
 	}
-	
+
 	/**
 	 * Opens a new JFileChooser so the user can open a file.
 	 * @return the URL of the selected file as a string
@@ -183,19 +178,19 @@ public class Tools {
 	 */
 	public static String loadFile(String name, File openToURL) throws NoSuchFileException {
 		JFileChooser jfc = new JFileChooser(openToURL);
-		
+
 		jfc.setDialogTitle(name);
-		
+
 		int returnValue = jfc.showOpenDialog(null);
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = jfc.getSelectedFile();
 			return selectedFile.getAbsolutePath();
 		}
-		
+
 		throw new NoSuchFileException("No file was selected.");
 	}
-	
+
 	/**
 	 * Gets text that was copied by the user.
 	 * @return a string of the copied text.
