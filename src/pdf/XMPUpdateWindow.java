@@ -102,8 +102,17 @@ public class XMPUpdateWindow extends JPanel {
 					url = url.substring(1, url.length()-1);
 
 					e.dropComplete(true);
-
-					String[] urls = url.split(", ");
+					
+					String[] urls;
+					
+					if(url.contains(",")) {						
+						url = url.replace(".pdf, ", ".pdf###");
+						url = url.replace(".xmp, ", ".xmp###");
+						
+						urls = url.split("###");
+					} else {
+						urls = url.split(", ");
+					}
 
 					for(String s : urls) {
 						isURLValid(s);
