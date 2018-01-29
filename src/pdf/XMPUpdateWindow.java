@@ -232,4 +232,17 @@ public class XMPUpdateWindow extends JPanel {
 			go.setEnabled(true);
 		}
 	}
+
+	/**
+	 * Resets the window to its default state.
+	 */
+	public void reset() {
+		xmpFile = null;
+		pdfFile = null;
+
+		pdf.setText("Locate PDF File...");
+		xmp.setText("Locate XMP File...");
+		
+		enableGoButton();
+	}
 }

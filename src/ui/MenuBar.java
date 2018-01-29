@@ -28,8 +28,12 @@ public class MenuBar extends JMenuBar {
 	Boolean logDialogVisible = true;
 	Boolean xmpUpdateVisible = true;
 
+	XMPUpdateWindow xmpUpdate;
+	
 	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate) {
 		this.mainWindow = mainWindow;
+		this.xmpUpdate  = xmpUpdate;
+		
 		this.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
 		add(new FileMenu());
@@ -72,6 +76,7 @@ public class MenuBar extends JMenuBar {
 		public JMenuItem clearAll() {
 			clearAll.addActionListener(e -> {
 				mainWindow.clearAll();
+				xmpUpdate.reset();
 			});
 			clearAll.setAccelerator(
 					KeyStroke.getKeyStroke(KeyEvent.VK_X, (
