@@ -130,7 +130,7 @@ public class MainWindow extends JMPanel {
 		add(setUpText(GUID), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
-		add(createJLabel("Preforce Path: "), Tools.createGBC(0, y, 0.0, insets));
+		add(createJLabel("Perforce Path: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(perforce), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
