@@ -274,6 +274,7 @@ public class MainWindow extends JMPanel {
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				toSetup.select(0, 0);
+				removeEndSpace(toSetup);
 			}
 		});
 
@@ -285,12 +286,6 @@ public class MainWindow extends JMPanel {
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if(toSetup.getText().endsWith(" ")) {
-					if(arg0.isControlDown()) {
-						toSetup.setText(toSetup.getText().substring(0, toSetup.getText().length()-1));
-					}
-				}
-
 				enableButton();
 			}
 
@@ -312,6 +307,22 @@ public class MainWindow extends JMPanel {
 		});
 
 		return toSetup;
+	}
+	
+	/**
+	 * If a given JTextField ends with a space, remove it.
+	 * @param toRemove the JTextField to be changed.
+	 */
+	private void removeEndSpace(JTextField toRemove) {
+		String text = toRemove.getText();
+		int carePosition = toRemove.getCaretPosition();
+		
+		if(text.endsWith(" ")) {
+			text = text.substring(0, text.length()-1);
+		}
+		
+		toRemove.setText(text);		
+		toRemove.setCaretPosition(carePosition);
 	}
 
 	/**
