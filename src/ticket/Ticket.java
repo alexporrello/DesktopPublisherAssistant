@@ -97,11 +97,15 @@ public class Ticket {
 	public static void writeChangesToLog(MainWindow mw) throws IOException {
 		checkLogURL();
 
-		FileWriter     fw = new FileWriter(new File(TICKET_URL.toPath() + "\\" + mw.getSaveFileName()));
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(mw.toString());
+		try {
+			FileWriter fw = new FileWriter(new File(TICKET_URL.toPath() + "\\" + mw.getSaveFileName()));
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(mw.toString());
 
-		bw.close();
+			bw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

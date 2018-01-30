@@ -436,12 +436,13 @@ public class MainWindow extends JMPanel {
 
 	/**
 	 * @return The name of the file if it will be returned.
+	 * @throws Exception 
 	 */
-	public String getSaveFileName() {
-		if(Tools.isEmpty(jiraSummary)) {
+	public String getSaveFileName() throws Exception {
+		if(!Tools.isEmpty(jiraSummary)) {
 			return jiraSummary.getText() + ".log";
 		} else {
-			return "untitledPPM.log";
+			throw new Exception();
 		}
 	}
 
