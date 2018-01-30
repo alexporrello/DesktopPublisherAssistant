@@ -187,6 +187,7 @@ public class MainWindow extends JMPanel {
 		
 		new File(workingDirectory).mkdir();
 		new File(localPDFsURL).mkdir();
+		new File(localChecklistsURL).mkdir();
 	}
 
 	/**
