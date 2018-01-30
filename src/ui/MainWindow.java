@@ -1,6 +1,5 @@
 package ui;
 
-import java.awt.Desktop;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -14,7 +13,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +61,10 @@ public class MainWindow extends JMPanel {
 	private JTextField author = new JTextField();
 
 	/** The URL to the Jira ticket **/
-	private JTextField jiraURL = new JTextField();
+	private JTextLink jiraURL = new JTextLink("");
 
 	/** The URL to the document in TCIS **/
-	private JTextField tcisURL = new JTextField();
+	private JTextLink tcisURL = new JTextLink("");
 
 	/** Allows user to select the current status of the Jira ticket **/
 	private JComboBox<String> status = new JComboBox<String>(Ticket.STATUS_OPTIONS);
@@ -81,6 +79,8 @@ public class MainWindow extends JMPanel {
 	private String localChecklistsURL = "";
 
 	private JFrame parent;
+
+
 
 	JButton cwd  = new JButton("Create Working Directory");
 	JButton cps  = new JButton("Copy Print Spec Doc");
@@ -142,12 +142,15 @@ public class MainWindow extends JMPanel {
 		add(setUpText(author), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
+
 		add(createJLabel("Jira Ticket URL: "), Tools.createGBC(0, y, 0.0, insets));
-		add(setUpText(jiraURL), Tools.createGBC(1, y, 1.0, insets));
+		setUpText(jiraURL.getTextField());
+		add(jiraURL, Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
 		add(createJLabel("TCIS URL: "), Tools.createGBC(0, y, 0.0, insets));
-		add(setUpText(tcisURL), Tools.createGBC(1, y, 1.0, insets));
+		setUpText(tcisURL.getTextField());
+		add(tcisURL, Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
 		add(createJLabel("Status: "), Tools.createGBC(0, y, 0.0, insets));
@@ -168,7 +171,7 @@ public class MainWindow extends JMPanel {
 		cps.setToolTipText("Enable button by entering the 32 part number and the doc title.");
 		cps.setEnabled(false);
 		cps.addActionListener(e -> copyPrintSpecDocument());
-		
+
 		//Create the "Copy DocProChecklist.pdf" Button
 		cdpc.setToolTipText("Enable button by entering the 37 part number, doc title, and date.");
 		cdpc.setEnabled(false);
@@ -184,7 +187,7 @@ public class MainWindow extends JMPanel {
 		workingDirectory   = url + "\\" + title.getText();
 		localPDFsURL       = workingDirectory + "\\" + "PDFs";
 		localChecklistsURL = workingDirectory + "\\" + "Checklists";
-		
+
 		new File(workingDirectory).mkdir();
 		new File(localPDFsURL).mkdir();
 		new File(localChecklistsURL).mkdir();
@@ -210,7 +213,7 @@ public class MainWindow extends JMPanel {
 			e1.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Copies the DocProChecklist to the directory created in {@link #createWorkingDirectory()}.
 	 */
@@ -229,7 +232,7 @@ public class MainWindow extends JMPanel {
 			System.err.println("DocProChecklist.pdf could not be auto-filled.");
 		}
 	}
-	
+
 	/**
 	 * Enables and disables buttons if conditions are met.
 	 */
@@ -300,14 +303,10 @@ public class MainWindow extends JMPanel {
 		toSetup.addMouseListener(new MouseAdapter() {				
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try {
-					if(e.getClickCount() == 3) {
-						if(toSetup.getText().contains("https:")) {
-							Desktop.getDesktop().browse(new URI(toSetup.getText()));
-						}
-					}
-				} catch (IOException | URISyntaxException e1) {
-					e1.printStackTrace();
+				if(e.getClickCount() == 2) {
+					Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+							new StringSelection(toSetup.getText()), null);
+					toSetup.select(0, 0);
 				}
 			}
 		});
@@ -337,7 +336,7 @@ public class MainWindow extends JMPanel {
 
 		partNumbers = getPartNumbers();
 
-		if(!Tools.isEmpty(this.tcisURL)) {
+		if(!Tools.isEmpty(this.tcisURL.getTextField())) {
 			tcisURL = this.tcisURL.getText();
 		}
 
@@ -415,11 +414,11 @@ public class MainWindow extends JMPanel {
 		} else if(s.contains("GUID")) {
 			setTextIfEmpty(GUID, s);
 		} else if(s.contains("nijira")) {
-			setTextIfEmpty(jiraURL, s);
+			setTextIfEmpty(jiraURL.getTextField(), s);
 		} else if(s.contains("Prepare") || s.contains("Apply")) {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {
-			setTextIfEmpty(tcisURL, s);
+			setTextIfEmpty(tcisURL.getTextField(), s);
 		}
 	}
 
