@@ -183,7 +183,8 @@ public class MainWindow extends JMPanel {
 
 		workingDirectory   = url + "\\" + title.getText();
 		localPDFsURL       = workingDirectory + "\\" + "PDFs";
-
+		localChecklistsURL = workingDirectory + "\\" + "Checklists";
+		
 		new File(workingDirectory).mkdir();
 		new File(localPDFsURL).mkdir();
 	}

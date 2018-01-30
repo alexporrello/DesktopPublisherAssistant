@@ -214,10 +214,6 @@ public class Tools {
 	 * @throws IOException
 	 */
 	public static void copyOutResource(String resourceName, String output) throws IOException {
-		if(!new File(output).exists()) {
-			new File(output).mkdirs();
-		}
-		
 		Files.copy(
 				Tools.class.getClassLoader().getResourceAsStream(resourceName), 
 				new File(output).toPath(), StandardCopyOption.REPLACE_EXISTING);

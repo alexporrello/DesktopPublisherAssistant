@@ -12,5 +12,6 @@
 			<attribute name="javadoc_location" value="jar:file:/D:/users/aporrell/Git/DesktopPublisherAssistant/itextpdf-5.5.12/itextpdf-5.5.12-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="mslinks/mslinks.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

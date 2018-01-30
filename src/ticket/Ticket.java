@@ -14,7 +14,7 @@ public class Ticket {
 
 	/** The possible status of the current Jira ticket **/
 	public static final String[] STATUS_OPTIONS = {"Not Started", "Started Progress", "Sent for Approval", "Done"};
-	
+
 	/** The URL of the location where all of the logs are stored **/
 	public static final File TICKET_URL = new File(System.getenv("APPDATA") + "\\Desktop Publisher Assistant");
 
@@ -33,7 +33,7 @@ public class Ticket {
 	 */
 	public static String[] readLogFile(String url) throws IOException {
 		checkLogURL();
-		
+
 		FileReader     fr = new FileReader(url);
 		BufferedReader br = new BufferedReader(fr);
 
@@ -60,7 +60,7 @@ public class Ticket {
 	 */
 	public static String readLogFile(String url, TicketInfo pol) throws IOException {
 		checkLogURL();
-		
+
 		String[] log = readLogFile(url);
 
 		return log[pol.i];
@@ -74,7 +74,7 @@ public class Ticket {
 	 */
 	public static void readLogFile(String url, MainWindow mw) throws IOException {
 		checkLogURL();
-		
+
 		String[] log = readLogFile(url);
 
 		mw.setDocTitle(log[TicketInfo.TITLE.i]);
@@ -96,23 +96,23 @@ public class Ticket {
 	 */
 	public static void writeChangesToLog(MainWindow mw) throws IOException {
 		checkLogURL();
-		
+
 		FileWriter     fw = new FileWriter(new File(TICKET_URL.toPath() + "\\" + mw.getSaveFileName()));
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(mw.toString());
-		
+
 		bw.close();
 	}
-	
+
 	/**
 	 * Writes the given file to its own log file.
 	 * @throws IOException
 	 */
 	public static void writeChangesToLog(String[] log) throws IOException {
 		checkLogURL();
-		
+
 		String toReturn = "";
-		
+
 		toReturn = log[TicketInfo.TITLE.i]; 
 
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.PART_NUM_32.i]);
@@ -125,11 +125,11 @@ public class Ticket {
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.TCIS_URL.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.STATUS.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.REPORT.i]);
-		
+
 		FileWriter     fw = new FileWriter(new File(TICKET_URL.toPath() + "\\" + log[TicketInfo.JIRA_TICKET_DESCRIPTION.i] + ".log"));
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(toReturn);
-		
+
 		bw.close();
 	}
 }
