@@ -76,7 +76,7 @@ Desktop Publisher Assistant's logging functionality is simple and user-friendly.
 
 ![](readme-images/log.PNG)
 
-#### Ticket Files
+#### 4.1. Ticket Files
 
 A ticket file is essentially a project file. A ticket file contains the following information: the project's _Doc Title_, _32_ and _37 Part Numbers_, _Doc Date_, _GUID_, _Perforce Path_, _Jira Ticket Summary_, _Jira Ticket Reporter_, _Jira Ticket URL_, _TCIS URL_, and the _Status_ (which could be _Not Started_, _In Progress_, _Sent for Approval_, or _Done_).
 
@@ -84,7 +84,7 @@ When a user opens Desktop Publisher Assistant for the first time, it creates a f
 
 Ticket files are named automatically from the program's _Jira Ticket Summary_ text field. If you try to save the ticket file but have not yet entered information in the _Jira Ticket Summary_ text field, a dialog will prompt you to fill out the _Jira Ticket Summary_ text field.
 
-#### Log Window
+#### 4.2. Log Window
 
 The log window is displayed at the bottom of the application. Log entries are loaded from the %APPDATA% folder where ticket files are automatically saved. The log window displays the following information about tickets:
 
