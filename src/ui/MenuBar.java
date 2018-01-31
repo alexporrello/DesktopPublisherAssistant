@@ -16,12 +16,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileSystemView;
 
 import log.LogWindow;
 import pdf.XMPUpdateWindow;
@@ -37,7 +39,7 @@ public class MenuBar extends JMenuBar {
 	Boolean xmpUpdateVisible = true;
 
 	XMPUpdateWindow xmpUpdate;
-	
+
 	JFrame parent;
 
 	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate, JFrame parent) {
@@ -71,13 +73,13 @@ public class MenuBar extends JMenuBar {
 		view.add(showXMPUpdate);
 
 		//add(view);
-		
+
 		addHelpMenu();
 	}
-	
+
 	public void addHelpMenu() {
 		JMenu help = new JMenu("Help");
-		
+
 		JMenuItem update = new JMenuItem("Check for Updates");
 		update.addActionListener(e -> {
 			JDialog updateDialog = new JDialog();
@@ -87,9 +89,9 @@ public class MenuBar extends JMenuBar {
 			updateDialog.setLocationByPlatform(true);
 			updateDialog.setTitle("Update Dialog");
 			updateDialog.setModal(true);
-			
+
 			Boolean doesUpdateExist = Tools.doesUpdateExist();
-			
+
 			JLabel updateLabel;
 
 			if(doesUpdateExist) {
@@ -122,7 +124,7 @@ public class MenuBar extends JMenuBar {
 			Tools.setDialogLocationFromParent(parent, updateDialog, true);
 		});
 		help.add(update);
-		
+
 		add(help);
 	}
 
@@ -164,6 +166,44 @@ public class MenuBar extends JMenuBar {
 
 			addSeparator();
 
+			//===========================================================================
+
+			JMenu ppmTemplates = new JMenu("PPM Templates");
+
+			JMenuItem dpc = new JMenuItem("Copy blank DocProChecklist.pdf");
+			dpc.addActionListener(e -> {
+				openCopyDialog("DocProChecklist.pdf");
+			});
+			JMenuItem psd = new JMenuItem("Copy blank Print Spec Document.pdf");
+			psd.addActionListener(e -> {
+				openCopyDialog("TCIS-Print-Specification_Template.pdf");
+			});
+
+			ppmTemplates.add(dpc);
+			ppmTemplates.add(psd);
+			add(ppmTemplates);
+
+			//===========================================================================
+
+			JMenu silkscreenTemplates = new JMenu("Silkscreen Templates");
+
+			JMenuItem sc = new JMenuItem("Copy blank Silkscreen_Checklist.pdf");
+			sc.addActionListener(e -> {
+				openCopyDialog("Silkscreen_Checklist.pdf");
+			});
+			JMenuItem st = new JMenuItem("Copy blank Spec_Template.pdf");
+			st.addActionListener(e -> {
+				openCopyDialog("Spec_template.pdf");
+			});
+			
+			silkscreenTemplates.add(sc);
+			silkscreenTemplates.add(st);
+			add(silkscreenTemplates);
+
+			//===========================================================================
+
+			addSeparator();
+
 			JMenuItem copyTemplate = new JMenuItem("Copy Print Template Perforce Path");
 			copyTemplate.addActionListener(e -> {
 				StringSelection stringSelection = new StringSelection("//TechComm/Templates/Print Templates");
@@ -171,6 +211,24 @@ public class MenuBar extends JMenuBar {
 				clpbrd.setContents(stringSelection, null);
 			});
 			add(copyTemplate);
+		}
+
+		private void openCopyDialog(String resourceName) {
+			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			jfc.setDialogTitle("Choose a directory to save " + resourceName);
+
+			if(jfc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {				
+				if (jfc.getSelectedFile().isDirectory()) {
+					try {
+						Tools.copyOutResource(resourceName, jfc.getSelectedFile().getAbsolutePath() + "\\" + resourceName);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			Tools.setJFileChooserLocationFromParent(parent, jfc, true);
 		}
 
 		/**

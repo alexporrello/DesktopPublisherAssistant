@@ -74,9 +74,29 @@ public class Tools {
 		int dialogH = dialog.getHeight();
 
 		dialog.setLocation(parentX + ((parentW/2)-(dialogW/2)), parentY + ((parentH/2)-(dialogH/2)));
-		dialog.setVisible(true);
+		dialog.setVisible(setVisible);
 	}
 
+	/**
+	 * Sets a JDialog's position to be exactly centered in its parent JFrame's position.
+	 * @param parent the JDialog's parent JFrame.
+	 * @param dialog the JDialg to be centered.
+	 * @param setVisible determines if the JDialog be set visible after its location is updated.
+	 */
+	public static void setJFileChooserLocationFromParent(JFrame parent, JFileChooser dialog, Boolean setVisible) {
+		int parentX = parent.getX();
+		int parentY = parent.getY();
+
+		int parentW = parent.getWidth();
+		int parentH = parent.getHeight();
+
+		int dialogW = dialog.getWidth();
+		int dialogH = dialog.getHeight();
+
+		dialog.setLocation(parentX + ((parentW/2)-(dialogW/2)), parentY + ((parentH/2)-(dialogH/2)));
+		dialog.setVisible(setVisible);
+	}
+	
 	/**
 	 * Creates a GridBagConstraint given the following parameters:
 	 * @param x the constraint's x position
