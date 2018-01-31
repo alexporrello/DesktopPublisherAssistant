@@ -78,10 +78,9 @@ public class MainWindow extends JMPanel {
 	/** The URL to the "Checklists: folder in the {@link #workingDirectory} **/
 	private String localChecklistsURL = "";
 
+	/** The JFrame in which this JPanel is displayed **/
 	private JFrame parent;
-
-
-
+	
 	JButton cwd  = new JButton("Create Working Directory");
 	JButton cps  = new JButton("Copy Print Spec Doc");
 	JButton cdpc = new JButton("Copy DocProChecklist.pdf");

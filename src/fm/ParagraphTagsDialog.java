@@ -98,8 +98,8 @@ public class ParagraphTagsDialog extends JDialog {
 	}
 	
 	private void loadTags() {
-		manual       = Tools.loadPlainTextFile(getClass().getResource("../paragraph-tags_manual.txt").getFile());
-		shortDoc     = Tools.loadPlainTextFile(getClass().getResource("../paragraph-tags_short-doc.txt").getFile());
-		courseManual = Tools.loadPlainTextFile(getClass().getResource("../paragraph-tags_course-manual.txt").getFile());
+		manual       = Tools.readInPlainTextFile(getClass().getResource("../paragraph-tags_manual.txt").getFile());
+		shortDoc     = Tools.readInPlainTextFile(getClass().getResource("../paragraph-tags_short-doc.txt").getFile());
+		courseManual = Tools.readInPlainTextFile(getClass().getResource("../paragraph-tags_course-manual.txt").getFile());
 	}
 }

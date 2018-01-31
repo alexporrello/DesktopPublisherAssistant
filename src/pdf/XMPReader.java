@@ -24,7 +24,7 @@ public class XMPReader extends HashMap<String, String> {
 	private ArrayList<String> removeAllXMPTags(String url) {
 		ArrayList<String> array = new ArrayList<String>();
 
-		for(String s : Tools.loadPlainTextFile(url)) {
+		for(String s : Tools.readInPlainTextFile(url)) {
 			s = s.trim();
 
 			String[] toReplace = {"xmp:", "dc:", "pdf:", "pdfx:", "xmpMM:", "rdf:", 

@@ -51,80 +51,96 @@ public class MenuBar extends JMenuBar {
 		add(new FileMenu());
 		add(new EditMenu());
 		add(new ToolsMenu());
-
-		JMenu view = new JMenu("View");
-
-		JCheckBoxMenuItem  showLogDialog = new JCheckBoxMenuItem ("Show Log");
-		showLogDialog.setSelected(true);
-		showLogDialog.addActionListener( e-> {
-			logDialogScroll.setVisible(showLogDialog.isSelected());
-			mainWindow.revalidate();
-			mainWindow.repaint();
-		});
-		view.add(showLogDialog);
-		JCheckBoxMenuItem  showXMPUpdate = new JCheckBoxMenuItem ("Show XMP Updater");
-		showXMPUpdate.setSelected(true);
-		showXMPUpdate.addActionListener(e -> {
-			xmpUpdate.setVisible(showXMPUpdate.isSelected());
-			mainWindow.revalidate();
-			mainWindow.repaint();
-		});
-		view.add(showXMPUpdate);
-
-		//add(view);
-
-		addHelpMenu();
+		add(new HelpMenu());
+		//add(new View(logDialogScroll));
 	}
+	
+	public class View extends JMenu {
+		private static final long serialVersionUID = -4652785373007319130L;
 
-	public void addHelpMenu() {
-		JMenu help = new JMenu("Help");
+		public View(LogWindow logDialogScroll) {
+			super("View");
 
-		JMenuItem update = new JMenuItem("Check for Updates");
-		update.addActionListener(e -> {
+			JCheckBoxMenuItem  showLogDialog = new JCheckBoxMenuItem ("Show Log");
+			showLogDialog.setSelected(true);
+			showLogDialog.addActionListener( e-> {
+				logDialogScroll.setVisible(showLogDialog.isSelected());
+				mainWindow.revalidate();
+				mainWindow.repaint();
+			});
+			
+			JCheckBoxMenuItem  showXMPUpdate = new JCheckBoxMenuItem ("Show XMP Updater");
+			showXMPUpdate.setSelected(true);
+			showXMPUpdate.addActionListener(e -> {
+				xmpUpdate.setVisible(showXMPUpdate.isSelected());
+				mainWindow.revalidate();
+				mainWindow.repaint();
+			});
+			
+			add(showLogDialog);
+			add(showXMPUpdate);
+		}
+	}
+	
+	public class HelpMenu extends JMenu {
+		private static final long serialVersionUID = 4975463837004809455L;
+
+		public HelpMenu() {
+			super("Help");
+			
+			JMenuItem update = new JMenuItem("Check for Updates");
+			update.addActionListener(e -> {
+				Tools.setComponentLocationFromParent(parent, makeUpdateDialog(), true);
+			});
+			
+			add(update);
+		}
+		
+		private JDialog makeUpdateDialog() {
 			JDialog updateDialog = new JDialog();
-
+			
 			updateDialog.setIconImages(Tools.imageIcon());
 			updateDialog.setLayout(new BorderLayout());
 			updateDialog.setLocationByPlatform(true);
 			updateDialog.setTitle("Update Dialog");
 			updateDialog.setModal(true);
 
-			Boolean doesUpdateExist = Tools.doesUpdateExist();
-
 			JLabel updateLabel;
-
-			if(doesUpdateExist) {
+			
+			if(Tools.doesUpdateExist()) {
 				updateLabel = new JLabel("An Update is Available");
+				
+				updateDialog.add(makeUpdateButton(updateLabel), BorderLayout.SOUTH);
 			} else {
 				updateLabel = new JLabel("No Update is Available");
 			}
-
+	
 			updateLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
-
+			
 			updateDialog.add(updateLabel, BorderLayout.CENTER);
-
-			if(doesUpdateExist) {
-				JButton updateButton = new JButton("Download Update");
-				updateButton.setFocusPainted(false);
-				updateButton.setBorder(BorderFactory.createEmptyBorder(7, 15, 7, 15));
-				updateButton.addActionListener(f -> {
-					if (Desktop.isDesktopSupported()) {
-						try {
-							Desktop.getDesktop().browse(new URI("https://github.com/alexporrello/DesktopPublisherAssistant/releases"));
-						} catch (IOException | URISyntaxException e1) {
-							updateLabel.setText("Update Page Could Not Be Opened.");
-						}
-					}
-				});
-				updateDialog.add(updateButton, BorderLayout.SOUTH);
-			}
-
 			updateDialog.pack();
-			Tools.setDialogLocationFromParent(parent, updateDialog, true);
-		});
-		help.add(update);
-
-		add(help);
+			
+			return updateDialog;
+		}
+		
+		private JButton makeUpdateButton(JLabel updateLabel) {
+			JButton updateButton = new JButton("Download Update");
+			
+			updateButton.setBorder(BorderFactory.createEmptyBorder(7, 15, 7, 15));
+			updateButton.setFocusPainted(false);
+			updateButton.addActionListener(f -> {
+				if (Desktop.isDesktopSupported()) {
+					try {
+						Desktop.getDesktop().browse(new URI(
+								"https://github.com/alexporrello/DesktopPublisherAssistant/releases"));
+					} catch (IOException | URISyntaxException e1) {
+						updateLabel.setText("Update Page Could Not Be Opened.");
+					}
+				}
+			});
+			
+			return updateButton;
+		}
 	}
 
 	public class EditMenu extends JMenu {
@@ -227,7 +243,7 @@ public class MenuBar extends JMenuBar {
 				}
 			}
 
-			Tools.setJFileChooserLocationFromParent(parent, jfc, true);
+			Tools.setComponentLocationFromParent(parent, jfc, true);
 		}
 
 		/**
@@ -296,7 +312,7 @@ public class MenuBar extends JMenuBar {
 					}
 				}
 
-				Tools.setJFileChooserLocationFromParent(parent, jfc, true);
+				Tools.setComponentLocationFromParent(parent, jfc, true);
 			});
 			open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 

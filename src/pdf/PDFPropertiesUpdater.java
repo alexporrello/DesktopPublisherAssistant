@@ -16,8 +16,7 @@ public class PDFPropertiesUpdater {
 	
 	/**
 	 * Auto-populates the generated DocProChecklist.
-	 * @param inputFile the file to be updated
-	 * @param outputFile the updated file
+	 * @param file the file to be updated
 	 * @param title the title of the document
 	 * @param partNumber the part number of the document
 	 * @param editionDate the edition date of the document
