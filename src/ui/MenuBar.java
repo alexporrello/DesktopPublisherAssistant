@@ -10,7 +10,6 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.NoSuchFileException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -195,7 +194,7 @@ public class MenuBar extends JMenuBar {
 			st.addActionListener(e -> {
 				openCopyDialog("Spec_template.pdf");
 			});
-			
+
 			silkscreenTemplates.add(sc);
 			silkscreenTemplates.add(st);
 			add(silkscreenTemplates);
@@ -285,13 +284,19 @@ public class MenuBar extends JMenuBar {
 		 */
 		public JMenuItem open() {
 			open.addActionListener(e -> {
-				try {
-					Ticket.readLogFile(Tools.loadFile("Select Ticket", Ticket.TICKET_URL), mainWindow);
-				} catch (NoSuchFileException e1) {
-					System.err.println("No file was selected.");
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				JFileChooser jfc = new JFileChooser(Ticket.TICKET_URL);
+				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				jfc.setDialogTitle("Choose the desired ticket to load it into the application.");
+
+				if(jfc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+					try {
+						Ticket.readLogFile(jfc.getSelectedFile().getAbsolutePath(), mainWindow);
+					} catch (IOException e2) {
+						e2.printStackTrace();
+					}
 				}
+
+				Tools.setJFileChooserLocationFromParent(parent, jfc, true);
 			});
 			open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
