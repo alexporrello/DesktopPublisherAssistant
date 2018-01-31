@@ -1,6 +1,6 @@
 # Desktop Publisher Assistant
 
-Desktop Publisher Assistant is a powerful organization tool created for Desktop Publishers at National Instruments. It was created not only to automate many desktop publishing procedures, but also to minimize mistakes.
+Desktop Publisher Assistant is a powerful organization tool created for Desktop Publishers at National Instruments. It was created to automate many desktop publishing procedures and to minimize mistakes.
 
 ![](readme-images/main-application.PNG)
 
@@ -8,46 +8,71 @@ Desktop Publisher Assistant is a powerful organization tool created for Desktop 
 
 The program is an executable .jar, so the software does not require installation. To run the .jar, however, the Java Runtime Environment (JRE) must be installed on your system. In-depth instructions for installing the latest JRE can be found [here](https://docs.oracle.com/goldengate/1212/gg-winux/GDRAD/java.htm#BGBFJHAB).
 
-Once you have installed the JRE:
+Once you have installed the JRE...
 
 1. Visit the [Desktop Publisher Assistant release page on GitHub](https://github.com/alexporrello/DesktopPublisherAssistant/releases).
 2. Download the latest release, found at the top of the page. (If you have trouble finding it, search the page for "Desktop.Publisher.Assistant.jar.")
-3. Once the file has downloaded, move it out of your downloads folder to a convenient location on your computer.
-4. Assuming you installed the JRE correctly, double-clicking the .jar file should open the application 
-5. If you have any problems running the application, create an issue on the [Desktop Publisher Assistant's issue page on Github](https://github.com/alexporrello/DesktopPublisherAssistant/issues).
+3. Once the file has downloaded, you can move it out of your download folder to a convenient location on your computer.
+4. Assuming you installed the JRE correctly, double-click the .jar to launch application 
+5. If you have any problems running the application, please create an issue on the [Desktop Publisher Assistant's issue page on Github](https://github.com/alexporrello/DesktopPublisherAssistant/issues).
 
-**TIP:** (If you would like to create a desktop shortcut, right-click on the .jar file and select *Send To* >> *Desktop (Create Shortcut)*.)
+**TIP:** If you would like to create a desktop shortcut, right-click on the .jar file and select *Send To* >> *Desktop (Create Shortcut)*.
 
-## Program Overview
+## Using the Software
 
-While Desktop Publisher Assistant appears to be a simple application, many features have been implemented to automate Desktop Publishing procedures. To use this program to its fullest, it is recommended that you read through the entirety of this short guide.
+While Desktop Publisher Assistant appears to be a simple application, many features have been implemented to automate Desktop Publishing procedures. To use this program to its fullest, you should read through this guide. Doing so will take about ten minutes.
 
-### Button Functions
+### 1. Populate the Program's Main Body
 
-There are three buttons in the top right of the application's main window: _Create Working Directory_, _Copy Print Spec Doc_, and _Copy DocProChecklist.pdf_. When the application is first loaded, they are all disabled. The following describes (1) how to enable the buttons and (2) their functions.
+The program's main body is a collection of labeled text areas designed to organize information during a PPM. You will be able to populate all of the fields with information gathered from the Jira ticket page except _Doc Date_. You will find the document date in TCIS.
+
+![](readme-images/main-body.PNG)
+
+### 2. Create Working Directory and Copy Necessary PPM Templates
+
+As part of the PPM process, a desktop publisher will often be working with four files:
+
+1. The 32 file
+2. The print specification document
+3. The 37 document
+4. The doc pro checklist document
+
+There are three buttons at the top right of the application's main window that are designed to simplify the process of managing these files: _Create Working Directory_, _Copy Print Spec Doc_, and _Copy DocProChecklist.pdf_. When the application is first loaded, they are all disabled. The following describes how to enable the buttons and what their functions are.
 
 ![](readme-images/buttons.PNG)
 
-#### _Create Working Directory_
-
-As part of the PPM process, a desktop publisher will often be working with four files: (1) the 32 file, (2) the print specification document, (3) the 37 document, and (4) a doc pro checklist document. The _Create Working Directory_ button greatly simplifies the process of managing these files.
+#### 2.1. _Create Working Directory_
 
 * **To enable the button**, fill out the ticket's _Doc Title_.
-* **Clicking the button** creates a folder on your _Desktop_ that mimics the Perforce folder structure. It contains two folders: (1) _Checklists_, created to contain DocProChecklist.pdf, and (2) _PDFs_, created to contain the 32 and/or 37 document(s).
+* **Click the button** to create a folder on your _Desktop_ that mimics the folder structure in Perforce. It contains two folders:
+    * _Checklists_: created to contain DocProChecklist.pdf
+    * _PDFs_: created to contain the 32 and/or 37 document(s)
 
-#### _Copy Print Spec Doc_
+#### 2.2. _Copy Print Spec Doc_ (Optional)
+
+Many writers submit PPMs for 37-type docs only. You only need to worry about the _Copy Print Spec Doc_ button if a writer submits a PPM for a 32-type document.
 
 * **To enable the button**, enter the ticket's _Doc Title_ and its _32 Part Number_.
-* **Clicking the button** copies a blank print spec document into the working directory (_Desktop_ >> _DOC-TITLE_ >> _PDFs_). The print spec document will automatically get its name from the information entered in the _32 part number_ text field.
+* **Click the button** to copy a blank print spec document into the working directory (_Desktop_ >> _DOC-TITLE_ >> _PDFs_). The print spec document will automatically get its name from the information entered in the _32 Part Number_ text field.
 
-#### _Copy DocProChecklist.pdf_
+#### 2.3. _Copy DocProChecklist.pdf_
 
 * **To enable the button**, enter the _Document Title_, the _Doc Date_, and one or both of the following: the _32 Part Number_ and/or the _37 Part Number_.
 * **Clicking the button** will copy the DocProChecklist.pdf into the working directory (_Desktop_ >> _DOC-TITLE_ >> _Checklists_). The editable fields in the DocProChecklist.pdf will be auto-populated from info entered by the user.
 
-### Logging
+### 3. PDF XMP Updater Window
 
-Desktop Publisher Assistant's logging functionality is simple and user-friendly.
+The PDF XMP Updater window (displayed in the right side of the application) is a convenient way to update a 37-type document's XMP.
+
+![](readme-images/xmp-updater.PNG)
+
+To update a 37-type doc's XMP, drag and drop the 37 PDF and the new XMP into the window one a time or both at once. (Alternately, if you would rather navigate to the files with a file explorer, click on _Path to PDF..._ or _Path to XMP..._.) When you have attached both documents, click the _Update_ button to update the PDF's metadata.
+
+If you leave the _Update PDF Initial View Properties_ radio button selected, the output PDF's initial view will conform to NI Desktop Publishing standards. If you deselect the radio button, the PDF's initial view properties remain unmodified.
+
+### 4. Logging
+
+Desktop Publisher Assistant's logging functionality is simple and user-friendly. 
 
 ![](readme-images/log.PNG)
 
@@ -57,7 +82,7 @@ A ticket file is essentially a project file. A ticket file contains the followin
 
 When a user opens Desktop Publisher Assistant for the first time, it creates a folder in %APPDATA% called _Desktop Publisher Assistant_, to which all tickets are automatically saved. 
 
-Ticket files are named automatically from the program's _Jira Ticket Summary_ text field. If a user attempts to save the ticket file but information has not yet been entered in the _Jira Ticket Summary_ text field, a dialog will prompt the user to fill out the _Jira Ticket Summary_ text field.
+Ticket files are named automatically from the program's _Jira Ticket Summary_ text field. If you try to save the ticket file but have not yet entered information in the _Jira Ticket Summary_ text field, a dialog will prompt you to fill out the _Jira Ticket Summary_ text field.
 
 #### Log Window
 
@@ -67,59 +92,51 @@ The log window is displayed at the bottom of the application. Log entries are lo
 2. **Jira Report:** The name of the writer/translator who created the ticket
 3. **32 Part Number**
 4. **37 Part Number**
-5. **Status:** The ticket's status can be one of four: _Not Started_, _Started_, _Sent for Approval_, and _Done_
+5. **Status:** The ticket's status can be _Not Started_, _Started_, _Sent for Approval_, or _Done_
 
 ![](readme-images/log-top.PNG)
 
-**TIP:** Clicking on the labels above the list of logs will change how they are sorted. (For example, clicking on _Jira Report_ will sort the log entries alphabetically by the name of the writer/translator who created the ticket.)
+**TIP:** Click the labels above the list of logs if you want to change how they are sorted.
 
-**TIP:** If the status of a ticket changes and you would like to update the ticket file, click on the ticket's status in the log window. This action will cycle through the four options (_Not Started_, _In Progress_, _Sent for Approval_, and _Done_). Each click will automatically update the correct ticket file.
+**TIP:** If the status of a ticket changes and you would like to update the ticket file, click the ticket's status in the log window. This action will cycle through the four options (_Not Started_, _In Progress_, _Sent for Approval_, and _Done_). Each click will automatically update the correct ticket file.
 
-Right-clicking on a Log entry will display a context menu with three options:
+To display your options, right-click a Log entry:
 
 ![](readme-images/context-menu.PNG)
 
-1. **Open in Current Window**: Resets the current main window and populates it with the selected ticket file's information.
-2. **Open in New Window**: Opens the ticket file in a new window and leaves the current window untouched.
-3. **Delete Ticket**: Deletes the ticket file from _%APPDATA%/Desktop Publisher Assistant_. Use with caution, as deleted files cannot be recovered.
+* **Open in Current Window**: Resets the current main window and populates it with the selected ticket file's information.
+* **Open in New Window**: Opens the ticket file in a new window and leaves the current window untouched.
+* **Delete Ticket**: Deletes the ticket file from _%APPDATA%/Desktop Publisher Assistant_. Use with caution, as deleted files cannot be recovered.
 
-### PDF XMP Updater Window
+### 5. Menu
 
-The PDF XMP Updater window (displayed in the right side of the application) is a convenient way to update a PDF's XMP. Drag and drop the PDF and the XMP into the window one a time or both at once. (Alternately, if you would rather navigate to the files with a file explorer, click on the empty text fields.) When you have attached both documents, click the "Update" button to update the PDF's metadata.
+#### 5.1. File Menu
 
-If you leave the "Update PDF Initial View Properties" radio button selected, the output PDF's initial view will conform to NI Desktop Publishing standards. Deselecting the radio button will leave the PDF's initial view properties untouched.
+* **Open Ticket**: opens a file explorer so the user can open a ticket
+* **Save Ticket**: saves the current ticket to default %APPDATA% location
 
-![](readme-images/xmp-updater.PNG)
+#### 5.2. Edit Menu
 
-### Menu
+* **Clear All**: sets everything back to its default state
 
-#### File Menu
+#### 5.3. Tools Menu
 
-* **Open Ticket**: Opens a file explorer so the user can open a ticket
-* **Save Ticket**: Saves the current ticket to default %APPDATA% location
+* **Email Doc Pro Publishing Group**: sends the boilerplate email needed to publish PPMs
+* **Copy Print Template Perforce Path**: copies the path to the print templates in Perforce
 
-#### Edit Menu
+#### 5.4. Help
 
-* **Clear All**: Sets everything back to its default state
+* **Check for Updates**: checks GitHub to see if there are any new app releases
 
-#### Tools Menu
+### 6. Keyboard Shortcuts
 
-* **Email Doc Pro Publishing Group**: Sends the boilerplate email needed to publish PPMs.
-* **Copy Print Template Perforce Path**: Copies the path to the print templates in Perforce.
-
-#### Help
-
-* **Check for Updates**: Checks GitHub to see if there are any new app releases.
-
-### Keyboard Shortcuts
-
-* **ctrl+o**: opens a ticket file in the current window.
+* **ctrl+o**: opens a ticket file in the current window
 * **ctrl+s**: saves the current ticket file to default location (%APPDATA%/Desktop Publisher Assistant)
 * **ctrl+shift+x**: clears all of the text fields
-* **ctrl+e**: generates the boilerplate publishing email and opens it in your default email client.
+* **ctrl+e**: generates the boilerplate publishing email and opens it in your default email client
 
-### Text Fields
+### 7. Text Fields
 
-* **Auto-select-all:** When a user clicks into a text area, its contents are highlighted.
-* **Auto-paste:** Any recognizable item that has been copied to the system's clipboard (for example, part numbers or GUIDs) will be auto-pasted into the correct text area.
+* **Auto-select-all:** When you click into a text area, its contents are highlighted.
+* **Auto-paste:** Any recognizable item that you have copied to the system's clipboard (for example, part numbers or GUIDs) will be auto-pasted into the correct text area.
 * **Triple-click:** If you triple click on a text field that has a URL, the page will open in your default web browser.
