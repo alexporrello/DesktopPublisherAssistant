@@ -207,8 +207,10 @@ public class MainWindow extends JMPanel {
 		}
 
 		try {
+			String output = localPDFsURL + "\\S" + modifiedNumber + ".pdf";
 			Tools.copyOutResource("TCIS-Print-Specification_Template.pdf", localPDFsURL + "\\S" + modifiedNumber + ".pdf");
-		} catch (IOException e1) {
+			PDFPropertiesUpdater.autoFillPrintSpec(output, title.getText(), getPartNumbers(), date.getText());
+		} catch (IOException | DocumentException e1) {
 			e1.printStackTrace();
 		}
 	}

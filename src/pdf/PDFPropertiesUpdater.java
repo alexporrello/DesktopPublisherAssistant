@@ -23,6 +23,29 @@ public class PDFPropertiesUpdater {
 	 * @throws IOException 
 	 * @throws DocumentException
 	 */
+	public static void autoFillPrintSpec(String file, String title, String partNumber, String editionDate) throws IOException, DocumentException {
+		PdfReader reader = new PdfReader(new FileInputStream(file));
+		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(file));
+		AcroFields form = stamper.getAcroFields();
+		
+		form.removeXfa();
+		form.setField("Title", title);
+		form.setField("Part Numbers 1", partNumber);
+		form.setField("Edition Date", editionDate);
+		
+		stamper.close();
+		reader.close();
+	}
+	
+	/**
+	 * Auto-populates the generated DocProChecklist.
+	 * @param file the file to be updated
+	 * @param title the title of the document
+	 * @param partNumber the part number of the document
+	 * @param editionDate the edition date of the document
+	 * @throws IOException 
+	 * @throws DocumentException
+	 */
 	public static void autoFillDocProChecklist(String file, String title, String partNumber, String editionDate) throws IOException, DocumentException {
 		PdfReader reader = new PdfReader(new FileInputStream(file));
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(file));
