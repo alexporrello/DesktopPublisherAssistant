@@ -13,7 +13,7 @@ Once you have installed the JRE...
 1. Visit the [Desktop Publisher Assistant release page on GitHub](https://github.com/alexporrello/DesktopPublisherAssistant/releases).
 2. Download the latest release, found at the top of the page. (If you have trouble finding it, search the page for "Desktop.Publisher.Assistant.jar.")
 3. Once the file has downloaded, you can move it out of your download folder to a convenient location on your computer.
-4. Assuming you installed the JRE correctly, double-click the .jar to launch application 
+4. Double-click the .jar to launch the application. If the application does not launch, make sure that you have correctly installed the JRE.
 5. If you have any problems running the application, please create an issue on the [Desktop Publisher Assistant's issue page on Github](https://github.com/alexporrello/DesktopPublisherAssistant/issues).
 
 **TIP:** If you would like to create a desktop shortcut, right-click on the .jar file and select *Send To* >> *Desktop (Create Shortcut)*.
@@ -43,7 +43,7 @@ There are three buttons at the top right of the application's main window that a
 
 #### 2.1. _Create Working Directory_
 
-* **To enable the button**, fill out the ticket's _Doc Title_.
+* **To enable the button**, fill out the _Doc Title_ text area.
 * **Click the button** to create a folder on your _Desktop_ that mimics the folder structure in Perforce. It contains two folders:
     * _Checklists_: created to contain DocProChecklist.pdf
     * _PDFs_: created to contain the 32 and/or 37 document(s)
@@ -58,17 +58,20 @@ Many writers submit PPMs for 37-type docs only. You only need to worry about the
 #### 2.3. _Copy DocProChecklist.pdf_
 
 * **To enable the button**, enter the _Document Title_, the _Doc Date_, and one or both of the following: the _32 Part Number_ and/or the _37 Part Number_.
-* **Clicking the button** will copy the DocProChecklist.pdf into the working directory (_Desktop_ >> _DOC-TITLE_ >> _Checklists_). The editable fields in the DocProChecklist.pdf will be auto-populated from info entered by the user.
+* **Clicking the button** will copy the DocProChecklist.pdf into the working directory (_Desktop_ >> _DOC-TITLE_ >> _Checklists_). The editable fields in the DocProChecklist.pdf will be auto-populated from the information you entered in the _Document Title_, the _Doc Date_, and the 32 and/or 37 part number text areas.
 
 ### 3. PDF XMP Updater Window
 
-The PDF XMP Updater window (displayed in the right side of the application) is a convenient way to update a 37-type document's XMP.
+When desktop publishers work with a 37-type document, they have to update its metadata. The PDF XMP Updater window (displayed in the right side of the application) makes this task easy.
 
 ![](readme-images/xmp-updater.PNG)
 
-To update a 37-type doc's XMP, drag and drop the 37 PDF and the new XMP into the window one a time or both at once. (Alternately, if you would rather navigate to the files with a file explorer, click on _Path to PDF..._ or _Path to XMP..._.) When you have attached both documents, click the _Update_ button to update the PDF's metadata.
+To update a 37-type doc's XMP... 
 
-If you leave the _Update PDF Initial View Properties_ radio button selected, the output PDF's initial view will conform to NI Desktop Publishing standards. If you deselect the radio button, the PDF's initial view properties remain unmodified.
+1. Drag and drop the 37 PDF and the new XMP into the window one a time or both at once. (Alternately, if you would rather navigate to the files with a file explorer, click on _Path to PDF..._ or _Path to XMP..._.)
+2. When you have attached both documents, click the _Update_ button to update the PDF's metadata.
+
+**Note**: If you leave the _Update PDF Initial View Properties_ radio button selected, the output PDF's initial view will conform to NI Desktop Publishing standards. If you deselect the radio button, the PDF's initial view properties remain unmodified.
 
 ### 4. Logging
 
@@ -78,17 +81,17 @@ Desktop Publisher Assistant's logging functionality is simple and user-friendly.
 
 #### 4.1. Ticket Files
 
-A ticket file is essentially a project file. A ticket file contains the following information: the project's _Doc Title_, _32_ and _37 Part Numbers_, _Doc Date_, _GUID_, _Perforce Path_, _Jira Ticket Summary_, _Jira Ticket Reporter_, _Jira Ticket URL_, _TCIS URL_, and the _Status_ (which could be _Not Started_, _In Progress_, _Sent for Approval_, or _Done_).
-
 When a user opens Desktop Publisher Assistant for the first time, it creates a folder in %APPDATA% called _Desktop Publisher Assistant_, to which all tickets are automatically saved. 
 
 Ticket files are named automatically from the program's _Jira Ticket Summary_ text field. If you try to save the ticket file but have not yet entered information in the _Jira Ticket Summary_ text field, a dialog will prompt you to fill out the _Jira Ticket Summary_ text field.
 
+**Note**: A ticket file is essentially a project file. Each ticket file contains the following information: the project's _Doc Title_, _32_ and _37 Part Numbers_, _Doc Date_, _GUID_, _Perforce Path_, _Jira Ticket Summary_, _Jira Ticket Reporter_, _Jira Ticket URL_, _TCIS URL_, and the _Status_ (which could be _Not Started_, _In Progress_, _Sent for Approval_, or _Done_).
+
 #### 4.2. Log Window
 
-The log window is displayed at the bottom of the application. Log entries are loaded from the %APPDATA% folder where ticket files are automatically saved. The log window displays the following information about tickets:
+The log window is displayed at the bottom of the application. Each line of the log is a ticket file, loaded from the %APPDATA% folder where tickets are automatically saved. The log window displays the following information about tickets:
 
-1. **Jira Ticket Description:** (necessary to save the file)
+1. **Jira Ticket Description**
 2. **Jira Report:** The name of the writer/translator who created the ticket
 3. **32 Part Number**
 4. **37 Part Number**
@@ -105,14 +108,13 @@ To display your options, right-click a Log entry:
 ![](readme-images/context-menu.PNG)
 
 * **Open in Current Window**: Resets the current main window and populates it with the selected ticket file's information.
-* **Open in New Window**: Opens the ticket file in a new window and leaves the current window untouched.
 * **Delete Ticket**: Deletes the ticket file from _%APPDATA%/Desktop Publisher Assistant_. Use with caution, as deleted files cannot be recovered.
 
 ### 5. Menu
 
 #### 5.1. File Menu
 
-* **Open Ticket**: opens a file explorer so the user can open a ticket
+* **Open Ticket**: opens up a file explorer so you can open a ticket
 * **Save Ticket**: saves the current ticket to default %APPDATA% location
 
 #### 5.2. Edit Menu
