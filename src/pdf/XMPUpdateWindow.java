@@ -42,11 +42,17 @@ public class XMPUpdateWindow extends JPanel {
 	/** The path to the XMP File **/
 	File xmpFile;
 
+	/** The path to the PDF output folder **/
+	File outFile;
+
 	/** The label on which the PDF Path will be displayed **/
 	JLabel pdf = new JLabel("Path to PDF...");
 
 	/** The label on which the XMP Path will be displayed **/
 	JLabel xmp = new JLabel("Path to XMP...");
+
+	/** The label on which the XMP Path will be displayed **/
+	JLabel out = new JLabel("Path to Output Folder...");
 
 	/** The button that kicks off the action **/
 	JButton go = new JButton("Update");
@@ -54,10 +60,25 @@ public class XMPUpdateWindow extends JPanel {
 	/** When selected, the initial view properties of the PDF are updated along with the tags **/
 	JRadioButton rb = new JRadioButton("Update PDF Initial View Properties");
 
+	Boolean showOutput = false;
+
 	public XMPUpdateWindow() {
 		setPreferredSize(new Dimension(300, 50));
 		setLayout(new BorderLayout());
-		
+
+		add(setUpDropArea(), BorderLayout.CENTER);
+		add(setUpLowerPanel(), BorderLayout.SOUTH);
+
+		rb.setFocusPainted(false);
+		rb.setSelected(true);
+	}
+
+	public XMPUpdateWindow(Boolean showOutput) {
+		this.showOutput = showOutput;
+
+		setPreferredSize(new Dimension(300, 50));
+		setLayout(new BorderLayout());
+
 		add(setUpDropArea(), BorderLayout.CENTER);
 		add(setUpLowerPanel(), BorderLayout.SOUTH);
 
@@ -102,13 +123,13 @@ public class XMPUpdateWindow extends JPanel {
 					url = url.substring(1, url.length()-1);
 
 					e.dropComplete(true);
-					
+
 					String[] urls;
-					
+
 					if(url.contains(",")) {						
 						url = url.replace(".pdf, ", ".pdf###");
 						url = url.replace(".xmp, ", ".xmp###");
-						
+
 						urls = url.split("###");
 					} else {
 						urls = url.split(", ");
@@ -139,6 +160,12 @@ public class XMPUpdateWindow extends JPanel {
 			pdf.setText("PDF:  " + url);
 			pdf.setForeground(Color.BLACK);
 			pdf.setToolTipText(url);
+		} else if(showOutput) {
+			outFile = new File(url);
+
+			out.setText("Output: " + url);
+			out.setForeground(Color.BLACK);
+			out.setToolTipText(url);
 		}
 
 		enableGoButton();
@@ -156,17 +183,26 @@ public class XMPUpdateWindow extends JPanel {
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 5, 5));	
 		toReturn.add(xmp, new GridBagConstraints(0, 1, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 5, 5));	
-		toReturn.add(rb,  new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
-				GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 5), 5, 5));
-		toReturn.add(go,  new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
+
+		if(showOutput) {
+			toReturn.add(out, new GridBagConstraints(0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 5), 5, 5));
+		}
+
+		toReturn.add(rb,  new GridBagConstraints(0, 3, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
+				GridBagConstraints.HORIZONTAL, new Insets(0, 5, 5, 5), 5, 5));
+		toReturn.add(go,  new GridBagConstraints(0, 4, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 5, 5), 5, 5));	
 
 		setupGoButton();
-		setupJLabel(pdf, true);
-		setupJLabel(xmp, false);
+		setupJLabel(pdf, true, false);
+		setupJLabel(xmp, false, false);
+		setupJLabel(out, false, true);
 
 		pdf.setForeground(Color.DARK_GRAY);
 		xmp.setForeground(Color.DARK_GRAY);
+		out.setForeground(Color.DARK_GRAY);
+
 		go.setEnabled(false);
 
 		return toReturn;
@@ -177,7 +213,7 @@ public class XMPUpdateWindow extends JPanel {
 	 * @param label the label to set up
 	 * @param isPDF true if the selection will be for PDF; else, false.
 	 */
-	private void setupJLabel(JLabel label, boolean isPDF) {
+	private void setupJLabel(JLabel label, boolean isPDF, boolean isOUT) {
 		label.setOpaque(true);
 		label.setBackground(Color.WHITE);
 		label.setBorder(BorderFactory.createCompoundBorder(
@@ -188,6 +224,8 @@ public class XMPUpdateWindow extends JPanel {
 
 		if(isPDF) {
 			dialogName = "Locate PDF File";
+		} else if(isOUT) {
+			dialogName = "Locate Output Folder";
 		} else {
 			dialogName = "Locate XMP File";
 		}
@@ -196,7 +234,11 @@ public class XMPUpdateWindow extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				try {
-					isURLValid(Tools.loadFile(dialogName, FileSystemView.getFileSystemView().getHomeDirectory()));
+					if(!isOUT) {
+						isURLValid(Tools.loadFile(dialogName, FileSystemView.getFileSystemView().getHomeDirectory()));
+					} else {
+						isURLValid(Tools.loadDirectory(dialogName, FileSystemView.getFileSystemView().getHomeDirectory()));
+					}
 				} catch (NoSuchFileException e) {
 					System.err.println("The user did not open a file.");
 				}
@@ -210,12 +252,19 @@ public class XMPUpdateWindow extends JPanel {
 	private void setupGoButton() {
 		go.setFocusPainted(false);
 		go.addActionListener(e -> {
-			try {				
-				XMPUpdater.updatePDFXMP(pdfFile.getAbsolutePath(), xmpFile.getAbsolutePath());
-
-				if(rb.isSelected()) {
-					PDFPropertiesUpdater.updateOpenProperties(pdfFile.getAbsolutePath());
+			try {
+				if(!showOutput) {
+					XMPUpdater.updatePDFXMP(pdfFile.getAbsolutePath(), xmpFile.getAbsolutePath());
+					
+					if(rb.isSelected()) {
+						PDFPropertiesUpdater.updateOpenProperties(pdfFile.getAbsolutePath());
+					}
+				} else {
+					XMPUpdater.updatePDFXMP(pdfFile.getAbsolutePath(), outFile.getAbsolutePath() + "//" + pdfFile.getName(),
+							xmpFile.getAbsolutePath());
 				}
+
+				
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			} catch (DocumentException e1) {
@@ -228,8 +277,12 @@ public class XMPUpdateWindow extends JPanel {
 	 * Checks if the go button should be enabled to disabled.
 	 */
 	private void enableGoButton() {
-		if((xmpFile != null && pdfFile !=null) && (xmpFile.exists() && pdfFile.exists())) {
-			go.setEnabled(true);
+		if((xmpFile != null && pdfFile !=null) && (xmpFile.exists() && pdfFile.exists())) {			
+			if(showOutput) {
+				go.setEnabled(outFile != null && xmpFile.exists());
+			} else {
+				go.setEnabled(true);
+			}
 		}
 	}
 
@@ -242,7 +295,7 @@ public class XMPUpdateWindow extends JPanel {
 
 		pdf.setText("Locate PDF File...");
 		xmp.setText("Locate XMP File...");
-		
+
 		enableGoButton();
 	}
 }

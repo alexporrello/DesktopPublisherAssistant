@@ -9,20 +9,27 @@ import fm.ParagraphTagsDialog;
 import ui.DesktopPublisherAssistant;
 
 public class Runner {
-	
-	
-	
+
+
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {			
 			setLookAndFeel();
 			runMainProgram();
 
+			//			JDialog dialog = new JDialog();
+			//			dialog.add(new XMPUpdateWindow(true));
+			//			dialog.setSize(new Dimension(300, 300));
+			//			dialog.setVisible(true);
+
 			//testParagraphTagsDialog();
 		});
 	}
 
-	
-	
+	public static void sortList() {
+
+	}
+
 	public static void runMainProgram() {
 		new DesktopPublisherAssistant().setVisible(true);
 	}

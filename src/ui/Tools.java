@@ -135,6 +135,24 @@ public class Tools {
 	
 		throw new NoSuchFileException("No file was selected.");
 	}
+	
+	/**
+	 * Opens a new JFileChooser so the user can open a file.
+	 * @return the URL of the selected file as a string
+	 * @throws NoSuchFileException if the user does not choose a file.
+	 */
+	public static String loadDirectory(String name, File openToURL) throws NoSuchFileException {
+		JFileChooser jfc = new JFileChooser(openToURL);
+		jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		jfc.setDialogTitle("Choose the desired ticket to load it into the application.");
+		jfc.setVisible(true);
+		
+		if(jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			return jfc.getSelectedFile().getAbsolutePath();
+		} else {
+			throw new NoSuchFileException("No file was selected.");
+		}
+	}
 
 	/**
 	 * Writes a string to a file.
