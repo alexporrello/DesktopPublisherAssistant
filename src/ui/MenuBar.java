@@ -208,7 +208,7 @@ public class MenuBar extends JMenuBar {
 			});
 			JMenuItem st = new JMenuItem("Copy blank Spec_Template.pdf");
 			st.addActionListener(e -> {
-				openCopyDialog("Spec_template.pdf");
+				openCopyDialog("Silkscreen-Print-Specification_Template.pdf");
 			});
 
 			silkscreenTemplates.add(sc);

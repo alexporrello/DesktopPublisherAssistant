@@ -416,7 +416,7 @@ public class MainWindow extends JMPanel {
 
 	/**
 	 * If a given string is recognized, it is auto-added to empty fields.
-	 * @param s the string to be auto-added.
+	 * @param s the string to be auto-added.d
 	 */
 	public void autoAddString(String s) {
 		if(s.startsWith("32")) {
