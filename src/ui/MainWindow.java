@@ -354,10 +354,19 @@ public class MainWindow extends JMPanel {
 		if(!Tools.isEmpty(this.tcisURL.getTextField())) {
 			tcisURL = this.tcisURL.getText();
 		}
-
+		
 		if(!Tools.isEmpty(perforce.getTextField())) {
-			checklistURL = perforce.getText() + "Checklists/DocProChecklist.pdf";
-			pdfsURL      = perforce.getText() + "PDFs";
+			String perforceURL = perforce.getText();
+			
+			if(perforceURL.endsWith(" ")) {
+				perforceURL = perforceURL.trim();
+			}
+			if(!perforceURL.endsWith("/")) {
+				perforceURL = perforceURL + "/";
+			}
+			
+			checklistURL = perforceURL + "Checklists/DocProChecklist.pdf";
+			pdfsURL      = perforceURL + "PDFs";
 		}
 
 		String subject = "PUBLISHING: " + partNumbers;
@@ -420,6 +429,10 @@ public class MainWindow extends JMPanel {
 	 * @param s the string to be auto-added.d
 	 */
 	public void autoAddString(String s) {
+		if(s.endsWith(" ")) {
+			s = s.substring(0, s.length()-1);
+		}
+		
 		if(s.startsWith("32")) {
 			setTextIfEmpty(partNum32, s);
 		} else if(s.startsWith("37")) {
@@ -434,7 +447,7 @@ public class MainWindow extends JMPanel {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {
 			setTextIfEmpty(tcisURL.getTextField(), s);
-		} else if(s.toLowerCase().contains("specifications")) {
+		} else if(s.toLowerCase().contains("specifications") || s.toLowerCase().contains("user manual")) {
 			setTextIfEmpty(title, s);
 		}
 	}
