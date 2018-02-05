@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -452,13 +453,13 @@ public class MainWindow extends JMPanel {
 
 	/**
 	 * @return The name of the file if it will be returned.
-	 * @throws Exception 
+	 * @throws NoSuchFileException if no Jira Ticket Summary has been entered. 
 	 */
-	public String getSaveFileName() throws Exception {
+	public String getSaveFileName() throws NoSuchFileException {
 		if(!Tools.isEmpty(jiraSummary)) {
 			return jiraSummary.getText() + ".log";
 		} else {
-			throw new Exception();
+			throw new NoSuchFileException("Enter the Jira Ticket Summary to save the file.");
 		}
 	}
 
