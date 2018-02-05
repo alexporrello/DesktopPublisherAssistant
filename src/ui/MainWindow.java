@@ -49,10 +49,10 @@ public class MainWindow extends JMPanel {
 	private JTextField date = new JTextField();
 
 	/** The document's "global unique identifier" **/
-	private JTextField GUID = new JTextField();
+	private JTextCopy GUID = new JTextCopy("");
 
 	/** The URL to the file in perforce **/
-	private JTextField perforce = new JTextField();
+	private JTextCopy perforce = new JTextCopy("");
 
 	/** The name of the Jira ticket **/
 	private JTextField jiraSummary = new JTextField();
@@ -126,11 +126,13 @@ public class MainWindow extends JMPanel {
 		y++;
 
 		add(createJLabel("GUID: "), Tools.createGBC(0, y, 0.0, insets));
-		add(setUpText(GUID), Tools.createGBC(1, y, 1.0, insets));
+		setUpText(GUID.getTextField());
+		add(GUID, Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
 		add(createJLabel("Perforce Path: "), Tools.createGBC(0, y, 0.0, insets));
-		add(setUpText(perforce), Tools.createGBC(1, y, 1.0, insets));
+		setUpText(perforce.getTextField());
+		add(perforce, Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
 		add(createJLabel("Jira Ticket Summary: "), Tools.createGBC(0, y, 0.0, insets));
@@ -352,7 +354,7 @@ public class MainWindow extends JMPanel {
 			tcisURL = this.tcisURL.getText();
 		}
 
-		if(!Tools.isEmpty(perforce)) {
+		if(!Tools.isEmpty(perforce.getTextField())) {
 			checklistURL = perforce.getText() + "Checklists/DocProChecklist.pdf";
 			pdfsURL      = perforce.getText() + "PDFs";
 		}
@@ -422,15 +424,17 @@ public class MainWindow extends JMPanel {
 		} else if(s.startsWith("37")) {
 			setTextIfEmpty(partNum37, s);
 		} else if(s.startsWith("//")) {
-			setTextIfEmpty(perforce, s);
+			setTextIfEmpty(perforce.getTextField(), s);
 		} else if(s.contains("GUID")) {
-			setTextIfEmpty(GUID, s);
+			setTextIfEmpty(GUID.getTextField(), s);
 		} else if(s.contains("nijira")) {
 			setTextIfEmpty(jiraURL.getTextField(), s);
 		} else if(s.contains("Prepare") || s.contains("Apply")) {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {
 			setTextIfEmpty(tcisURL.getTextField(), s);
+		} else if(s.toLowerCase().contains("specifications")) {
+			setTextIfEmpty(title, s);
 		}
 	}
 
