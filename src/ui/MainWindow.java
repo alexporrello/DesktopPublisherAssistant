@@ -434,7 +434,10 @@ public class MainWindow extends JMPanel {
 			s = s.substring(0, s.length()-1);
 		}
 
-		if(s.startsWith("32")) {
+		if(s.contains("32") && s.contains("37") && s.split(", ").length == 2) {
+			setTextIfEmpty(partNum32, s.split(", ")[0]);
+			setTextIfEmpty(partNum37, s.split(", ")[1]);
+		} else if(s.startsWith("32")) {
 			setTextIfEmpty(partNum32, s);
 		} else if(s.startsWith("37")) {
 			setTextIfEmpty(partNum37, s);
