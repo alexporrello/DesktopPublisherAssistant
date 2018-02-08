@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ui.Tools;
 import ui.MainWindow;
@@ -64,6 +65,30 @@ public class Ticket {
 		String[] log = readLogFile(url);
 
 		return log[pol.i];
+	}
+	
+	/**
+	 * Searches through all available tickets given a query string.
+	 * @param query the query to search for.
+	 * @return An ArrayList of all the logs that match the query.
+	 * @throws IOException 
+	 */
+	public static ArrayList<String[]> searchThroughTickets(String query) throws IOException {
+		ArrayList<String[]> toReturn = new ArrayList<String[]>();
+		
+		for(File f : Ticket.TICKET_URL.listFiles()) {
+			String[] thisTicket = Ticket.readLogFile(f.getAbsolutePath()); 
+			
+			out:
+			for(String s : thisTicket) {
+				if(s != null && s.toLowerCase().contains(query.toLowerCase())) {
+					toReturn.add(thisTicket);
+					break out;
+				}
+			}
+		}
+		
+		return toReturn;
 	}
 
 	/**

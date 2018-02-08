@@ -1,5 +1,6 @@
 package log;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -100,6 +101,14 @@ public class ShortLog implements Comparable<ShortLog> {
 
 	public JLabel getLabel(ShortLogLabel sll) {
 		return labels[sll.i];
+	}
+	
+	public void setBackgroundWhite() {
+		getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION).setBackground(Color.WHITE);
+		getLabel(ShortLogLabel.JIRA_TICKET_REPORTER).setBackground(Color.WHITE);
+		getLabel(ShortLogLabel.PART_NUM_32).setBackground(Color.WHITE);
+		getLabel(ShortLogLabel.PART_NUM_37).setBackground(Color.WHITE);
+		status.setBackground(Color.WHITE);
 	}
 
 	@Override

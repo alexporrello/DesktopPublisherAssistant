@@ -29,6 +29,7 @@ import com.itextpdf.text.DocumentException;
 
 import pdf.PDFPropertiesUpdater;
 import ticket.Ticket;
+import ticket.TicketInfo;
 
 /**
  * The window upon which is displayed all fields and information.
@@ -81,7 +82,7 @@ public class MainWindow extends JMPanel {
 
 	/** The JFrame in which this JPanel is displayed **/
 	private JFrame parent;
-	
+
 	JButton cwd  = new JButton("Create Working Directory");
 	JButton cps  = new JButton("Copy Print Spec Doc");
 	JButton cdpc = new JButton("Copy DocProChecklist.pdf");
@@ -312,7 +313,7 @@ public class MainWindow extends JMPanel {
 
 		return toSetup;
 	}
-	
+
 	/**
 	 * If a given JTextField ends with a space, remove it.
 	 * @param toRemove the JTextField to be changed.
@@ -320,11 +321,11 @@ public class MainWindow extends JMPanel {
 	private void removeEndSpace(JTextField toRemove) {
 		String text = toRemove.getText();
 		int carePosition = toRemove.getCaretPosition();
-		
+
 		if(text.endsWith(" ")) {
 			text = text.substring(0, text.length()-1);
 		}
-		
+
 		toRemove.setText(text);		
 		toRemove.setCaretPosition(carePosition);
 	}
@@ -354,17 +355,17 @@ public class MainWindow extends JMPanel {
 		if(!Tools.isEmpty(this.tcisURL.getTextField())) {
 			tcisURL = this.tcisURL.getText();
 		}
-		
+
 		if(!Tools.isEmpty(perforce.getTextField())) {
 			String perforceURL = perforce.getText();
-			
+
 			if(perforceURL.endsWith(" ")) {
 				perforceURL = perforceURL.trim();
 			}
 			if(!perforceURL.endsWith("/")) {
 				perforceURL = perforceURL + "/";
 			}
-			
+
 			checklistURL = perforceURL + "Checklists/DocProChecklist.pdf";
 			pdfsURL      = perforceURL + "PDFs";
 		}
@@ -432,7 +433,7 @@ public class MainWindow extends JMPanel {
 		if(s.endsWith(" ")) {
 			s = s.substring(0, s.length()-1);
 		}
-		
+
 		if(s.startsWith("32")) {
 			setTextIfEmpty(partNum32, s);
 		} else if(s.startsWith("37")) {
@@ -474,6 +475,25 @@ public class MainWindow extends JMPanel {
 		} else {
 			throw new NoSuchFileException("Enter the Jira Ticket Summary to save the file.");
 		}
+	}
+
+	/**
+	 * Populates all the fields in the program's body.
+	 * @param ticket the ticket file to add to the program.
+	 */
+	public void setLog(String[] ticket) {
+		setAll(
+				ticket[TicketInfo.TITLE.i], 
+				ticket[TicketInfo.PART_NUM_32.i],
+				ticket[TicketInfo.PART_NUM_37.i], 
+				ticket[TicketInfo.DATE.i], 
+				ticket[TicketInfo.GUID.i], 
+				ticket[TicketInfo.PERFORCE_URL.i], 
+				ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], 
+				ticket[TicketInfo.REPORT.i],
+				ticket[TicketInfo.JIRA_TICKET_URL.i], 
+				ticket[TicketInfo.TCIS_URL.i],
+				Integer.parseInt(ticket[TicketInfo.STATUS.i]));
 	}
 
 	/**

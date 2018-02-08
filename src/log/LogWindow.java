@@ -27,7 +27,6 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import ticket.Ticket;
-import ticket.TicketInfo;
 import ui.MainWindow;
 import ui.JMPanel;
 import ui.Tools;
@@ -39,128 +38,44 @@ import ui.Tools;
 public class LogWindow extends JMPanel {
 	private static final long serialVersionUID = -1014191579466760962L;
 
+	public static final int TICKET_DESCRIPTION = 0;
+	public static final int JIRA_REPORT = 1;
+	public static final int PART_NUM_32 = 2;
+	public static final int PART_NUM_37 = 3;
+	public static final int STATUS = 4;
+	public static final int SPACER = 5;
+
 	/** All of the ticket files currently in existence on the user's computer **/
 	private ArrayList<ShortLog> shortLogs = new ArrayList<ShortLog>();
 
+	/** Determines how the tickets are sorted in {@link #logWindow} **/
+	private Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
+
+	/** The labels that the user clicks to sort the tickets **/
+	private JLabel[] infoLabels = {
+			new JLabelEdge("Jira Ticket Description"),
+			new JLabelEdge("Jira Report"),
+			new JLabelEdge("32 Part Number"),
+			new JLabelEdge("37 Part Number"),
+			new JLabelEdge("Status", false),
+			new JLabelEdge("", false)
+	};
+	
+	/** The JScrollPane that holds {@link #logWindow} **/
+	private JScrollPane logDialogScroll;
+
+	/** The panel upon which all the logs are displayed **/
+	private LogPanel logWindow = new LogPanel();
+
+	/** The program body's main window **/
 	private MainWindow mw;
 
-	LogsInWindow liw = new LogsInWindow();
-	JScrollPane logDialogScroll = new JScrollPane(liw);
-
-	Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
-	
 	public LogWindow(MainWindow mw) {
 		this.mw = mw;
 
-		logDialogScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		logDialogScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		logDialogScroll.setPreferredSize(new Dimension(900,150));
-		logDialogScroll.setBorder(BorderFactory.createEmptyBorder());
+		setupScrollPane();
+		setupAllLabels();
 
-		JLabel[] labels = {
-				new JLabel("Jira Ticket Description") {
-					private static final long serialVersionUID = -2564660927510249775L;
-					public void paintComponent(Graphics g) {
-						super.paintComponent(g);
-						g.setColor(Color.LIGHT_GRAY);
-						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
-					}
-				},
-				new JLabel("Jira Report") {
-					private static final long serialVersionUID = -2564660927510249776L;
-					public void paintComponent(Graphics g) {
-						super.paintComponent(g);
-						g.setColor(Color.LIGHT_GRAY);
-						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
-					}
-				},
-				new JLabel("32 Part Number") {
-					private static final long serialVersionUID = -2564660927510249777L;
-					public void paintComponent(Graphics g) {
-						super.paintComponent(g);
-						g.setColor(Color.LIGHT_GRAY);
-						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
-					}
-				},
-				new JLabel("37 Part Number") {
-					private static final long serialVersionUID = -2564660927510249778L;
-					public void paintComponent(Graphics g) {
-						super.paintComponent(g);
-						g.setColor(Color.LIGHT_GRAY);
-						g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
-					}
-				},
-				new JLabel("Status"),
-				new JLabel("")};
-
-		int y = 0;
-
-		JMPanel labelsPanel = new JMPanel();
-		labelsPanel.setLayout(new GridBagLayout());
-
-		labels[1].setPreferredSize(new Dimension(130, 24));
-		labels[2].setPreferredSize(new Dimension(100, 24));
-		labels[3].setPreferredSize(new Dimension(100, 24));
-		labels[4].setPreferredSize(new Dimension(110, 24));
-		labels[5].setPreferredSize(new Dimension(25, 24));
-		
-		labels[0].addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				compare = Compare.JIRA_TICKET_DESCRIPTION;
-				liw.addAllToLogEntryPanel();
-			}
-		});
-		labels[1].addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				compare = Compare.JIRA_REPORT;
-				liw.addAllToLogEntryPanel();
-			}
-		});
-		labels[2].addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				compare = Compare.PART_NUM_32;
-				liw.addAllToLogEntryPanel();
-			}
-		});
-		labels[3].addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				compare = Compare.PART_NUM_37;
-				liw.addAllToLogEntryPanel();
-			}
-		});
-		labels[4].addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				compare = Compare.STATUS;
-				liw.addAllToLogEntryPanel();
-			}
-		});
-		
-		labelsPanel.add(labels[0], Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[1], Tools.createGBC(2, y, 0.0, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[2], Tools.createGBC(3, y, 0.0, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[3], Tools.createGBC(4, y, 0.0, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[4], Tools.createGBC(5, y, 0.0, new Insets(0,0,-1,0)));
-		labelsPanel.add(labels[5], Tools.createGBC(6, y, 0.0, new Insets(0,0,-1,0)));
-		
-		for(JLabel label : labels) {
-			label.setHorizontalAlignment(SwingConstants.LEFT);
-			label.setOpaque(true);
-		}
-		
-		for(int i = 1; i < labels.length; i++) {
-			labels[i].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
-		}
-		
-		labels[0].setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
-		
-		//labels[4].setPreferredSize(new Dimension(105,24));
-		//labels[1].setPreferredSize(new Dimension(100, 24));
-		
 		setLayout(new GridBagLayout());
 		setBorder(
 				BorderFactory.createCompoundBorder(
@@ -168,14 +83,78 @@ public class LogWindow extends JMPanel {
 						BorderFactory.createCompoundBorder(
 								BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
 								BorderFactory.createEmptyBorder(5, 5, 5, 5))));
-		add(labelsPanel,     new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-		add(logDialogScroll, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH,       new Insets(0, 0, 0, 0), 0, 0));
+		
+		add(createInfoPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, 
+				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		add(logDialogScroll,   new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, 
+				GridBagConstraints.BOTH,       new Insets(0, 0, 0, 0), 0, 0));
 	}
 
-	public class LogsInWindow extends JMPanel {
+	/** Sets up the JScrollPane that displays all the log entries  **/
+	private void setupScrollPane() {
+		logDialogScroll = new JScrollPane(logWindow);
+
+		logDialogScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		logDialogScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		logDialogScroll.setBorder(BorderFactory.createEmptyBorder());
+		logDialogScroll.setPreferredSize(new Dimension(900,150));
+	}
+
+	/** Sets up the JLabels that sort the displayed log entries **/
+	private void setupAllLabels() {
+		setupJLabel(JIRA_REPORT, 130, 24, Compare.JIRA_REPORT);
+		setupJLabel(PART_NUM_32, 100, 24, Compare.PART_NUM_32);
+		setupJLabel(PART_NUM_37, 100, 24, Compare.PART_NUM_37);
+		setupJLabel(STATUS, 110, 24, Compare.STATUS);
+		setupJLabel(SPACER, 25, 24, Compare.NULL);
+
+		infoLabels[TICKET_DESCRIPTION].setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+		infoLabels[TICKET_DESCRIPTION].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				compare = Compare.JIRA_TICKET_DESCRIPTION;
+				logWindow.addAllToLogEntryPanel();
+			}
+		});
+	}
+
+	/** Sets up individual JLabels that the user clicks to sort the log entries **/
+	private void setupJLabel(int label, int width, int height, Compare thisCompare) {
+		infoLabels[label].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
+		infoLabels[label].setPreferredSize(new Dimension(width, height));
+		infoLabels[label].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(infoLabels[label].contains(e.getPoint()) && compare != Compare.NULL) {
+					compare = thisCompare;
+					logWindow.addAllToLogEntryPanel();
+				}
+			}
+		});
+	}
+
+	/** Sets up the info panel that displays the JLabels that the user clicks to sort log entries **/
+	private JMPanel createInfoPanel() {
+		JMPanel infoPanel = new JMPanel();
+
+		infoPanel.setLayout(new GridBagLayout());
+		infoPanel.add(infoLabels[TICKET_DESCRIPTION], Tools.createGBC(1, 0, 1.0, new Insets(0,0,-1,0)));
+
+		for(int i = 1; i <= 5; i++) {
+			infoPanel.add(infoLabels[i], Tools.createGBC(i+1, 0, 0.0, new Insets(0,0,-1,0)));
+		}
+
+		return infoPanel;
+	}
+
+	/**
+	 * The panel upon which all the log entries are displayed.
+	 * @author Alexander Porrello
+	 */
+	private class LogPanel extends JMPanel {
 		private static final long serialVersionUID = 8218069729268454703L;
 
-		public LogsInWindow() {
+		LogPanel() {
 			setLayout(new GridBagLayout());
 			addAllToLogEntryPanel();
 			watchService();
@@ -185,7 +164,7 @@ public class LogWindow extends JMPanel {
 		 * Watches the Desktop Publisher Assistant for changes and updates the log
 		 * if any occur.
 		 */
-		public void watchService() {
+		private void watchService() {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -194,7 +173,7 @@ public class LogWindow extends JMPanel {
 						Path dir = Ticket.TICKET_URL.toPath();
 
 						dir.register(watcher, ENTRY_MODIFY, ENTRY_CREATE, ENTRY_DELETE);
-						
+
 						for(;;) {
 							WatchKey key = watcher.take();
 							for (WatchEvent<?> event : key.pollEvents()) {
@@ -203,7 +182,7 @@ public class LogWindow extends JMPanel {
 									continue;
 								}
 							}
-							
+
 							key.reset();
 						}
 					} catch(InterruptedException | IOException e) {
@@ -216,15 +195,11 @@ public class LogWindow extends JMPanel {
 		/**
 		 * Locates all tickets, adds them to {@link #shortLogs}, and adds them to {@link #logEntryPanel}.
 		 */
-		public void addAllToLogEntryPanel() {
+		private void addAllToLogEntryPanel() {
 			this.removeAll();
 			shortLogs.clear();
-			
+
 			try {
-				if(!Ticket.TICKET_URL.exists()) {
-					Ticket.TICKET_URL.mkdir();
-				}
-				
 				for(File f : Ticket.TICKET_URL.listFiles()) {
 					shortLogs.add(setUpNewShortLog(f));
 				}
@@ -234,11 +209,7 @@ public class LogWindow extends JMPanel {
 
 				for(ShortLog sl : shortLogs) {
 					if(y%2 == 0) {
-						sl.getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION).setBackground(Color.WHITE);
-						sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER).setBackground(Color.WHITE);
-						sl.getLabel(ShortLogLabel.PART_NUM_32).setBackground(Color.WHITE);
-						sl.getLabel(ShortLogLabel.PART_NUM_37).setBackground(Color.WHITE);
-						sl.status.setBackground(Color.WHITE);
+						sl.setBackgroundWhite();
 					}
 
 					int space = 0;
@@ -268,6 +239,7 @@ public class LogWindow extends JMPanel {
 		private ShortLog setUpNewShortLog(File f) throws IOException {
 			ShortLog toReturn = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath(), compare);
 
+			toReturn.popupOptions.openH.addActionListener(e -> mw.setLog(toReturn.ticket));
 			toReturn.popupOptions.delete.addActionListener(e -> {					
 				try {
 					Files.deleteIfExists(new File(toReturn.ticketURL).toPath());
@@ -276,22 +248,42 @@ public class LogWindow extends JMPanel {
 				}
 			});
 
-			toReturn.popupOptions.openH.addActionListener(e -> {
-				mw.setAll(
-						toReturn.ticket[TicketInfo.TITLE.i], 
-						toReturn.ticket[TicketInfo.PART_NUM_32.i],
-						toReturn.ticket[TicketInfo.PART_NUM_37.i], 
-						toReturn.ticket[TicketInfo.DATE.i], 
-						toReturn.ticket[TicketInfo.GUID.i], 
-						toReturn.ticket[TicketInfo.PERFORCE_URL.i], 
-						toReturn.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], 
-						toReturn.ticket[TicketInfo.REPORT.i],
-						toReturn.ticket[TicketInfo.JIRA_TICKET_URL.i], 
-						toReturn.ticket[TicketInfo.TCIS_URL.i],
-						Integer.parseInt(toReturn.ticket[TicketInfo.STATUS.i]));
-			});
-
 			return toReturn;
+		}
+	}
+
+	/**
+	 * JLabel with a line drawn to the right.
+	 * @author Alexander Porrello
+	 */
+	private class JLabelEdge extends JLabel {
+		private static final long serialVersionUID = -2564660927510249775L;
+
+		private Boolean show = true;
+
+		JLabelEdge(String s) { 
+			super(s);
+
+			setHorizontalAlignment(SwingConstants.LEFT);
+			setOpaque(true);
+		}
+
+		JLabelEdge(String s, Boolean show) { 
+			super(s);
+			this.show = show;
+
+			setHorizontalAlignment(SwingConstants.LEFT);
+			setOpaque(true);
+		}
+
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+
+			if(show) {
+				g.setColor(Color.LIGHT_GRAY);
+				g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
+			}
 		}
 	}
 }

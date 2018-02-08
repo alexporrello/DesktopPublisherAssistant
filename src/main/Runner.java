@@ -10,6 +10,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import fm.ParagraphTag;
 import fm.ParagraphTagsDialog;
 import pdf.XMPUpdateWindow;
+import ticket.Ticket;
 import ui.DesktopPublisherAssistant;
 
 public class Runner {
@@ -17,12 +18,15 @@ public class Runner {
 
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {			
+		SwingUtilities.invokeLater(() -> {	
+			if(!Ticket.TICKET_URL.exists()) {
+				Ticket.TICKET_URL.mkdir();
+			}
+			
 			setLookAndFeel();
 			runMainProgram();
+			
 			///runXMPUpdateWindowDialog();
-						
-
 			//testParagraphTagsDialog();
 		});
 	}
