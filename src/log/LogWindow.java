@@ -51,6 +51,9 @@ public class LogWindow extends JMPanel {
 	/** Determines how the tickets are sorted in {@link #logWindow} **/
 	private Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
 
+	/** Determines if the tickets are sorted from back to front or front to back **/
+	private Boolean invert = false;
+
 	/** The labels that the user clicks to sort the tickets **/
 	private JLabel[] infoLabels = {
 			new JLabelEdge("Jira Ticket Description"),
@@ -60,7 +63,7 @@ public class LogWindow extends JMPanel {
 			new JLabelEdge("Status", false),
 			new JLabelEdge("", false)
 	};
-	
+
 	/** The JScrollPane that holds {@link #logWindow} **/
 	private JScrollPane logDialogScroll;
 
@@ -83,7 +86,7 @@ public class LogWindow extends JMPanel {
 						BorderFactory.createCompoundBorder(
 								BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
 								BorderFactory.createEmptyBorder(5, 5, 5, 5))));
-		
+
 		add(createInfoPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, 
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		add(logDialogScroll,   new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, 
@@ -112,7 +115,13 @@ public class LogWindow extends JMPanel {
 		infoLabels[TICKET_DESCRIPTION].addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				compare = Compare.JIRA_TICKET_DESCRIPTION;
+				if(compare == Compare.JIRA_TICKET_DESCRIPTION) {
+					invert = !invert;
+				} else {
+					compare = Compare.JIRA_TICKET_DESCRIPTION;
+					invert = false;
+				}
+
 				logWindow.addAllToLogEntryPanel();
 			}
 		});
@@ -126,7 +135,13 @@ public class LogWindow extends JMPanel {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if(infoLabels[label].contains(e.getPoint()) && compare != Compare.NULL) {
-					compare = thisCompare;
+					if(compare == thisCompare) {
+						invert = !invert;
+					} else {
+						compare = thisCompare;
+						invert = false;
+					}
+					
 					logWindow.addAllToLogEntryPanel();
 				}
 			}
@@ -237,7 +252,7 @@ public class LogWindow extends JMPanel {
 		 * @throws IOException
 		 */
 		private ShortLog setUpNewShortLog(File f) throws IOException {
-			ShortLog toReturn = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath(), compare);
+			ShortLog toReturn = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath(), compare, invert);
 
 			toReturn.popupOptions.openH.addActionListener(e -> mw.setLog(toReturn.ticket));
 			toReturn.popupOptions.delete.addActionListener(e -> {					

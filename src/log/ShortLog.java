@@ -15,7 +15,7 @@ import ticket.Ticket;
 import ticket.TicketInfo;
 
 public class ShortLog implements Comparable<ShortLog> {
-	
+
 	public Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
 
 	/** Makes it so the user can change a ticket's status without opening the ticket **/
@@ -25,38 +25,42 @@ public class ShortLog implements Comparable<ShortLog> {
 	public String[] ticket;	
 
 	private JLabel[] labels = {new JLabel(), new JLabel(), new JLabel(), new JLabel()};
-	
+
 	/** The URL of the ticket, for opening purposes **/
 	public String ticketURL;
 
 	/** The context menu that appears when the user left clicks **/
 	public LeftClickOptions popupOptions;
-	
-	public ShortLog(String[] ticket, String ticketURL, Compare compare) {
+
+	/** Determines if the ShortLog is organized front to back or back to front **/
+	public boolean invert;
+
+	public ShortLog(String[] ticket, String ticketURL, Compare compare, Boolean invert) {
+		this.invert    = invert;
 		this.ticket    = ticket;
 		this.compare   = compare;
 		this.ticketURL = ticketURL;
 		this.popupOptions = new LeftClickOptions(this.ticketURL);
-		
+
 		status.setPreferredSize(new Dimension(110,24));
 
 		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i] = new JLabel(this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
-		
+
 		labels[ShortLogLabel.PART_NUM_32.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_32.i]);
 		labels[ShortLogLabel.PART_NUM_32.i].setPreferredSize(new Dimension(100, 24));
-		
+
 		labels[ShortLogLabel.PART_NUM_37.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_37.i]);
 		labels[ShortLogLabel.PART_NUM_37.i].setPreferredSize(new Dimension(100, 24));
 
 		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i] = new JLabel(this.ticket[TicketInfo.REPORT.i]);
 		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i].setPreferredSize(new Dimension(130, 24));
-		
-		
+
+
 		for(JLabel label : labels) {
 			label.setOpaque(true);
 			label.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 		}
-		
+
 		setUpOpenTicket();
 		setupStatus();
 	}
@@ -80,7 +84,7 @@ public class ShortLog implements Comparable<ShortLog> {
 		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
 		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setOpaque(true);
 	}
-	
+
 	private void setupStatus() {
 		status.setSelectedIndex(Integer.parseInt(this.ticket[TicketInfo.STATUS.i]));
 		status.addMouseListener(new MouseAdapter() {
@@ -102,7 +106,7 @@ public class ShortLog implements Comparable<ShortLog> {
 	public JLabel getLabel(ShortLogLabel sll) {
 		return labels[sll.i];
 	}
-	
+
 	public void setBackgroundWhite() {
 		getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION).setBackground(Color.WHITE);
 		getLabel(ShortLogLabel.JIRA_TICKET_REPORTER).setBackground(Color.WHITE);
@@ -111,18 +115,32 @@ public class ShortLog implements Comparable<ShortLog> {
 		status.setBackground(Color.WHITE);
 	}
 
+	/**
+	 * Compares two given strings.
+	 * @param oa the first string to be compared.
+	 * @param ob the second string to be compared.
+	 * @return the result of the comparison.
+	 */
+	private int compareTo(String oa, String ob) {
+		if(!invert) {
+			return oa.compareTo(ob);
+		} else {
+			return ob.compareTo(oa);
+		}
+	}
+
 	@Override
 	public int compareTo(ShortLog e) {
 		if(compare == Compare.JIRA_TICKET_DESCRIPTION) {
-			return ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i].compareTo(e.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
+			return compareTo(ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], e.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
 		} else if(compare == Compare.JIRA_REPORT) {
-			return ticket[TicketInfo.REPORT.i].compareTo(e.ticket[TicketInfo.REPORT.i]);
+			return compareTo(ticket[TicketInfo.REPORT.i], e.ticket[TicketInfo.REPORT.i]);
 		} else if(compare == Compare.PART_NUM_32) {
-			return ticket[TicketInfo.PART_NUM_32.i].compareTo(e.ticket[TicketInfo.PART_NUM_32.i]);
+			return compareTo(ticket[TicketInfo.PART_NUM_32.i], e.ticket[TicketInfo.PART_NUM_32.i]);
 		} else if(compare == Compare.PART_NUM_37){
-			return ticket[TicketInfo.PART_NUM_37.i].compareTo(e.ticket[TicketInfo.PART_NUM_37.i]);
+			return compareTo(ticket[TicketInfo.PART_NUM_37.i], e.ticket[TicketInfo.PART_NUM_37.i]);
 		} else {
-			return ticket[TicketInfo.STATUS.i].compareTo(e.ticket[TicketInfo.STATUS.i]);
+			return compareTo(ticket[TicketInfo.STATUS.i], e.ticket[TicketInfo.STATUS.i]);
 		}
 	}
 }
