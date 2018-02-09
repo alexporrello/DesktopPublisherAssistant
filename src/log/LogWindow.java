@@ -112,28 +112,37 @@ public class LogWindow extends JMPanel {
 		setupJLabel(SPACER, 25, 24, Compare.NULL);
 
 		infoLabels[TICKET_DESCRIPTION].setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
-		infoLabels[TICKET_DESCRIPTION].addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(compare == Compare.JIRA_TICKET_DESCRIPTION) {
-					invert = !invert;
-				} else {
-					compare = Compare.JIRA_TICKET_DESCRIPTION;
-					invert = false;
-				}
-
-				logWindow.addAllToLogEntryPanel();
-			}
-		});
+		addActionListenerToJLabel(TICKET_DESCRIPTION, Compare.JIRA_TICKET_DESCRIPTION);
 	}
 
 	/** Sets up individual JLabels that the user clicks to sort the log entries **/
 	private void setupJLabel(int label, int width, int height, Compare thisCompare) {
 		infoLabels[label].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
 		infoLabels[label].setPreferredSize(new Dimension(width, height));
+		addActionListenerToJLabel(label, thisCompare);
+	}
+	
+	private void addActionListenerToJLabel(int label, Compare thisCompare) {
 		infoLabels[label].addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseEntered(MouseEvent e) {
+				infoLabels[label].setBackground(Color.decode("#D9EBF9"));
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				infoLabels[label].setBackground(new JLabel().getBackground());
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				infoLabels[label].setBackground(Color.decode("#BCDCF4"));
+			}
+			
+			@Override
 			public void mouseReleased(MouseEvent e) {
+				infoLabels[label].setBackground(new JLabel().getBackground());
+				
 				if(infoLabels[label].contains(e.getPoint()) && compare != Compare.NULL) {
 					if(compare == thisCompare) {
 						invert = !invert;
