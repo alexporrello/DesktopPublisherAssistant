@@ -37,6 +37,10 @@ public class Tools {
 
 	public static final Color DEFAULT_BACKGROUND = new JLabel().getBackground();
 	
+	public static final Color HOVER_COLOR = Color.decode("#D9EBF9");
+	
+	public static final Color CLICK_COLOR = Color.decode("#BCDCF4");
+	
 	/** Creates the image icons that will be displayed on the app's taskbar **/
 	public static ArrayList<Image> imageIcon() {
 		ArrayList<Image> icons = new ArrayList<Image>();

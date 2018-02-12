@@ -80,7 +80,6 @@ public class LogWindow extends JMPanel {
 
 		setupScrollPane();
 		setupAllLabels();
-
 		setLayout(new GridBagLayout());
 		setBorder(
 				BorderFactory.createCompoundBorder(
@@ -236,10 +235,10 @@ public class LogWindow extends JMPanel {
 
 				for(ShortLog sl : shortLogs) {
 					if(y%2 == 0) {
-						sl.setBackgroundWhite();
+						sl.setBackground(Color.WHITE);
 					}
 
-					this.add(sl.createView(), Tools.createGBC(1, y++, 1.0, new Insets(0,0,-1,0)));
+					this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,-1,0)));
 				}
 
 				this.revalidate();
@@ -271,7 +270,7 @@ public class LogWindow extends JMPanel {
 				label.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseReleased(MouseEvent e) {
-						if(toReturn.view.contains(e.getPoint())) {
+						if(toReturn.contains(e.getPoint())) {
 							mw.setLog(toReturn.ticket);
 						}
 					}

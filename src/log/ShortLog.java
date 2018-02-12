@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -19,108 +21,169 @@ import ticket.TicketInfo;
 import ui.JMPanel;
 import ui.Tools;
 
-public class ShortLog implements Comparable<ShortLog> {
-
-	public static final Dimension STATUS_SIZE = new Dimension(110,24);
+/**
+ * A log as it is displayed in LogWindow.
+ * @author Alexander Porrello
+ */
+public class ShortLog extends JMPanel implements Comparable<ShortLog> {
+	private static final long serialVersionUID = 4949615017530138259L;
+	
+	public static final Dimension STATUS_SIZE       = new Dimension(110,24);
 	public static final Dimension CREATED_DATE_SIZE = new Dimension(110, 24);
 	public static final Dimension PART_NUM_32_SIZE  = new Dimension(100, 24);
 	public static final Dimension PART_NUM_37_SIZE  = new Dimension(100, 24);
-	public static final Dimension JIRA_REPORT_SIZE = new Dimension(130, 24);
+	public static final Dimension JIRA_REPORT_SIZE  = new Dimension(130, 24);
 
-	public Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
+	// ====================== PRIVATE FIELDS ====================== //
+
+	/** Used for pulling labels out of {@link #labels} **/
+	private int TICKET_DESCRIPTION, DATE_CREATED, TICKET_REPORTER, PART_NUM_32, PART_NUM_37;
 
 	/** Makes it so the user can change a ticket's status without opening the ticket **/
-	public ClickLabel<String> status = new ClickLabel<String>(Ticket.STATUS_OPTIONS, SwingConstants.LEFT);
+	private ClickLabel<String> status = new ClickLabel<String>(Ticket.STATUS_OPTIONS, SwingConstants.LEFT);
 
-	/** All of the fields in the ticket **/
-	public String[] ticket;	
+	/** Determines how the log entries are sorted **/
+	private Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
 
+	/** The date used when the file is sorted **/
+	private String dateForSort;
+
+	/** Determines if the ShortLog is organized front to back or back to front **/
+	private boolean invert;
+
+	/** The date that this log file was created **/
+	private String logDate;
+
+	/** Set to true if the mouse has been pressed; else, false. **/
+	private Boolean mousePressed = false;
+
+	/** Used when user hovers over log **/
+	private Color originalColor;
+
+	// ====================== PUBLIC FIELDS ====================== //
+
+	/** Displays the short log's info, such as status, date created, part numbers, and ticket report **/
 	public JLabel[] labels = {new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel()};
-
-	/** The URL of the ticket, for opening purposes **/
-	public String ticketURL;
 
 	/** The context menu that appears when the user left clicks **/
 	public LeftClickOptions popupOptions;
 
-	/** Determines if the ShortLog is organized front to back or back to front **/
-	public boolean invert;
+	/** All of the fields in the ticket **/
+	public String[] ticket;	
 
-	/** The date that this log file was created **/
-	public String logDate;
+	/** The URL of the ticket, for opening purposes **/
+	public String ticketURL;
 
-	JMPanel view = new JMPanel();
-
-	Color originalColor;
-
-	Boolean mousePressed = false;
-	
 	public ShortLog(String[] ticket, String ticketURL, Compare compare, Boolean invert) {
-		this.invert       = invert;
 		this.ticket       = ticket;
-		this.compare      = compare;
 		this.ticketURL    = ticketURL;
-		this.popupOptions = new LeftClickOptions(this.ticketURL);		
-		this.logDate      = new SimpleDateFormat("M/d/yy HH:mm").format(new File(ticketURL).lastModified());
+		this.compare      = compare;
+		this.invert       = invert;
+		
+		popupOptions = new LeftClickOptions(this.ticketURL);
+
+		getLogDates();
+		setValues();
+
+		setUpLabel(TICKET_DESCRIPTION, this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], null);
+		setUpLabel(DATE_CREATED, logDate, ShortLog.CREATED_DATE_SIZE);
+		setUpLabel(PART_NUM_32, this.ticket[TicketInfo.PART_NUM_32.i], ShortLog.CREATED_DATE_SIZE);
+		setUpLabel(PART_NUM_37, this.ticket[TicketInfo.PART_NUM_37.i], ShortLog.PART_NUM_37_SIZE);
+		setUpLabel(TICKET_REPORTER, this.ticket[TicketInfo.REPORT.i], ShortLog.JIRA_REPORT_SIZE);
 
 		status.setPreferredSize(ShortLog.STATUS_SIZE);
 
-		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i] = new JLabel(this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
-
-		labels[ShortLogLabel.CREATED_DATE.i] = new JLabel(logDate);
-		labels[ShortLogLabel.CREATED_DATE.i].setPreferredSize(ShortLog.CREATED_DATE_SIZE);
-
-		labels[ShortLogLabel.PART_NUM_32.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_32.i]);
-		labels[ShortLogLabel.PART_NUM_32.i].setPreferredSize(ShortLog.PART_NUM_32_SIZE);
-
-		labels[ShortLogLabel.PART_NUM_37.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_37.i]);
-		labels[ShortLogLabel.PART_NUM_37.i].setPreferredSize(ShortLog.PART_NUM_37_SIZE);
-
-		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i] = new JLabel(this.ticket[TicketInfo.REPORT.i]);
-		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i].setPreferredSize(ShortLog.JIRA_REPORT_SIZE);
-
-		for(JLabel label : labels) {
-			label.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-			label.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseReleased(MouseEvent arg0) {
-					mousePressed = false;
-					
-					if(view.contains(arg0.getPoint())) {
-						view.setBackground(Color.decode("#D9EBF9"));
-					}
-				}
-
-				@Override
-				public void mousePressed(MouseEvent arg0) {
-					mousePressed = true;
-					view.setBackground(Color.decode("#BCDCF4"));
-				}
-
-				@Override
-				public void mouseExited(MouseEvent arg0) {
-					view.setBackground(originalColor);
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent arg0) {
-					originalColor = view.getBackground();
-
-					if(!mousePressed) {
-						view.setBackground(Color.decode("#D9EBF9"));
-					} else {
-						view.setBackground(Color.decode("#BCDCF4"));
-					}
-				}
-			});
-		}
-
-		setUpOpenTicket();
+		setUpView();
 		setupStatus();
+		
+		createUserInterface();
 	}
 
-	private void setUpOpenTicket() {
-		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].addMouseListener(new MouseAdapter() {			
+	/** Gets the date on which the log file was created. **/
+	private void getLogDates() {
+		Long lastModified = new File(ticketURL).lastModified();
+
+		this.logDate      = new SimpleDateFormat("M/d/yy h:mm a").format(lastModified);
+		this.dateForSort  = new SimpleDateFormat("MM/dd/yy HH:mm:SS").format(lastModified);
+	}
+
+	/** Sets the values of the integers that are used to pull info from {@link #labels} **/
+	private void setValues() {
+		TICKET_DESCRIPTION = 0;
+		DATE_CREATED = 1;
+		TICKET_REPORTER = 2; 
+		PART_NUM_32 = 3;
+		PART_NUM_37 = 4;
+	}
+
+	/** 
+	 * Sets up a JLabel.
+	 * @param label the label in {@link #labels} to be set up. 
+	 * @param text the JLabel's displayed text.
+	 * @param d the size of the JLabel (should be null for {@link #TICKET_DESCRIPTION})
+	 */
+	private void setUpLabel(int label, String text, Dimension d) {
+		labels[label] = new JLabel(text);
+		
+		if(label != TICKET_DESCRIPTION) {
+			labels[label].setPreferredSize(d);
+			labels[label].setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+		} else {
+			labels[label].setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
+		}
+		
+		labels[label].addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				mousePressed = false;
+
+				if(contains(arg0.getPoint())) {
+					setBackground(Tools.HOVER_COLOR);
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				mousePressed = true;
+				setBackground(Tools.CLICK_COLOR);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				setBackground(originalColor);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				originalColor = getBackground();
+
+				if(!mousePressed) {
+					setBackground(Tools.HOVER_COLOR);
+				} else {
+					setBackground(Tools.CLICK_COLOR);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Sets a given label visible if the width of {@link #view} is greater than 
+	 * a given width.
+	 * @param label the label to set visible or invisible
+	 * @param width the width to determine if label is visible or invisible.
+	 */
+	private void setLabelVisible(JLabel label, int width) {
+		if(getWidth() < width) {
+			label.setVisible(false);
+		} else {
+			label.setVisible(true);
+		}
+	}
+
+	/** Sets up the view JTextArea **/
+	private void setUpView() {
+		setLayout(new GridBagLayout());
+		addMouseListener(new MouseAdapter() {			
 			@Override
 			public void mousePressed(MouseEvent e){
 				if(e.isPopupTrigger()) {
@@ -135,10 +198,22 @@ public class ShortLog implements Comparable<ShortLog> {
 				}
 			}
 		});
-		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
-		//labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i].setOpaque(true);
+		
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent arg0) {				
+				if(getWidth() <= 740) {
+					setLabelVisible(labels[DATE_CREATED], 740);
+					setLabelVisible(labels[TICKET_REPORTER], 630);
+					setLabelVisible(status, 500);
+					setLabelVisible(labels[PART_NUM_32], 385);
+					setLabelVisible(labels[PART_NUM_37], 385);
+				}
+			}
+		});
 	}
 
+	/** Sets up the status button. **/
 	private void setupStatus() {
 		status.setSelectedIndex(Integer.parseInt(this.ticket[TicketInfo.STATUS.i]));
 		status.addMouseListener(new MouseAdapter() {
@@ -157,19 +232,20 @@ public class ShortLog implements Comparable<ShortLog> {
 		status.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
 	}
 
-	public JLabel getLabel(ShortLogLabel sll) {
-		return labels[sll.i];
-	}
+	/**
+	 * Adds all of the JLabels to {@link #view}.
+	 * @return {@link #view}
+	 */
+	public void createUserInterface() {
+		int space = 0;
+		int y = 0;
 
-	public void setBackgroundWhite() {
-		//		getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION).setBackground(Color.WHITE);
-		//		getLabel(ShortLogLabel.CREATED_DATE).setBackground(Color.WHITE);
-		//		getLabel(ShortLogLabel.JIRA_TICKET_REPORTER).setBackground(Color.WHITE);
-		//		getLabel(ShortLogLabel.PART_NUM_32).setBackground(Color.WHITE);
-		//		getLabel(ShortLogLabel.PART_NUM_37).setBackground(Color.WHITE);
-		//		status.setBackground(Color.WHITE);
-
-		view.setBackground(Color.WHITE);
+		add(labels[TICKET_DESCRIPTION], Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
+		add(labels[DATE_CREATED],       Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
+		add(labels[TICKET_REPORTER],    Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
+		add(labels[PART_NUM_32],        Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
+		add(labels[PART_NUM_37],        Tools.createGBC(5, y, 0.0, new Insets(0,space,-1,0)));
+		add(status,                     Tools.createGBC(6, y, 0.0, new Insets(0,space,-1,space)));
 	}
 
 	/**
@@ -186,22 +262,6 @@ public class ShortLog implements Comparable<ShortLog> {
 		}
 	}
 
-	public JMPanel createView() {
-		view.setLayout(new GridBagLayout());
-
-		int space = 0;
-		int y = 0;
-
-		view.add(getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION), Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-		view.add(getLabel(ShortLogLabel.CREATED_DATE),            Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
-		view.add(getLabel(ShortLogLabel.JIRA_TICKET_REPORTER),    Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
-		view.add(getLabel(ShortLogLabel.PART_NUM_32),             Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
-		view.add(getLabel(ShortLogLabel.PART_NUM_37),             Tools.createGBC(5, y, 0.0, new Insets(0,space,-1,0)));
-		view.add(status,                                          Tools.createGBC(6, y, 0.0, new Insets(0,space,-1,space)));
-
-		return view;
-	}
-
 	@Override
 	public int compareTo(ShortLog e) {
 		if(compare == Compare.JIRA_TICKET_DESCRIPTION) {
@@ -213,7 +273,7 @@ public class ShortLog implements Comparable<ShortLog> {
 		} else if(compare == Compare.PART_NUM_37){
 			return compareTo(ticket[TicketInfo.PART_NUM_37.i], e.ticket[TicketInfo.PART_NUM_37.i]);
 		} else if(compare == Compare.DATE_CREATED) {
-			return compareTo(logDate, e.logDate);
+			return compareTo(dateForSort, e.dateForSort);
 		} else {
 			return compareTo(ticket[TicketInfo.STATUS.i], e.ticket[TicketInfo.STATUS.i]);
 		}
