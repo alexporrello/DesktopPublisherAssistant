@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.HeadlessException;
@@ -26,6 +27,7 @@ import java.util.Scanner;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class Tools {
@@ -33,6 +35,8 @@ public class Tools {
 	/** The URL where the current version number is stored **/
 	public static final String ONLINE_VERSION_URL = "https://raw.githubusercontent.com/alexporrello/DesktopPublisherAssistant/master/resources/version-history.txt";
 
+	public static final Color DEFAULT_BACKGROUND = new JLabel().getBackground();
+	
 	/** Creates the image icons that will be displayed on the app's taskbar **/
 	public static ArrayList<Image> imageIcon() {
 		ArrayList<Image> icons = new ArrayList<Image>();

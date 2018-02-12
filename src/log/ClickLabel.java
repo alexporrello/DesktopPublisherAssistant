@@ -26,7 +26,7 @@ public class ClickLabel<E> extends JLabel {
 		
 		setText(items[itemDisplayed] + "");
 		addMouseListener();
-		setOpaque(true);
+		//setOpaque(true);
 		
 	}
 	
@@ -41,7 +41,7 @@ public class ClickLabel<E> extends JLabel {
 		setText(items[itemDisplayed] + "");
 		setHorizontalAlignment(layout);
 		addMouseListener();
-		setOpaque(true);
+		//setOpaque(true);
 	}
 	
 	private void addMouseListener() {

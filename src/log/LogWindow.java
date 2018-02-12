@@ -124,28 +124,28 @@ public class LogWindow extends JMPanel {
 		infoLabels[label].setPreferredSize(size);
 		addActionListenerToJLabel(label, thisCompare);
 	}
-	
+
 	private void addActionListenerToJLabel(int label, Compare thisCompare) {
 		infoLabels[label].addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				infoLabels[label].setBackground(Color.decode("#D9EBF9"));
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				infoLabels[label].setBackground(new JLabel().getBackground());
 			}
-			
+
 			@Override
 			public void mousePressed(MouseEvent e) {
 				infoLabels[label].setBackground(Color.decode("#BCDCF4"));
 			}
-			
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				infoLabels[label].setBackground(new JLabel().getBackground());
-				
+
 				if(infoLabels[label].contains(e.getPoint()) && compare != Compare.NULL) {
 					if(compare == thisCompare) {
 						invert = !invert;
@@ -153,7 +153,7 @@ public class LogWindow extends JMPanel {
 						compare = thisCompare;
 						invert = false;
 					}
-					
+
 					logWindow.addAllToLogEntryPanel();
 				}
 			}
@@ -239,16 +239,7 @@ public class LogWindow extends JMPanel {
 						sl.setBackgroundWhite();
 					}
 
-					int space = 0;
-
-					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION), Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.CREATED_DATE),            Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER),    Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.PART_NUM_32),             Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.PART_NUM_37),             Tools.createGBC(5, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.status,                                          Tools.createGBC(6, y, 0.0, new Insets(0,0,-1,0)));
-
-					y++;
+					this.add(sl.createView(), Tools.createGBC(1, y++, 1.0, new Insets(0,0,-1,0)));
 				}
 
 				this.revalidate();
@@ -276,6 +267,17 @@ public class LogWindow extends JMPanel {
 				}
 			});
 
+			for(JLabel label : toReturn.labels) {
+				label.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						if(toReturn.view.contains(e.getPoint())) {
+							mw.setLog(toReturn.ticket);
+						}
+					}
+				});
+			}
+			
 			return toReturn;
 		}
 	}
