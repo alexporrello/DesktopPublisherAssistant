@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -16,6 +17,12 @@ import ticket.TicketInfo;
 
 public class ShortLog implements Comparable<ShortLog> {
 
+	public static final Dimension STATUS_SIZE = new Dimension(110,24);
+	public static final Dimension CREATED_DATE_SIZE = new Dimension(110, 24);
+	public static final Dimension PART_NUM_32_SIZE  = new Dimension(100, 24);
+	public static final Dimension PART_NUM_37_SIZE  = new Dimension(100, 24);
+	public static final Dimension JIRA_REPORT_SIZE = new Dimension(130, 24);
+	
 	public Compare compare = Compare.JIRA_TICKET_DESCRIPTION;
 
 	/** Makes it so the user can change a ticket's status without opening the ticket **/
@@ -24,7 +31,7 @@ public class ShortLog implements Comparable<ShortLog> {
 	/** All of the fields in the ticket **/
 	public String[] ticket;	
 
-	private JLabel[] labels = {new JLabel(), new JLabel(), new JLabel(), new JLabel()};
+	private JLabel[] labels = {new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel()};
 
 	/** The URL of the ticket, for opening purposes **/
 	public String ticketURL;
@@ -34,26 +41,33 @@ public class ShortLog implements Comparable<ShortLog> {
 
 	/** Determines if the ShortLog is organized front to back or back to front **/
 	public boolean invert;
-
+	
+	/** The date that this log file was created **/
+	public String logDate;
+	
 	public ShortLog(String[] ticket, String ticketURL, Compare compare, Boolean invert) {
-		this.invert    = invert;
-		this.ticket    = ticket;
-		this.compare   = compare;
-		this.ticketURL = ticketURL;
-		this.popupOptions = new LeftClickOptions(this.ticketURL);
-
-		status.setPreferredSize(new Dimension(110,24));
+		this.invert       = invert;
+		this.ticket       = ticket;
+		this.compare      = compare;
+		this.ticketURL    = ticketURL;
+		this.popupOptions = new LeftClickOptions(this.ticketURL);		
+		this.logDate      = new SimpleDateFormat("M/d/yy HH:mm").format(new File(ticketURL).lastModified());
+		
+		status.setPreferredSize(ShortLog.STATUS_SIZE);
 
 		labels[ShortLogLabel.JIRA_TICKET_DESCRIPTION.i] = new JLabel(this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
 
+		labels[ShortLogLabel.CREATED_DATE.i] = new JLabel(logDate);
+		labels[ShortLogLabel.CREATED_DATE.i].setPreferredSize(ShortLog.CREATED_DATE_SIZE);
+		
 		labels[ShortLogLabel.PART_NUM_32.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_32.i]);
-		labels[ShortLogLabel.PART_NUM_32.i].setPreferredSize(new Dimension(100, 24));
+		labels[ShortLogLabel.PART_NUM_32.i].setPreferredSize(ShortLog.PART_NUM_32_SIZE);
 
 		labels[ShortLogLabel.PART_NUM_37.i] = new JLabel(this.ticket[TicketInfo.PART_NUM_37.i]);
-		labels[ShortLogLabel.PART_NUM_37.i].setPreferredSize(new Dimension(100, 24));
+		labels[ShortLogLabel.PART_NUM_37.i].setPreferredSize(ShortLog.PART_NUM_37_SIZE);
 
 		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i] = new JLabel(this.ticket[TicketInfo.REPORT.i]);
-		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i].setPreferredSize(new Dimension(130, 24));
+		labels[ShortLogLabel.JIRA_TICKET_REPORTER.i].setPreferredSize(ShortLog.JIRA_REPORT_SIZE);
 
 
 		for(JLabel label : labels) {
@@ -109,6 +123,7 @@ public class ShortLog implements Comparable<ShortLog> {
 
 	public void setBackgroundWhite() {
 		getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION).setBackground(Color.WHITE);
+		getLabel(ShortLogLabel.CREATED_DATE).setBackground(Color.WHITE);
 		getLabel(ShortLogLabel.JIRA_TICKET_REPORTER).setBackground(Color.WHITE);
 		getLabel(ShortLogLabel.PART_NUM_32).setBackground(Color.WHITE);
 		getLabel(ShortLogLabel.PART_NUM_37).setBackground(Color.WHITE);
@@ -139,6 +154,8 @@ public class ShortLog implements Comparable<ShortLog> {
 			return compareTo(ticket[TicketInfo.PART_NUM_32.i], e.ticket[TicketInfo.PART_NUM_32.i]);
 		} else if(compare == Compare.PART_NUM_37){
 			return compareTo(ticket[TicketInfo.PART_NUM_37.i], e.ticket[TicketInfo.PART_NUM_37.i]);
+		} else if(compare == Compare.DATE_CREATED) {
+			return compareTo(logDate, e.logDate);
 		} else {
 			return compareTo(ticket[TicketInfo.STATUS.i], e.ticket[TicketInfo.STATUS.i]);
 		}

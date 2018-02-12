@@ -38,12 +38,13 @@ import ui.Tools;
 public class LogWindow extends JMPanel {
 	private static final long serialVersionUID = -1014191579466760962L;
 
-	public static final int TICKET_DESCRIPTION = 0;
-	public static final int JIRA_REPORT = 1;
-	public static final int PART_NUM_32 = 2;
-	public static final int PART_NUM_37 = 3;
-	public static final int STATUS = 4;
-	public static final int SPACER = 5;
+	private final int TICKET_DESCRIPTION = 0;
+	private final int DATE_CREATED = 1;
+	private final int JIRA_REPORT = 2;
+	private final int PART_NUM_32 = 3;
+	private final int PART_NUM_37 = 4;
+	private final int STATUS = 5;
+	private final int SPACER = 6;
 
 	/** All of the ticket files currently in existence on the user's computer **/
 	private ArrayList<ShortLog> shortLogs = new ArrayList<ShortLog>();
@@ -57,6 +58,7 @@ public class LogWindow extends JMPanel {
 	/** The labels that the user clicks to sort the tickets **/
 	private JLabel[] infoLabels = {
 			new JLabelEdge("Jira Ticket Description"),
+			new JLabelEdge("Date Created"),
 			new JLabelEdge("Jira Report"),
 			new JLabelEdge("32 Part Number"),
 			new JLabelEdge("37 Part Number"),
@@ -105,20 +107,21 @@ public class LogWindow extends JMPanel {
 
 	/** Sets up the JLabels that sort the displayed log entries **/
 	private void setupAllLabels() {
-		setupJLabel(JIRA_REPORT, 130, 24, Compare.JIRA_REPORT);
-		setupJLabel(PART_NUM_32, 100, 24, Compare.PART_NUM_32);
-		setupJLabel(PART_NUM_37, 100, 24, Compare.PART_NUM_37);
-		setupJLabel(STATUS, 110, 24, Compare.STATUS);
-		setupJLabel(SPACER, 25, 24, Compare.NULL);
+		setupJLabel(DATE_CREATED, ShortLog.CREATED_DATE_SIZE, Compare.DATE_CREATED);
+		setupJLabel(JIRA_REPORT,  ShortLog.JIRA_REPORT_SIZE,  Compare.JIRA_REPORT);
+		setupJLabel(PART_NUM_32,  ShortLog.PART_NUM_32_SIZE,  Compare.PART_NUM_32);
+		setupJLabel(PART_NUM_37,  ShortLog.PART_NUM_37_SIZE,  Compare.PART_NUM_37);
+		setupJLabel(STATUS,       ShortLog.STATUS_SIZE,       Compare.STATUS);
+		setupJLabel(SPACER,       new Dimension(25, 24),      Compare.NULL);
 
 		infoLabels[TICKET_DESCRIPTION].setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
 		addActionListenerToJLabel(TICKET_DESCRIPTION, Compare.JIRA_TICKET_DESCRIPTION);
 	}
 
 	/** Sets up individual JLabels that the user clicks to sort the log entries **/
-	private void setupJLabel(int label, int width, int height, Compare thisCompare) {
+	private void setupJLabel(int label, Dimension size, Compare thisCompare) {
 		infoLabels[label].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
-		infoLabels[label].setPreferredSize(new Dimension(width, height));
+		infoLabels[label].setPreferredSize(size);
 		addActionListenerToJLabel(label, thisCompare);
 	}
 	
@@ -164,7 +167,7 @@ public class LogWindow extends JMPanel {
 		infoPanel.setLayout(new GridBagLayout());
 		infoPanel.add(infoLabels[TICKET_DESCRIPTION], Tools.createGBC(1, 0, 1.0, new Insets(0,0,-1,0)));
 
-		for(int i = 1; i <= 5; i++) {
+		for(int i = 1; i <= 6; i++) {
 			infoPanel.add(infoLabels[i], Tools.createGBC(i+1, 0, 0.0, new Insets(0,0,-1,0)));
 		}
 
@@ -239,10 +242,11 @@ public class LogWindow extends JMPanel {
 					int space = 0;
 
 					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_DESCRIPTION), Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER),    Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.PART_NUM_32),             Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.getLabel(ShortLogLabel.PART_NUM_37),             Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
-					this.add(sl.status,                                          Tools.createGBC(5, y, 0.0, new Insets(0,0,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.CREATED_DATE),            Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.JIRA_TICKET_REPORTER),    Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.PART_NUM_32),             Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.getLabel(ShortLogLabel.PART_NUM_37),             Tools.createGBC(5, y, 0.0, new Insets(0,space,-1,0)));
+					this.add(sl.status,                                          Tools.createGBC(6, y, 0.0, new Insets(0,0,-1,0)));
 
 					y++;
 				}
