@@ -32,6 +32,8 @@ public abstract class JTextButton extends JPanel {
 				GridBagConstraints.BOTH,     new Insets(0,0,0,2), 0, 0));
 		add(link,  new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, 
 				GridBagConstraints.VERTICAL, new Insets(0,0,0,0), 0, 0));
+		
+		addMouseReleasedListener();
 	}
 	
 	private MouseAdapter createMouseAdapter() {

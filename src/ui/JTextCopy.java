@@ -11,8 +11,6 @@ public class JTextCopy extends JTextButton {
 
 	public JTextCopy(String text) {
 		super(text, " ⎘ ");
-		
-		addMouseReleasedListener();
 	}
 
 	@Override

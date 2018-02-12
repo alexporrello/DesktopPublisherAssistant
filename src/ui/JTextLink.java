@@ -12,8 +12,6 @@ public class JTextLink extends JTextButton {
 
 	public JTextLink(String setText) {
 		super(setText, " > ");
-		
-		addMouseReleasedListener();
 	}
 
 	@Override
