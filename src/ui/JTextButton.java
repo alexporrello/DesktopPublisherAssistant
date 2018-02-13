@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -13,8 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import com.itextpdf.text.Font;
 
 public abstract class JTextButton extends JPanel {
 	private static final long serialVersionUID = -2231714098377893220L;
@@ -40,7 +38,7 @@ public abstract class JTextButton extends JPanel {
 		link.setBorder(label.getBorder());
 		link.setOpaque(true);
 
-		label.addKeyListener(createKeyListener());
+		label.addKeyListener(createKeyAdapter());
 		
 		setBorderColor(Tools.DEFAULT_BORDER_COLOR);
 
@@ -55,22 +53,11 @@ public abstract class JTextButton extends JPanel {
 		addMouseReleasedListener();
 	}
 
-	private KeyListener createKeyListener() {
-		return new KeyListener() {
-
+	private KeyAdapter createKeyAdapter() {
+		return new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				enableButton(link.getText().length() > 0);
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				
-			}
-
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-
 			}
 		};
 	}
