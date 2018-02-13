@@ -41,6 +41,14 @@ public class Tools {
 	
 	public static final Color CLICK_COLOR = Color.decode("#BCDCF4");
 	
+	public static final Color DEFAULT_BORDER_COLOR = Color.decode("#ABADB3");
+	
+	public static final Color HOVEER_BORDER_COLOR = Color.decode("#0078D7");
+	
+	public static final Color DISABLED_COLOR = Color.decode("#CCCCCC");
+	
+	public static final Color DISABLED_BORDER_COLOR = Color.decode("#BFBFBF");
+	
 	/** Creates the image icons that will be displayed on the app's taskbar **/
 	public static ArrayList<Image> imageIcon() {
 		ArrayList<Image> icons = new ArrayList<Image>();
