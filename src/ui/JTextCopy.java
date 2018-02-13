@@ -15,11 +15,11 @@ public class JTextCopy extends JTextButton {
 
 	@Override
 	public void addMouseReleasedListener() {
-		link.addMouseListener(new MouseAdapter() {
+		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				if(link.contains(arg0.getPoint())) {
-					StringSelection stringSelection = new StringSelection(label.getText());
+				if(button.contains(arg0.getPoint())) {
+					StringSelection stringSelection = new StringSelection(getTextField().getText());
 					Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
 					clpbrd.setContents(stringSelection, null);
 				}

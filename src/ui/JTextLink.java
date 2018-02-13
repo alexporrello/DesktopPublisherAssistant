@@ -16,14 +16,14 @@ public class JTextLink extends JTextButton {
 
 	@Override
 	public void addMouseReleasedListener() {
-		link.addMouseListener(new MouseAdapter() {
+		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				if(link.contains(arg0.getPoint()) && label.getText().startsWith("https")) {
+				if(button.contains(arg0.getPoint()) && getTextField().getText().startsWith("https")) {
 					try {
-						Desktop.getDesktop().browse(new URI(label.getText()));
+						Desktop.getDesktop().browse(new URI(getTextField().getText()));
 					} catch (IOException | URISyntaxException e) {
-						System.err.println("URL could not be opened: " + label.getText());
+						System.err.println("URL could not be opened: " + getTextField().getText());
 					}
 				}
 			}

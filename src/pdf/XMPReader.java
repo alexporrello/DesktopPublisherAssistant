@@ -96,8 +96,10 @@ public class XMPReader extends HashMap<String, String> {
 				if(s.contains("</subject>")) {
 					s = s.split(">")[1].split("<")[0];
 					put("Subject", s);
+					put("Keywords", s);
 				} else {
 					put("Subject", array.get(array.indexOf(s)+1));
+					put("Keywords", array.get(array.indexOf(s)+1));
 				}
 			}
 		}

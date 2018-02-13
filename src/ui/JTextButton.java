@@ -17,35 +17,33 @@ import javax.swing.JTextField;
 public abstract class JTextButton extends JPanel {
 	private static final long serialVersionUID = -2231714098377893220L;
 
-	JTextField label;
+	private JTextField textField;
 
-	JLabel link;
+	JLabel button;
 
-	Color originalBackground;
+	private Color originalBackground;
 
-	Boolean pressed = false;
+	private Boolean pressed = false;
 
-	Boolean hovered = false;
-
-	Boolean enabled = false;
+	private Boolean enabled = false;
 
 	public JTextButton(String text, String buttonText) {
-		label = new JTextField(text);
-		link  = new JLabel(buttonText);
+		textField = new JTextField(text);
+		button  = new JLabel(buttonText);
 
-		link.addMouseListener(createMouseAdapter());
-		link.setBackground(label.getBackground());
-		link.setBorder(label.getBorder());
-		link.setOpaque(true);
+		button.addMouseListener(createMouseAdapter());
+		button.setBackground(textField.getBackground());
+		button.setBorder(textField.getBorder());
+		button.setOpaque(true);
 
-		label.addKeyListener(createKeyAdapter());
+		textField.addKeyListener(createKeyAdapter());
 		
 		setBorderColor(Tools.DEFAULT_BORDER_COLOR);
 
 		setLayout(new GridBagLayout());
-		add(label, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, 
+		add(textField, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, 
 				GridBagConstraints.BOTH,     new Insets(0,0,0,2), 0, 0));
-		add(link,  new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, 
+		add(button,  new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, 
 				GridBagConstraints.VERTICAL, new Insets(0,0,0,0), 0, 0));
 
 		enableButton(false);
@@ -56,25 +54,23 @@ public abstract class JTextButton extends JPanel {
 	private KeyAdapter createKeyAdapter() {
 		return new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent arg0) {
-				enableButton(link.getText().length() > 0);
+			public void keyReleased(KeyEvent arg0) {
+				enableButton(textField.getText().length() > 0);
 			}
 		};
 	}
 	
 	private void enableButton(Boolean enable) {
-		if(enable) {
-			enabled = true;
-			
+		this.enabled = enable;
+		
+		if(this.enabled) {
 			setBorderColor(Tools.DEFAULT_BORDER_COLOR);
-			link.setForeground(Color.BLACK);
-			link.setBackground(Color.WHITE);
+			button.setForeground(Color.BLACK);
+			button.setBackground(Color.WHITE);
 		} else {
-			enabled = false;
-			
 			setBorderColor(Tools.DISABLED_BORDER_COLOR);
-			link.setForeground(Color.decode("#838383"));
-			link.setBackground(Tools.DISABLED_COLOR);
+			button.setForeground(Color.decode("#838383"));
+			button.setBackground(Tools.DISABLED_COLOR);
 		}
 	}
 
@@ -86,14 +82,14 @@ public abstract class JTextButton extends JPanel {
 					pressed = false;
 
 					setBorderColor(Tools.HOVEER_BORDER_COLOR);
-					link.setBackground(Tools.HOVER_COLOR);		
+					button.setBackground(Tools.HOVER_COLOR);		
 				}
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(enabled) {
-					link.setBackground(Tools.CLICK_COLOR);
+					button.setBackground(Tools.CLICK_COLOR);
 					pressed = true;
 				}
 			}
@@ -103,10 +99,10 @@ public abstract class JTextButton extends JPanel {
 				if(enabled) {
 					if(pressed) {
 						setBorderColor(Tools.HOVEER_BORDER_COLOR);
-						link.setBackground(Tools.HOVER_COLOR);
+						button.setBackground(Tools.HOVER_COLOR);
 					} else {
 						setBorderColor(Tools.DEFAULT_BORDER_COLOR);
-						link.setBackground(originalBackground);
+						button.setBackground(originalBackground);
 					}
 				}
 			}
@@ -115,10 +111,10 @@ public abstract class JTextButton extends JPanel {
 			public void mouseEntered(MouseEvent arg0) {
 				if(enabled) {
 					if(!pressed) {
-						originalBackground = link.getBackground();
-						link.setBackground(Tools.HOVER_COLOR);
+						originalBackground = button.getBackground();
+						button.setBackground(Tools.HOVER_COLOR);
 					} else {
-						link.setBackground(Tools.CLICK_COLOR);
+						button.setBackground(Tools.CLICK_COLOR);
 					}
 
 					setBorderColor(Tools.HOVEER_BORDER_COLOR);
@@ -128,27 +124,35 @@ public abstract class JTextButton extends JPanel {
 	}
 
 	private void setBorderColor(Color borderColor) {
-		link.setBorder(
+		button.setBorder(
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createLineBorder(borderColor, 1), 
 						BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 	}
 
 	public String getText() {
-		return label.getText();
+		return textField.getText();
 	}
 
+	public void setTextIfEmpty(String toSet) {
+		if(textField.getText().length() == 0) {
+			setText(toSet);
+		}
+	}
+	
 	public void setText(String toSet) {
-		label.setText(toSet);
+		textField.setText(toSet);
+		
+		enableButton(toSet.length() > 0);
 	}
 
 	public JTextField getTextField() {
-		return label;
+		return textField;
 	}
 
 	public void setCaretPosition(int caretPosition) {
-		label.setCaretPosition(caretPosition);
+		textField.setCaretPosition(caretPosition);
 	}
-
+	
 	public abstract void addMouseReleasedListener();
 }

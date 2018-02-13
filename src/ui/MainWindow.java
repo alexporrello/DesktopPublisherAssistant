@@ -435,7 +435,7 @@ public class MainWindow extends JMPanel {
 		}
 
 		if(s.startsWith("//")) {
-			setTextIfEmpty(perforce.getTextField(), s);
+			perforce.setTextIfEmpty(s);
 		} else if(s.contains("32") && s.contains("37") && s.split(", ").length == 2) {
 			setTextIfEmpty(partNum32, s.split(", ")[0]);
 			setTextIfEmpty(partNum37, s.split(", ")[1]);
@@ -444,13 +444,13 @@ public class MainWindow extends JMPanel {
 		} else if(s.startsWith("37")) {
 			setTextIfEmpty(partNum37, s);
 		} else if(s.contains("GUID")) {
-			setTextIfEmpty(GUID.getTextField(), s);
+			GUID.setTextIfEmpty(s);
 		} else if(s.contains("nijira")) {
-			setTextIfEmpty(jiraURL.getTextField(), s);
+			jiraURL.setTextIfEmpty(s);
 		} else if(s.contains("Prepare") || s.contains("Apply")) {
 			setTextIfEmpty(jiraSummary, s);
-		} else if(s.contains("apex.natinst")) {
-			setTextIfEmpty(tcisURL.getTextField(), s);
+		} else if(s.contains("apex.natinst")) {			
+			tcisURL.setTextIfEmpty(s);
 		} else if(s.toLowerCase().contains("specifications") || s.toLowerCase().contains("user manual")) {
 			setTextIfEmpty(title, s);
 		}
