@@ -13,7 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 
-import ui.JMPanel;
+import jm.JMPanel;
 import ui.Tools;
 
 public class ParagraphTagsDialog extends JDialog {

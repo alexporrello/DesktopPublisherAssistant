@@ -108,7 +108,7 @@ public class Ticket {
 		mw.setDocDate(log[TicketInfo.DATE.i]);
 		mw.setGUID(log[TicketInfo.GUID.i]);
 		mw.setPerforcePath(log[TicketInfo.PERFORCE_URL.i]);
-		mw.setJiraTicketSummary(log[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
+		mw.setJiraTicketSummary(log[TicketInfo.TICKET_DESCRIPTION.i]);
 		mw.setJiraTicketURL(log[TicketInfo.JIRA_TICKET_URL.i]);
 		mw.setTCIS(log[TicketInfo.TCIS_URL.i]);
 		mw.setStatus(Integer.parseInt(log[TicketInfo.STATUS.i]));
@@ -149,13 +149,13 @@ public class Ticket {
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.DATE.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.GUID.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.PERFORCE_URL.i]);
-		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
+		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.TICKET_DESCRIPTION.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.JIRA_TICKET_URL.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.TCIS_URL.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.STATUS.i]);
 		toReturn = Tools.appendToNewLine(toReturn, log[TicketInfo.REPORT.i]);
 
-		FileWriter     fw = new FileWriter(new File(TICKET_URL.toPath() + "\\" + log[TicketInfo.JIRA_TICKET_DESCRIPTION.i] + ".log"));
+		FileWriter     fw = new FileWriter(new File(TICKET_URL.toPath() + "\\" + log[TicketInfo.TICKET_DESCRIPTION.i] + ".log"));
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(toReturn);
 

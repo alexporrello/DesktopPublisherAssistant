@@ -1,4 +1,4 @@
-package ui;
+package jm;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;

@@ -27,6 +27,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.itextpdf.text.DocumentException;
 
+import jm.JMPanel;
 import pdf.PDFPropertiesUpdater;
 import ticket.Ticket;
 import ticket.TicketInfo;
@@ -492,7 +493,7 @@ public class MainWindow extends JMPanel {
 				ticket[TicketInfo.DATE.i], 
 				ticket[TicketInfo.GUID.i], 
 				ticket[TicketInfo.PERFORCE_URL.i], 
-				ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], 
+				ticket[TicketInfo.TICKET_DESCRIPTION.i], 
 				ticket[TicketInfo.REPORT.i],
 				ticket[TicketInfo.JIRA_TICKET_URL.i], 
 				ticket[TicketInfo.TCIS_URL.i],

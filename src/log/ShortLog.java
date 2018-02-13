@@ -2,6 +2,7 @@ package log;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
@@ -16,9 +17,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import jm.JMPanel;
 import ticket.Ticket;
 import ticket.TicketInfo;
-import ui.JMPanel;
 import ui.Tools;
 
 /**
@@ -27,8 +28,8 @@ import ui.Tools;
  */
 public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	private static final long serialVersionUID = 4949615017530138259L;
-	
-	public static final Dimension STATUS_SIZE       = new Dimension(110,24);
+
+	public static final Dimension STATUS_SIZE       = new Dimension(90,  24);
 	public static final Dimension CREATED_DATE_SIZE = new Dimension(110, 24);
 	public static final Dimension PART_NUM_32_SIZE  = new Dimension(100, 24);
 	public static final Dimension PART_NUM_37_SIZE  = new Dimension(100, 24);
@@ -62,6 +63,9 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 	// ====================== PUBLIC FIELDS ====================== //
 
+	/** Determines if the separation line below the log is drawn **/
+	public boolean last = false;
+	
 	/** Displays the short log's info, such as status, date created, part numbers, and ticket report **/
 	public JLabel[] labels = {new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel()};
 
@@ -85,17 +89,15 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		getLogDates();
 		setValues();
 
-		setUpLabel(TICKET_DESCRIPTION, this.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], null);
-		setUpLabel(DATE_CREATED, logDate, ShortLog.CREATED_DATE_SIZE);
-		setUpLabel(PART_NUM_32, this.ticket[TicketInfo.PART_NUM_32.i], ShortLog.CREATED_DATE_SIZE);
-		setUpLabel(PART_NUM_37, this.ticket[TicketInfo.PART_NUM_37.i], ShortLog.PART_NUM_37_SIZE);
-		setUpLabel(TICKET_REPORTER, this.ticket[TicketInfo.REPORT.i], ShortLog.JIRA_REPORT_SIZE);
-
-		status.setPreferredSize(ShortLog.STATUS_SIZE);
+		setUpLabel(TICKET_DESCRIPTION, this.ticket[TicketInfo.TICKET_DESCRIPTION.i], null);
+		setUpLabel(DATE_CREATED,       logDate,                                      ShortLog.CREATED_DATE_SIZE);
+		setUpLabel(PART_NUM_32,        this.ticket[TicketInfo.PART_NUM_32.i],        ShortLog.PART_NUM_32_SIZE);
+		setUpLabel(PART_NUM_37,        this.ticket[TicketInfo.PART_NUM_37.i],        ShortLog.PART_NUM_37_SIZE);
+		setUpLabel(TICKET_REPORTER,    this.ticket[TicketInfo.REPORT.i],             ShortLog.JIRA_REPORT_SIZE);
 
 		setUpView();
 		setupStatus();
-		
+
 		createUserInterface();
 	}
 
@@ -116,6 +118,9 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		PART_NUM_37 = 4;
 	}
 
+	Boolean mouseEntered = false;
+	Color   drawColor    = getBackground();
+
 	/** 
 	 * Sets up a JLabel.
 	 * @param label the label in {@link #labels} to be set up. 
@@ -124,44 +129,50 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	 */
 	private void setUpLabel(int label, String text, Dimension d) {
 		labels[label] = new JLabel(text);
-		
+		labels[label].setOpaque(false);
+		labels[label].setHorizontalAlignment(SwingConstants.LEFT);
+
 		if(label != TICKET_DESCRIPTION) {
 			labels[label].setPreferredSize(d);
-			labels[label].setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+			labels[label].setBorder(BorderFactory.createEmptyBorder(2,10,2,2));
 		} else {
-			labels[label].setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
+			labels[label].setBorder(BorderFactory.createEmptyBorder(5,10,5,0));
 		}
-		
+
 		labels[label].addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				mousePressed = false;
 
 				if(contains(arg0.getPoint())) {
-					setBackground(Tools.HOVER_COLOR);
+					drawColor = Tools.HOVER_COLOR;
+					repaint();
 				}
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				mousePressed = true;
-				setBackground(Tools.CLICK_COLOR);
+				repaint();
 			}
 
 			@Override
-			public void mouseExited(MouseEvent arg0) {
-				setBackground(originalColor);
+			public void mouseExited(MouseEvent arg0) {				
+				drawColor = originalColor;
+				repaint();
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
 				originalColor = getBackground();
 
-				if(!mousePressed) {
-					setBackground(Tools.HOVER_COLOR);
+				if(mousePressed) {
+					drawColor = Tools.CLICK_COLOR;
 				} else {
-					setBackground(Tools.CLICK_COLOR);
+					drawColor = Tools.HOVER_COLOR;
 				}
+
+				repaint();
 			}
 		});
 	}
@@ -198,7 +209,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 				}
 			}
 		});
-		
+
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent arg0) {				
@@ -229,7 +240,8 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 				} 
 			}
 		});
-		status.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
+		status.setBorder(BorderFactory.createEmptyBorder(5,10,5,0));
+		status.setPreferredSize(ShortLog.STATUS_SIZE);
 	}
 
 	/**
@@ -240,12 +252,12 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		int space = 0;
 		int y = 0;
 
-		add(labels[TICKET_DESCRIPTION], Tools.createGBC(1, y, 1.0, new Insets(0,0,-1,0)));
-		add(labels[DATE_CREATED],       Tools.createGBC(2, y, 0.0, new Insets(0,space,-1,0)));
-		add(labels[TICKET_REPORTER],    Tools.createGBC(3, y, 0.0, new Insets(0,space,-1,0)));
-		add(labels[PART_NUM_32],        Tools.createGBC(4, y, 0.0, new Insets(0,space,-1,0)));
-		add(labels[PART_NUM_37],        Tools.createGBC(5, y, 0.0, new Insets(0,space,-1,0)));
-		add(status,                     Tools.createGBC(6, y, 0.0, new Insets(0,space,-1,space)));
+		add(labels[TICKET_DESCRIPTION], Tools.createGBC(1, y, 1.0, new Insets(0,0,    0,0)));
+		add(labels[DATE_CREATED],       Tools.createGBC(2, y, 0.0, new Insets(0,space,0,0)));
+		add(labels[TICKET_REPORTER],    Tools.createGBC(3, y, 0.0, new Insets(0,space,0,0)));
+		add(labels[PART_NUM_32],        Tools.createGBC(4, y, 0.0, new Insets(0,space,0,0)));
+		add(labels[PART_NUM_37],        Tools.createGBC(5, y, 0.0, new Insets(0,space,0,0)));
+		add(status,                     Tools.createGBC(6, y, 0.0, new Insets(0,space,0,space)));
 	}
 
 	/**
@@ -265,7 +277,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	@Override
 	public int compareTo(ShortLog e) {
 		if(compare == Compare.JIRA_TICKET_DESCRIPTION) {
-			return compareTo(ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i], e.ticket[TicketInfo.JIRA_TICKET_DESCRIPTION.i]);
+			return compareTo(ticket[TicketInfo.TICKET_DESCRIPTION.i], e.ticket[TicketInfo.TICKET_DESCRIPTION.i]);
 		} else if(compare == Compare.JIRA_REPORT) {
 			return compareTo(ticket[TicketInfo.REPORT.i], e.ticket[TicketInfo.REPORT.i]);
 		} else if(compare == Compare.PART_NUM_32) {
@@ -276,6 +288,19 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 			return compareTo(dateForSort, e.dateForSort);
 		} else {
 			return compareTo(ticket[TicketInfo.STATUS.i], e.ticket[TicketInfo.STATUS.i]);
+		}
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.setColor(drawColor);
+		g.fillRect(0, 0, getWidth()-5, getHeight());
+		
+		if(!last) {
+			g.setColor(Color.LIGHT_GRAY);
+			g.fillRect(0, getHeight()-1, getWidth()-5, getHeight());
 		}
 	}
 }

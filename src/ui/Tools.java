@@ -49,6 +49,8 @@ public class Tools {
 	
 	public static final Color DISABLED_BORDER_COLOR = Color.decode("#BFBFBF");
 	
+	public static final Integer SCROLL_BAR_WIDTH = 10;
+	
 	/** Creates the image icons that will be displayed on the app's taskbar **/
 	public static ArrayList<Image> imageIcon() {
 		ArrayList<Image> icons = new ArrayList<Image>();

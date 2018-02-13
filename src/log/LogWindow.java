@@ -22,13 +22,15 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import jm.JMPanel;
+import jm.JMScrollPane;
+
 import static java.nio.file.StandardWatchEventKinds.*;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import ticket.Ticket;
 import ui.MainWindow;
-import ui.JMPanel;
 import ui.Tools;
 
 /**
@@ -40,7 +42,7 @@ public class LogWindow extends JMPanel {
 
 	/** All of the ticket files currently in existence on the user's computer **/
 	private ArrayList<ShortLog> shortLogs = new ArrayList<ShortLog>();
-	
+
 	/** The program body's main window **/
 	private MainWindow mw;
 
@@ -51,12 +53,12 @@ public class LogWindow extends JMPanel {
 	private Boolean invert = false;
 
 	/** The JScrollPane that holds {@link #logWindow} **/
-	private JScrollPane logDialogScroll;
+	private JMScrollPane logDialogScroll;
 
 	/** The panel upon which all the logs are displayed **/
 	private LogPanel logWindow = new LogPanel();
 
-	
+
 	public LogWindow(MainWindow mw) {
 		this.mw = mw;
 
@@ -67,7 +69,7 @@ public class LogWindow extends JMPanel {
 						BorderFactory.createEmptyBorder(-1,5,5,5),
 						BorderFactory.createCompoundBorder(
 								BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-								BorderFactory.createEmptyBorder(5, 5, 5, 5))));
+								BorderFactory.createEmptyBorder(5, 5, 0, 0))));
 
 		add(new HeadingPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, 
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
@@ -77,11 +79,13 @@ public class LogWindow extends JMPanel {
 
 	/** Sets up the JScrollPane that displays all the log entries  **/
 	private void setupScrollPane() {
-		logDialogScroll = new JScrollPane(logWindow);
-
+		logDialogScroll = new JMScrollPane(logWindow);
+		//logDialogScroll.setScrollBarWidth(10);
 		logDialogScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		logDialogScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		logDialogScroll.setBorder(BorderFactory.createEmptyBorder());
+		logDialogScroll.setBackground(Color.WHITE);
+		
 		logDialogScroll.setPreferredSize(new Dimension(900,150));
 	}
 
@@ -91,7 +95,7 @@ public class LogWindow extends JMPanel {
 	 */
 	private class HeadingPanel extends JMPanel {
 		private static final long serialVersionUID = -1040672906315782425L;
-		
+
 		/** The labels that the user clicks to sort the tickets **/
 		private JLabel[] headings = {
 				new JLabelEdge("Jira Ticket Description"),
@@ -121,9 +125,9 @@ public class LogWindow extends JMPanel {
 			setupJLabel(HF.PART_NUM_32,  ShortLog.PART_NUM_32_SIZE,  Compare.PART_NUM_32);
 			setupJLabel(HF.PART_NUM_37,  ShortLog.PART_NUM_37_SIZE,  Compare.PART_NUM_37);
 			setupJLabel(HF.STATUS,       ShortLog.STATUS_SIZE,       Compare.STATUS);
-			setupJLabel(HF.SPACER,       new Dimension(25, 24),      Compare.NULL);
+			setupJLabel(HF.SPACER,       new Dimension(Tools.SCROLL_BAR_WIDTH, 24),      Compare.NULL);
 
-			headings[HF.TICKET_DESCRIPTION].setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+			headings[HF.TICKET_DESCRIPTION].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
 			addActionListenerToJLabel(HF.TICKET_DESCRIPTION, Compare.JIRA_TICKET_DESCRIPTION);
 		}
 
@@ -142,24 +146,7 @@ public class LogWindow extends JMPanel {
 		private void addActionListenerToJLabel(int label, Compare thisCompare) {
 			headings[label].addMouseListener(new MouseAdapter() {
 				@Override
-				public void mouseEntered(MouseEvent e) {
-					headings[label].setBackground(Color.decode("#D9EBF9"));
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-					headings[label].setBackground(new JLabel().getBackground());
-				}
-
-				@Override
-				public void mousePressed(MouseEvent e) {
-					headings[label].setBackground(Color.decode("#BCDCF4"));
-				}
-
-				@Override
 				public void mouseReleased(MouseEvent e) {
-					headings[label].setBackground(new JLabel().getBackground());
-
 					if(headings[label].contains(e.getPoint()) && compare != Compare.NULL) {
 						if(compare == thisCompare) {
 							invert = !invert;
@@ -173,7 +160,7 @@ public class LogWindow extends JMPanel {
 				}
 			});
 		}
-		
+
 		private class HF {
 			public static final int TICKET_DESCRIPTION = 0;
 			public static final int DATE_CREATED = 1;
@@ -238,7 +225,9 @@ public class LogWindow extends JMPanel {
 			shortLogs.clear();
 
 			try {
-				for(File f : Ticket.TICKET_URL.listFiles()) {
+				File[] tickets = Ticket.TICKET_URL.listFiles();		
+				
+				for(File f : tickets) {
 					shortLogs.add(setUpNewShortLog(f));
 				}
 				Collections.sort(shortLogs);
@@ -246,11 +235,8 @@ public class LogWindow extends JMPanel {
 				int y = 0;
 
 				for(ShortLog sl : shortLogs) {
-					if(y%2 == 0) {
-						sl.setBackground(Color.WHITE);
-					}
-
-					this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,-1,0)));
+					sl.last = (y == tickets.length-1);
+					this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,0,0)));
 				}
 
 				this.revalidate();
@@ -302,11 +288,17 @@ public class LogWindow extends JMPanel {
 
 		private Boolean show = true;
 
+		boolean mousePressed;
+		
+		Color drawColor = getBackground();
+
+		Color originalColor = getBackground();
+
 		JLabelEdge(String s) { 
 			super(s);
 
 			setHorizontalAlignment(SwingConstants.LEFT);
-			setOpaque(true);
+			addActionListener();
 		}
 
 		JLabelEdge(String s, Boolean show) { 
@@ -314,17 +306,66 @@ public class LogWindow extends JMPanel {
 			this.show = show;
 
 			setHorizontalAlignment(SwingConstants.LEFT);
-			setOpaque(true);
+			addActionListener();
+		}
+
+		private void addActionListener() {
+			addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					mousePressed = false;
+
+					if(contains(arg0.getPoint())) {
+						drawColor = Tools.HOVER_COLOR;
+						repaint();
+					}
+				}
+
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					mousePressed = true;
+					
+					if(contains(arg0.getPoint())) {
+						drawColor = Tools.CLICK_COLOR;
+						repaint();
+					}
+				}
+
+				@Override
+				public void mouseExited(MouseEvent arg0) {				
+					drawColor = originalColor;
+					repaint();
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					originalColor = getBackground();
+
+					if(mousePressed) {
+						drawColor = Tools.CLICK_COLOR;
+					} else {
+						drawColor = Tools.HOVER_COLOR;
+					}
+
+					repaint();
+				}
+			});
 		}
 
 		@Override
 		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
+			g.setColor(drawColor);
+			g.fillRect(0, 4, getWidth(), getHeight()-8);
+
+			g.setColor(Color.LIGHT_GRAY);
+			g.fillRect(0, getHeight()-1, getWidth(), getHeight());
 
 			if(show) {
 				g.setColor(Color.LIGHT_GRAY);
 				g.drawLine(getWidth()-1, 4, getWidth()-1, getHeight()-5);
 			}
+			super.paintComponent(g);
+
 		}
 	}
 }
