@@ -30,6 +30,7 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 import ticket.Ticket;
+import ticket.TicketInfo;
 import ui.MainWindow;
 import ui.Tools;
 
@@ -56,11 +57,13 @@ public class LogWindow extends JMPanel {
 	private JMScrollPane logDialogScroll;
 
 	/** The panel upon which all the logs are displayed **/
-	private LogPanel logWindow = new LogPanel();
+	private LogPanel logWindow;
 
 
 	public LogWindow(MainWindow mw) {
 		this.mw = mw;
+		
+		this.logWindow = new LogPanel();
 
 		setupScrollPane();
 		setLayout(new GridBagLayout());
@@ -253,7 +256,10 @@ public class LogWindow extends JMPanel {
 		 * @throws IOException
 		 */
 		private ShortLog setUpNewShortLog(File f) throws IOException {
-			ShortLog toReturn = new ShortLog(Ticket.readLogFile(f.getAbsolutePath()), f.getAbsolutePath(), compare, invert);
+			String[] log = Ticket.readLogFile(f.getAbsolutePath());
+			Boolean  isn = mw.isTicketOpen(log[TicketInfo.TICKET_DESCRIPTION.i]);
+			
+			ShortLog toReturn = new ShortLog(log, f.getAbsolutePath(), compare, invert, isn);
 
 			toReturn.popupOptions.openH.addActionListener(e -> mw.setLog(toReturn.ticket));
 			toReturn.popupOptions.delete.addActionListener(e -> {					
@@ -270,6 +276,10 @@ public class LogWindow extends JMPanel {
 					public void mouseReleased(MouseEvent e) {
 						if(toReturn.contains(e.getPoint())) {
 							mw.setLog(toReturn.ticket);
+							
+							for(ShortLog sl : shortLogs) {
+								sl.open(mw.isTicketOpen(sl.ticket[TicketInfo.TICKET_DESCRIPTION.i]));
+							}
 						}
 					}
 				});

@@ -604,6 +604,19 @@ public class MainWindow extends JMPanel {
 		author.setText(toSet);
 	}
 
+	/**
+	 * Checks if the current ticket is open in this Main Window.
+	 * @param ticketDescription the ticket description of the f
+	 * @return
+	 */
+	public Boolean isTicketOpen(String ticketDescription) {
+		if(Tools.isEmpty(jiraSummary)) {
+			return false;
+		} else {
+			return jiraSummary.getText().equals(ticketDescription);
+		}
+	}
+
 	@Override
 	public String toString() {
 		String toReturn = "";

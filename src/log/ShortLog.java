@@ -52,6 +52,9 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	/** Determines if the ShortLog is organized front to back or back to front **/
 	private boolean invert;
 
+	/** Determines if the ShortLog is open in the system editor **/
+	private boolean open;
+	
 	/** The date that this log file was created **/
 	private String logDate;
 
@@ -78,11 +81,12 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	/** The URL of the ticket, for opening purposes **/
 	public String ticketURL;
 
-	public ShortLog(String[] ticket, String ticketURL, Compare compare, Boolean invert) {
+	public ShortLog(String[] ticket, String ticketURL, Compare compare, Boolean invert, Boolean open) {
 		this.ticket       = ticket;
 		this.ticketURL    = ticketURL;
 		this.compare      = compare;
 		this.invert       = invert;
+		this.open         = open;
 		
 		popupOptions = new LeftClickOptions(this.ticketURL);
 
@@ -260,6 +264,11 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		add(status,                     Tools.createGBC(6, y, 0.0, new Insets(0,space,0,space)));
 	}
 
+	public void open(Boolean open) {
+		this.open = open;
+		repaint();
+	}
+	
 	/**
 	 * Compares two given strings.
 	 * @param oa the first string to be compared.
@@ -295,8 +304,14 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		g.setColor(drawColor);
+		if(!open) {
+			g.setColor(drawColor);
+		} else {
+			g.setColor(Tools.CLICK_COLOR);
+		}
+		
 		g.fillRect(0, 0, getWidth()-5, getHeight());
+		
 		
 		if(!last) {
 			g.setColor(Color.LIGHT_GRAY);
