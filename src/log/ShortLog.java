@@ -145,18 +145,28 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 		labels[label].addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent arg0) {
+			public void mouseReleased(MouseEvent e) {
 				mousePressed = false;
 
-				if(contains(arg0.getPoint())) {
+				if(contains(e.getPoint())) {
 					drawColor = Tools.HOVER_COLOR;
+					
+					if(e.isPopupTrigger()) {
+						popupOptions.show(e.getComponent(), e.getX(), e.getY());
+					}
+					
 					repaint();
 				}
 			}
 
 			@Override
-			public void mousePressed(MouseEvent arg0) {
+			public void mousePressed(MouseEvent e) {
 				mousePressed = true;
+				
+				if(e.isPopupTrigger()) {
+					popupOptions.show(e.getComponent(), e.getX(), e.getY());
+				}
+				
 				repaint();
 			}
 
@@ -178,42 +188,15 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 				repaint();
 			}
+			
+			
 		});
-	}
-
-	/**
-	 * Sets a given label visible if the width of {@link #view} is greater than 
-	 * a given width.
-	 * @param label the label to set visible or invisible
-	 * @param width the width to determine if label is visible or invisible.
-	 */
-	private void setLabelVisible(JLabel label, int width) {
-		if(getWidth() < width) {
-			label.setVisible(false);
-		} else {
-			label.setVisible(true);
-		}
 	}
 
 	/** Sets up the view JTextArea **/
 	private void setUpView() {
 		setLayout(new GridBagLayout());
-		addMouseListener(new MouseAdapter() {			
-			@Override
-			public void mousePressed(MouseEvent e){
-				if(e.isPopupTrigger()) {
-					popupOptions.show(e.getComponent(), e.getX(), e.getY());
-				}
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e){
-				if(e.isPopupTrigger()) {
-					popupOptions.show(e.getComponent(), e.getX(), e.getY());
-				}
-			}
-		});
-
+		
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent arg0) {				
@@ -226,6 +209,20 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Sets a given label visible if the width of {@link #view} is greater than 
+	 * a given width.
+	 * @param label the label to set visible or invisible
+	 * @param width the width to determine if label is visible or invisible.
+	 */
+	private void setLabelVisible(JLabel label, int width) {
+		if(getWidth() < width) {
+			label.setVisible(false);
+		} else {
+			label.setVisible(true);
+		}
 	}
 
 	/** Sets up the status button. **/

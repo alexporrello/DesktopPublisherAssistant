@@ -21,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import jm.JMPanel;
 import jm.JMScrollPane;
@@ -274,7 +275,7 @@ public class LogWindow extends JMPanel {
 				label.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseReleased(MouseEvent e) {
-						if(toReturn.contains(e.getPoint())) {
+						if(SwingUtilities.isLeftMouseButton(e) && toReturn.contains(e.getPoint())) {
 							mw.setLog(toReturn.ticket);
 							
 							for(ShortLog sl : shortLogs) {
