@@ -67,7 +67,7 @@ public abstract class JTextButton extends JPanel {
 		return new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if(!disabledWhenEmpty) {
+				if(disabledWhenEmpty) {
 					enableButton(textField.getText().length() > 0);
 				}
 			}
