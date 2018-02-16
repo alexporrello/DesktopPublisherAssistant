@@ -123,6 +123,29 @@ public class Tools {
 	
 		return gbc;
 	}
+	
+	/**
+	 * Creates a GridBagConstraint given the following parameters:
+	 * @param x the constraint's x position
+	 * @param y the constraint's y position
+	 * @param weightx the constraint's x weight
+	 * @param insetRight the constraint's right inset
+	 * @return a GridBagConstraint object
+	 */
+	public static GridBagConstraints createGBC(int x, int y, Double weightx, Insets insets, int gridWidth) {
+		GridBagConstraints gbc = new GridBagConstraints();
+	
+		gbc.gridx = x;
+		gbc.gridy = y;
+		gbc.fill  = GridBagConstraints.BOTH;
+		gbc.weightx = weightx;
+		gbc.weighty = 0.0;
+		gbc.insets  = insets;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.gridwidth = gridWidth;
+	
+		return gbc;
+	}
 
 	/**
 	 * Appends a new line of text with a return to an original line of text.

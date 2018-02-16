@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -113,7 +115,7 @@ public class MainWindow extends JMPanel {
 		add(setUpText(title), Tools.createGBC(1, y, 1.0, insets));
 		add(cwd, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));
 		y++;
-
+		
 		add(createJLabel("32 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(partNum32), Tools.createGBC(1, y, 1.0, insets));
 		add(cps, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
@@ -123,11 +125,14 @@ public class MainWindow extends JMPanel {
 		add(setUpText(partNum37), Tools.createGBC(1, y, 1.0, insets));
 		add(cdpc, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		y++;
-
+		
 		add(createJLabel("Doc Date: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(date), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
+		//add(new Separator(), Tools.createGBC(0, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 0), 2));
+		//y++;
+		
 		add(createJLabel("GUID: "), Tools.createGBC(0, y, 0.0, insets));
 		setUpText(GUID.getTextField());
 		add(GUID, Tools.createGBC(1, y, 1.0, insets));
@@ -138,6 +143,9 @@ public class MainWindow extends JMPanel {
 		add(perforce, Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
+		//add(new Separator(), Tools.createGBC(0, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 0), 2));
+		//y++;
+		
 		add(createJLabel("Jira Ticket Summary: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(jiraSummary), Tools.createGBC(1, y, 1.0, insets));
 		y++;
@@ -146,11 +154,13 @@ public class MainWindow extends JMPanel {
 		add(setUpText(author), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
-
 		add(createJLabel("Jira Ticket URL: "), Tools.createGBC(0, y, 0.0, insets));
 		setUpText(jiraURL.getTextField());
 		add(jiraURL, Tools.createGBC(1, y, 1.0, insets));
 		y++;
+		
+		//add(new Separator(), Tools.createGBC(0, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 0), 2));
+		//y++;
 
 		add(createJLabel("TCIS URL: "), Tools.createGBC(0, y, 0.0, insets));
 		setUpText(tcisURL.getTextField());
@@ -635,5 +645,16 @@ public class MainWindow extends JMPanel {
 		toReturn = Tools.appendToNewLine(toReturn, author.getText());
 
 		return toReturn;
+	}
+	
+	public class Separator extends JMPanel {
+		private static final long serialVersionUID = -7433172482073590125L;
+
+		@Override
+		public void paintComponent(Graphics g) {
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawLine(0, getHeight()/2, getWidth(), getHeight()/2);
+		}
+		
 	}
 }
