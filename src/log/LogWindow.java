@@ -6,6 +6,10 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -32,6 +36,7 @@ import java.nio.file.WatchService;
 
 import ticket.Ticket;
 import ticket.TicketInfo;
+import ui.JTextClose;
 import ui.MainWindow;
 import ui.Tools;
 
@@ -59,7 +64,9 @@ public class LogWindow extends JMPanel {
 
 	/** The panel upon which all the logs are displayed **/
 	private LogPanel logWindow;
-
+	
+	/** The JTextFields with which the user searches through ticket information **/
+	public JTextClose search = new JTextClose("");
 
 	public LogWindow(MainWindow mw) {
 		this.mw = mw;
@@ -67,6 +74,7 @@ public class LogWindow extends JMPanel {
 		this.logWindow = new LogPanel();
 
 		setupScrollPane();
+		setupSearch();
 		setLayout(new GridBagLayout());
 		setBorder(
 				BorderFactory.createCompoundBorder(
@@ -79,18 +87,36 @@ public class LogWindow extends JMPanel {
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		add(logDialogScroll,    new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, 
 				GridBagConstraints.BOTH,       new Insets(0, 0, 0, 0), 0, 0));
+		add(search,             new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstraints.NORTH, 
+				GridBagConstraints.HORIZONTAL, new Insets(5, 0, 5, 15), 0, 0));
 	}
 
 	/** Sets up the JScrollPane that displays all the log entries  **/
 	private void setupScrollPane() {
 		logDialogScroll = new JMScrollPane(logWindow);
-		//logDialogScroll.setScrollBarWidth(10);
 		logDialogScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		logDialogScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		logDialogScroll.setBorder(BorderFactory.createEmptyBorder());
 		logDialogScroll.setBackground(Color.WHITE);
-		
+
 		logDialogScroll.setPreferredSize(new Dimension(900,150));
+	}
+	
+	/** Sets up the search functionality **/
+	private void setupSearch() {
+		search.setVisible(false);
+		search.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentHidden(ComponentEvent arg0) {
+				logWindow.addToLogEntryPanel();
+			}
+		});
+		search.getTextField().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				logWindow.addToLogEntryPanel();
+			}
+		});
 	}
 
 	/**
@@ -159,7 +185,7 @@ public class LogWindow extends JMPanel {
 							invert = false;
 						}
 
-						logWindow.addAllToLogEntryPanel();
+						logWindow.addToLogEntryPanel();
 					}
 				}
 			});
@@ -185,7 +211,7 @@ public class LogWindow extends JMPanel {
 
 		LogPanel() {
 			setLayout(new GridBagLayout());
-			addAllToLogEntryPanel();
+			addToLogEntryPanel();
 			watchService();
 		}
 
@@ -207,7 +233,7 @@ public class LogWindow extends JMPanel {
 							WatchKey key = watcher.take();
 							for (WatchEvent<?> event : key.pollEvents()) {
 								if (event.kind() == ENTRY_CREATE || event.kind() == ENTRY_DELETE || event.kind() == ENTRY_MODIFY) {
-									addAllToLogEntryPanel();
+									addToLogEntryPanel();
 									continue;
 								}
 							}
@@ -221,16 +247,50 @@ public class LogWindow extends JMPanel {
 			}).start();
 		}
 
+		public void addToLogEntryPanel() {
+			if(!search.isVisible()) {
+				addAllTicketsToLogEntryPanel();
+			} else {
+				addSearchQueryToEntryPanel(search.getText());
+			}
+		}
+
+		private void addSearchQueryToEntryPanel(String query) {
+			this.removeAll();
+			shortLogs.clear();
+
+			try {
+				ArrayList<File> tickets = Ticket.searchThroughTickets(query);
+
+				for(File f : tickets) {
+					shortLogs.add(setUpNewShortLog(f));
+				}
+				Collections.sort(shortLogs);
+
+				int y = 0;
+
+				for(ShortLog sl : shortLogs) {
+					sl.last = (y == tickets.size()-1);
+					this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,0,0)));
+				}
+
+				this.revalidate();
+				this.repaint();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		/**
 		 * Locates all tickets, adds them to {@link #shortLogs}, and adds them to {@link #logEntryPanel}.
 		 */
-		private void addAllToLogEntryPanel() {
+		private void addAllTicketsToLogEntryPanel() {
 			this.removeAll();
 			shortLogs.clear();
 
 			try {
 				File[] tickets = Ticket.TICKET_URL.listFiles();		
-				
+
 				for(File f : tickets) {
 					shortLogs.add(setUpNewShortLog(f));
 				}
@@ -259,7 +319,7 @@ public class LogWindow extends JMPanel {
 		private ShortLog setUpNewShortLog(File f) throws IOException {
 			String[] log = Ticket.readLogFile(f.getAbsolutePath());
 			Boolean  isn = mw.isTicketOpen(log[TicketInfo.TICKET_DESCRIPTION.i]);
-			
+
 			ShortLog toReturn = new ShortLog(log, f.getAbsolutePath(), compare, invert, isn);
 
 			toReturn.popupOptions.openH.addActionListener(e -> mw.setLog(toReturn.ticket));
@@ -277,7 +337,7 @@ public class LogWindow extends JMPanel {
 					public void mouseReleased(MouseEvent e) {
 						if(SwingUtilities.isLeftMouseButton(e) && toReturn.contains(e.getPoint())) {
 							mw.setLog(toReturn.ticket);
-							
+
 							for(ShortLog sl : shortLogs) {
 								sl.open(mw.isTicketOpen(sl.ticket[TicketInfo.TICKET_DESCRIPTION.i]));
 							}
@@ -300,7 +360,7 @@ public class LogWindow extends JMPanel {
 		private Boolean show = true;
 
 		boolean mousePressed;
-		
+
 		Color drawColor = getBackground();
 
 		Color originalColor = getBackground();
@@ -335,7 +395,7 @@ public class LogWindow extends JMPanel {
 				@Override
 				public void mousePressed(MouseEvent arg0) {
 					mousePressed = true;
-					
+
 					if(contains(arg0.getPoint())) {
 						drawColor = Tools.CLICK_COLOR;
 						repaint();

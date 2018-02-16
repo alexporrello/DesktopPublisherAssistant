@@ -27,9 +27,21 @@ public abstract class JTextButton extends JPanel {
 
 	private Boolean enabled = false;
 
+	private Boolean disabledWhenEmpty = true;
+
 	public JTextButton(String text, String buttonText) {
+		setUpButton(text, buttonText, true);
+	}
+
+	public JTextButton(String text, String buttonText, Boolean disabledWhenEmpty) {
+		setUpButton(text, buttonText, disabledWhenEmpty);
+	}
+	
+	private void setUpButton(String text, String buttonText, Boolean disabledWhenEmpty) {
 		textField = new JTextField(text);
 		button  = new JLabel(buttonText);
+		
+		this.disabledWhenEmpty = disabledWhenEmpty;
 
 		button.addMouseListener(createMouseAdapter());
 		button.setBackground(textField.getBackground());
@@ -37,7 +49,7 @@ public abstract class JTextButton extends JPanel {
 		button.setOpaque(true);
 
 		textField.addKeyListener(createKeyAdapter());
-		
+
 		setBorderColor(Tools.DEFAULT_BORDER_COLOR);
 
 		setLayout(new GridBagLayout());
@@ -50,20 +62,22 @@ public abstract class JTextButton extends JPanel {
 
 		addMouseReleasedListener();
 	}
-
+	
 	private KeyAdapter createKeyAdapter() {
 		return new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				enableButton(textField.getText().length() > 0);
+				if(!disabledWhenEmpty) {
+					enableButton(textField.getText().length() > 0);
+				}
 			}
 		};
 	}
-	
+
 	private void enableButton(Boolean enable) {
 		this.enabled = enable;
-		
-		if(this.enabled) {
+
+		if(this.enabled || !disabledWhenEmpty) {
 			setBorderColor(Tools.DEFAULT_BORDER_COLOR);
 			button.setForeground(Color.BLACK);
 			button.setBackground(Color.WHITE);
@@ -78,7 +92,7 @@ public abstract class JTextButton extends JPanel {
 		return new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if(enabled) {
+				if(enabled || !disabledWhenEmpty) {
 					pressed = false;
 
 					setBorderColor(Tools.HOVEER_BORDER_COLOR);
@@ -88,7 +102,7 @@ public abstract class JTextButton extends JPanel {
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				if(enabled) {
+				if(enabled || !disabledWhenEmpty) {
 					button.setBackground(Tools.CLICK_COLOR);
 					pressed = true;
 				}
@@ -96,7 +110,7 @@ public abstract class JTextButton extends JPanel {
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
-				if(enabled) {
+				if(enabled || !disabledWhenEmpty) {
 					if(pressed) {
 						setBorderColor(Tools.HOVEER_BORDER_COLOR);
 						button.setBackground(Tools.HOVER_COLOR);
@@ -109,7 +123,7 @@ public abstract class JTextButton extends JPanel {
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				if(enabled) {
+				if(enabled || !disabledWhenEmpty) {
 					if(!pressed) {
 						originalBackground = button.getBackground();
 						button.setBackground(Tools.HOVER_COLOR);
@@ -139,10 +153,10 @@ public abstract class JTextButton extends JPanel {
 			setText(toSet);
 		}
 	}
-	
+
 	public void setText(String toSet) {
 		textField.setText(toSet);
-		
+
 		enableButton(toSet.length() > 0);
 	}
 
@@ -153,6 +167,6 @@ public abstract class JTextButton extends JPanel {
 	public void setCaretPosition(int caretPosition) {
 		textField.setCaretPosition(caretPosition);
 	}
-	
+
 	public abstract void addMouseReleasedListener();
 }

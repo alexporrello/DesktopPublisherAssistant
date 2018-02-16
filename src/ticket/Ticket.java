@@ -73,8 +73,8 @@ public class Ticket {
 	 * @return An ArrayList of all the logs that match the query.
 	 * @throws IOException 
 	 */
-	public static ArrayList<String[]> searchThroughTickets(String query) throws IOException {
-		ArrayList<String[]> toReturn = new ArrayList<String[]>();
+	public static ArrayList<File> searchThroughTickets(String query) throws IOException {
+		ArrayList<File> toReturn = new ArrayList<File>();
 		
 		for(File f : Ticket.TICKET_URL.listFiles()) {
 			String[] thisTicket = Ticket.readLogFile(f.getAbsolutePath()); 
@@ -82,7 +82,7 @@ public class Ticket {
 			out:
 			for(String s : thisTicket) {
 				if(s != null && s.toLowerCase().contains(query.toLowerCase())) {
-					toReturn.add(thisTicket);
+					toReturn.add(f);
 					break out;
 				}
 			}

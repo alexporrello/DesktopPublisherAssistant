@@ -40,8 +40,11 @@ public class MenuBar extends JMenuBar {
 	XMPUpdateWindow xmpUpdate;
 
 	JFrame parent;
+	
+	LogWindow logDialogScroll;
 
 	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate, JFrame parent) {
+		this.logDialogScroll = logDialogScroll;
 		this.mainWindow = mainWindow;
 		this.xmpUpdate  = xmpUpdate;
 		this.parent     = parent;
@@ -263,18 +266,23 @@ public class MenuBar extends JMenuBar {
 	public class FileMenu extends JMenu {
 		private static final long serialVersionUID = -754503798159404299L;
 
-
 		/** Saves the currently open project to a .log file **/
 		JMenuItem saveToLog = new JMenuItem("Save Ticket");
 
 		/** Opens a ticket project and loads it into the application **/
 		JMenuItem open = new JMenuItem("Open Ticket");
 
+		JMenuItem search = new JMenuItem("Search through tickets...");
+		
 		FileMenu() {
 			super("File");
 
 			add(open());
 			add(save());
+			
+			addSeparator();
+			
+			add(search());
 		}
 
 		/**
@@ -317,6 +325,17 @@ public class MenuBar extends JMenuBar {
 			open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
 			return open;
+		}
+		
+		public JMenuItem search() {
+			search.addActionListener(e -> {
+				logDialogScroll.search.setVisible(!logDialogScroll.search.isVisible());
+				logDialogScroll.revalidate();
+				logDialogScroll.repaint();
+			});
+			search.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			
+			return search;
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class DesktopPublisherAssistant extends JFrame {
 
 	public MainWindow mainWindow = new MainWindow(this);
 
-	public LogWindow logDialogScroll = new LogWindow(mainWindow);
+	public LogWindow logWindow = new LogWindow(mainWindow);
 	
 	public XMPUpdateWindow xmpUpdate = new XMPUpdateWindow();
 	
@@ -47,7 +47,7 @@ public class DesktopPublisherAssistant extends JFrame {
 	private void setup() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Desktop Publisher Assistant");
-		setJMenuBar(new MenuBar(mainWindow, logDialogScroll, xmpUpdate, this));
+		setJMenuBar(new MenuBar(mainWindow, logWindow, xmpUpdate, this));
 		setIconImages(Tools.imageIcon());
 		setSize(new Dimension(1000, 530));
 		setLayout(new BorderLayout());
@@ -55,7 +55,7 @@ public class DesktopPublisherAssistant extends JFrame {
 
 		addMainWindow();
 		addXMPUpdateWindow();
-		add(logDialogScroll, BorderLayout.SOUTH);
+		add(logWindow, BorderLayout.SOUTH);
 
 		addWindowListener(new WindowAdapter() {			
 			@Override
