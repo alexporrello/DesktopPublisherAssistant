@@ -14,10 +14,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import jm.JMTextField;
+
 public abstract class JTextButton extends JPanel {
 	private static final long serialVersionUID = -2231714098377893220L;
 
-	private JTextField textField;
+	private JMTextField textField;
 
 	JLabel button;
 
@@ -38,7 +40,7 @@ public abstract class JTextButton extends JPanel {
 	}
 	
 	private void setUpButton(String text, String buttonText, Boolean disabledWhenEmpty) {
-		textField = new JTextField(text);
+		textField = new JMTextField(text);
 		button  = new JLabel(buttonText);
 		
 		this.disabledWhenEmpty = disabledWhenEmpty;

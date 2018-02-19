@@ -7,12 +7,8 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,6 +26,7 @@ import javax.swing.filechooser.FileSystemView;
 import com.itextpdf.text.DocumentException;
 
 import jm.JMPanel;
+import jm.JMTextField;
 import pdf.PDFPropertiesUpdater;
 import ticket.Ticket;
 import ticket.TicketInfo;
@@ -42,16 +39,16 @@ public class MainWindow extends JMPanel {
 	private static final long serialVersionUID = 8053959756132135670L;
 
 	/** The title of the document **/
-	private JTextField title = new JTextField();
+	private JMTextField title = new JMTextField();
 
 	/** The field for the online part number **/
-	private JTextField partNum37 = new JTextField();
+	private JMTextField partNum37 = new JMTextField();
 
 	/** The field for the print part number **/
-	private JTextField partNum32 = new JTextField();
+	private JMTextField partNum32 = new JMTextField();
 
 	/** The date of the document **/
-	private JTextField date = new JTextField();
+	private JMTextField date = new JMTextField();
 
 	/** The document's "global unique identifier" **/
 	private JTextCopy GUID = new JTextCopy("");
@@ -60,10 +57,10 @@ public class MainWindow extends JMPanel {
 	private JTextCopy perforce = new JTextCopy("");
 
 	/** The name of the Jira ticket **/
-	private JTextField jiraSummary = new JTextField();
+	private JMTextField jiraSummary = new JMTextField();
 
 	/** The author of the document **/
-	private JTextField author = new JTextField();
+	private JMTextField author = new JMTextField();
 
 	/** The URL to the Jira ticket **/
 	private JTextLink jiraURL = new JTextLink("");
@@ -281,19 +278,6 @@ public class MainWindow extends JMPanel {
 	 * @return a setup JTextField
 	 */
 	private JTextField setUpText(JTextField toSetup) {
-		toSetup.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				toSetup.selectAll();
-			}
-
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				toSetup.select(0, 0);
-				removeEndSpace(toSetup);
-			}
-		});
-
 		toSetup.addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
@@ -311,34 +295,7 @@ public class MainWindow extends JMPanel {
 			}
 		});
 
-		toSetup.addMouseListener(new MouseAdapter() {				
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getClickCount() == 2) {
-					Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-							new StringSelection(toSetup.getText()), null);
-					toSetup.select(0, 0);
-				}
-			}
-		});
-
 		return toSetup;
-	}
-
-	/**
-	 * If a given JTextField ends with a space, remove it.
-	 * @param toRemove the JTextField to be changed.
-	 */
-	private void removeEndSpace(JTextField toRemove) {
-		String text = toRemove.getText();
-		int carePosition = toRemove.getCaretPosition();
-
-		if(text.endsWith(" ")) {
-			text = text.substring(0, text.length()-1);
-		}
-
-		toRemove.setText(text);		
-		toRemove.setCaretPosition(carePosition);
 	}
 
 	/**
