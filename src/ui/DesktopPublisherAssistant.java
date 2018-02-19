@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
+import jm.JMScrollPane;
 import log.LogWindow;
 import pdf.XMPUpdateWindow;
 import ticket.Ticket;
@@ -75,13 +76,15 @@ public class DesktopPublisherAssistant extends JFrame {
 	}
 	
 	private void addMainWindow() {
-		JScrollPane scroll = new JScrollPane(mainWindow);
+		JMScrollPane scroll = new JMScrollPane(mainWindow);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		add(scroll, BorderLayout.CENTER);
 
-		Border inside = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1), BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		Border outside = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5,5,0,-1), inside);
+		mainWindow.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		
+
+		Border outside = BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5,5,0,-1), BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 		scroll.setBorder(outside);
+		
+		add(scroll, BorderLayout.CENTER);
 	}
 }

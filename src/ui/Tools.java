@@ -24,7 +24,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,22 +36,15 @@ public class Tools {
 
 	/** The URL where the current version number is stored **/
 	public static final String ONLINE_VERSION_URL = "https://raw.githubusercontent.com/alexporrello/DesktopPublisherAssistant/master/resources/version-history.txt";
-
-	public static final Color DEFAULT_BACKGROUND = new JLabel().getBackground();
-	
-	public static final Color HOVER_COLOR = Color.decode("#D9EBF9");
-	
-	public static final Color CLICK_COLOR = Color.decode("#BCDCF4");
-	
-	public static final Color DEFAULT_BORDER_COLOR = Color.decode("#ABADB3");
-	
-	public static final Color HOVEER_BORDER_COLOR = Color.decode("#0078D7");
-	
-	public static final Color DISABLED_COLOR = Color.decode("#CCCCCC");
-	
-	public static final Color DISABLED_BORDER_COLOR = Color.decode("#BFBFBF");
 	
 	public static final Integer SCROLL_BAR_WIDTH = 10;
+	
+	public static void setBorderColor(JComponent component, Color borderColor) {
+		component.setBorder(
+				BorderFactory.createCompoundBorder(
+						BorderFactory.createLineBorder(borderColor, 1), 
+						BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+	}
 	
 	/** Creates the image icons that will be displayed on the app's taskbar **/
 	public static ArrayList<Image> imageIcon() {

@@ -17,19 +17,25 @@ public class JMTextField extends JTextField {
 	private static final long serialVersionUID = -2346021547935315452L;
 
 	public JMTextField() {
-		copyContentsOnDoubleClick();
-		selectAllWhenFocused();
-
-		createBorder(Color.LIGHT_GRAY);
+		setupTextField();
 	}
 
 	public JMTextField(String s) {
 		super(s);
-
+		setupTextField();
+	}
+	
+	private void setupTextField() {
 		copyContentsOnDoubleClick();
 		selectAllWhenFocused();
+		
+		createBorder(Color.LIGHT_GRAY);
 	}
 
+	/**
+	 * Sets the border for this JTextField.
+	 * @param borderColor is the color of the border.
+	 */
 	private void createBorder(Color borderColor) {
 		setBorder(
 				BorderFactory.createCompoundBorder(
@@ -61,7 +67,7 @@ public class JMTextField extends JTextField {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				selectAll();
-				createBorder(Tools.HOVEER_BORDER_COLOR);
+				createBorder(JMColor.HOVER_BORDER_COLOR);
 			}
 
 			@Override

@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 
 import jm.JMPanel;
 import jm.JMScrollPane;
+import jm.JMColor;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 import java.nio.file.WatchKey;
@@ -387,7 +388,7 @@ public class LogWindow extends JMPanel {
 					mousePressed = false;
 
 					if(contains(arg0.getPoint())) {
-						drawColor = Tools.HOVER_COLOR;
+						drawColor = JMColor.HOVER_COLOR;
 						repaint();
 					}
 				}
@@ -397,7 +398,7 @@ public class LogWindow extends JMPanel {
 					mousePressed = true;
 
 					if(contains(arg0.getPoint())) {
-						drawColor = Tools.CLICK_COLOR;
+						drawColor = JMColor.PRESS_COLOR;
 						repaint();
 					}
 				}
@@ -413,9 +414,9 @@ public class LogWindow extends JMPanel {
 					originalColor = getBackground();
 
 					if(mousePressed) {
-						drawColor = Tools.CLICK_COLOR;
+						drawColor = JMColor.PRESS_COLOR;
 					} else {
-						drawColor = Tools.HOVER_COLOR;
+						drawColor = JMColor.HOVER_COLOR;
 					}
 
 					repaint();

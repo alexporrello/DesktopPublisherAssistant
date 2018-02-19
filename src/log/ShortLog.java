@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import jm.JMPanel;
+import jm.JMColor;
 import ticket.Ticket;
 import ticket.TicketInfo;
 import ui.Tools;
@@ -149,7 +150,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 				mousePressed = false;
 
 				if(contains(e.getPoint())) {
-					drawColor = Tools.HOVER_COLOR;
+					drawColor = JMColor.HOVER_COLOR;
 					
 					if(e.isPopupTrigger()) {
 						popupOptions.show(e.getComponent(), e.getX(), e.getY());
@@ -181,9 +182,9 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 				originalColor = getBackground();
 
 				if(mousePressed) {
-					drawColor = Tools.CLICK_COLOR;
+					drawColor = JMColor.PRESS_COLOR;
 				} else {
-					drawColor = Tools.HOVER_COLOR;
+					drawColor = JMColor.HOVER_COLOR;
 				}
 
 				repaint();
@@ -304,7 +305,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		if(!open) {
 			g.setColor(drawColor);
 		} else {
-			g.setColor(Tools.CLICK_COLOR);
+			g.setColor(JMColor.PRESS_COLOR);
 		}
 		
 		g.fillRect(0, 0, getWidth()-5, getHeight());

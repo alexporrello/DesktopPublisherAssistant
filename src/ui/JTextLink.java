@@ -1,8 +1,6 @@
 package ui;
 
 import java.awt.Desktop;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,18 +13,11 @@ public class JTextLink extends JTextButton {
 	}
 
 	@Override
-	public void addMouseReleasedListener() {
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				if(button.contains(arg0.getPoint()) && getTextField().getText().startsWith("https")) {
-					try {
-						Desktop.getDesktop().browse(new URI(getTextField().getText()));
-					} catch (IOException | URISyntaxException e) {
-						System.err.println("URL could not be opened: " + getTextField().getText());
-					}
-				}
-			}
-		});
+	public void buttonAction() {
+		try {
+			Desktop.getDesktop().browse(new URI(getTextField().getText()));
+		} catch (IOException | URISyntaxException e) {
+			System.err.println("URL could not be opened: " + getTextField().getText());
+		}
 	}
 }
