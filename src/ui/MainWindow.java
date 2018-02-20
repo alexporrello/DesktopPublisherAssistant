@@ -16,7 +16,6 @@ import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +24,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.itextpdf.text.DocumentException;
 
+import jm.JMButton;
 import jm.JMPanel;
 import jm.JMTextField;
 import pdf.PDFPropertiesUpdater;
@@ -83,9 +83,9 @@ public class MainWindow extends JMPanel {
 	/** The JFrame in which this JPanel is displayed **/
 	private JFrame parent;
 
-	JButton cwd  = new JButton("Create Working Directory");
-	JButton cps  = new JButton("Copy Print Spec Doc");
-	JButton cdpc = new JButton("Copy DocProChecklist.pdf");
+	JMButton cwd;
+	JMButton cps;
+	JMButton cdpc;
 
 	public MainWindow(JFrame parent) {
 		this.parent = parent;
@@ -174,19 +174,22 @@ public class MainWindow extends JMPanel {
 	 */
 	private void makeAllButtons() {
 		// Create the "Create Working Directory" Button
+		cwd = new JMButton("  Create Working Directory  ");
 		cwd.setToolTipText("Enable this button by entering the doc title.");
-		cwd.setEnabled(false);
-		cwd.addActionListener(e -> createWorkingDirectory());
-
+		cwd.setButtonEnabled(false);
+		cwd.addActionListner(e -> createWorkingDirectory());
+		
 		// Create the "Copy Print Spec Doc" Button
+		cps = new JMButton("  Copy Print Spec Doc  ");
 		cps.setToolTipText("Enable button by entering the 32 part number and the doc title.");
-		cps.setEnabled(false);
-		cps.addActionListener(e -> copyPrintSpecDocument());
+		cps.setButtonEnabled(false);
+		cps.addActionListner(e -> copyPrintSpecDocument());
 
 		//Create the "Copy DocProChecklist.pdf" Button
+		cdpc = new JMButton("  Copy DocProChecklist  ");
 		cdpc.setToolTipText("Enable button by entering the 37 part number, doc title, and date.");
-		cdpc.setEnabled(false);
-		cdpc.addActionListener(e -> copyDocProChecklist());
+		cdpc.setButtonEnabled(false);
+		cdpc.addActionListner(e -> copyDocProChecklist());
 	}
 
 	/**
@@ -252,22 +255,22 @@ public class MainWindow extends JMPanel {
 	private void enableButton() {
 		if(!Tools.isEmpty(title)) {
 			if(!Tools.isEmpty(partNum32)) {
-				cps.setEnabled(true);
+				cps.setButtonEnabled(true);
 			} else {
-				cps.setEnabled(false);
+				cps.setButtonEnabled(false);
 			}
 
 			if(!Tools.isEmpty(date) && (!Tools.isEmpty(partNum37) || !Tools.isEmpty(partNum32))) {
-				cdpc.setEnabled(true);
+				cdpc.setButtonEnabled(true);
 			} else {
-				cdpc.setEnabled(false);
+				cdpc.setButtonEnabled(false);
 			}
 
-			cwd.setEnabled(true);
+			cwd.setButtonEnabled(true);
 		} else {
-			cwd.setEnabled(false);
-			cdpc.setEnabled(false);
-			cps.setEnabled(false);
+			cwd.setButtonEnabled(false);
+			cdpc.setButtonEnabled(false);
+			cps.setButtonEnabled(false);
 		}
 	}
 

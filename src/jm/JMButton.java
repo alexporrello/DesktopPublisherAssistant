@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -30,20 +31,20 @@ public class JMButton extends JLabel {
 	/** Set to true if the mouse has been pressed; else, false. **/
 	private Boolean pressed = false;
 
-	/** Used when user hovers over log **/
-	private Color originalBackground;
-
 	/** The color of the button's background **/
-	private Color drawColor = JMColor.DEFAULT_BACKGROUND;
+	private Color background = JMColor.DEFAULT_BACKGROUND;
+	
+	/** The color of the button's border **/
+	private Color border = JMColor.DEFAULT_BORDER_COLOR;
 
 	/** Determines what is displayed on the button **/
 	private int style = JMButton.STYLE_TEXT;
 
 	
-	public JMButton(String s, Consumer<KeyEvent> keyListener, Consumer<MouseEvent> mouseListener) {
+	public JMButton(String s) {
 		super(s);
 
-		setupJMButton(keyListener, mouseListener);
+		setupJMButton();
 	}
 
 	/**
@@ -52,38 +53,41 @@ public class JMButton extends JLabel {
 	 * 		<li> {@link #STYLE_CLOSE_BUTTON}
 	 * <ul>
 	 */
-	public JMButton(int style, Consumer<KeyEvent> keyListener, Consumer<MouseEvent> mouseListener) {		
+	public JMButton(int style) {
 		this.style = style;
 
-		setupJMButton(keyListener, mouseListener);
+		setupJMButton();
 	}
 
 	
-	public void setupJMButton(Consumer<KeyEvent> keyListener, Consumer<MouseEvent> mouseListener) {
+	public void setupJMButton() {
 		setHorizontalAlignment(SwingConstants.CENTER);
 		setFocusable(true);
-		setOpaque(true);
-
+		setOpaque(false);
+		setBorder();
+		addFocusListener();
+		addMouseListener(createMouseAdapter());
+	}
+	
+	public void addActionListner(Consumer<InputEvent> listener) {
+		
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				if(arg0.getKeyCode() == KeyEvent.VK_ENTER && enabled) {
-					keyListener.accept(arg0);
+					listener.accept(arg0);
 				}
 			}
 		});
-
+		
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				if(contains(arg0.getPoint()) && enabled) {
-					mouseListener.accept(arg0);
+					listener.accept(arg0);
 				}
 			}
 		});
-
-		addFocusListener();
-		addMouseListener(createMouseAdapter());
 	}
 
 	public void addFocusListener() {
@@ -91,15 +95,19 @@ public class JMButton extends JLabel {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if(enabled) {
-					setBorder(JMColor.HOVER_BORDER_COLOR);
+					border = JMColor.HOVER_BORDER_COLOR;
 				}
+				
+				repaint();
 			}
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				if(enabled) {
-					setBorder(JMColor.DEFAULT_BORDER_COLOR);
+					border = JMColor.DEFAULT_BORDER_COLOR;
 				}
+				
+				repaint();
 			}
 		});
 	}
@@ -111,44 +119,51 @@ public class JMButton extends JLabel {
 				if(enabled) {
 					pressed = false;
 
-					setBorder(JMColor.HOVER_BORDER_COLOR);
-					setBackground(JMColor.HOVER_COLOR);		
+					border = JMColor.DEFAULT_BORDER_COLOR;
+					background   = JMColor.DEFAULT_BACKGROUND;	
 				}
+				
+				repaint();
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(enabled) {
-					setBackground(JMColor.PRESS_COLOR);
+					background = JMColor.PRESS_COLOR;
 					pressed = true;
 				}
+				
+				repaint();
 			}
 
 			@Override
 			public void mouseExited(MouseEvent arg0) {
 				if(enabled) {
 					if(pressed) {
-						setBorder(JMColor.HOVER_BORDER_COLOR);
-						setBackground(JMColor.HOVER_COLOR);
+						border = JMColor.HOVER_BORDER_COLOR;
+						background = JMColor.HOVER_COLOR;
 					} else {
-						setBorder(JMColor.DEFAULT_BORDER_COLOR);
-						setBackground(originalBackground);
+						border = JMColor.DEFAULT_BORDER_COLOR;
+						background = JMColor.DEFAULT_BACKGROUND;
 					}
 				}
+				
+				repaint();
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
 				if(enabled) {
 					if(!pressed) {
-						originalBackground = getBackground();
-						setBackground(JMColor.HOVER_COLOR);
+						border = JMColor.HOVER_BORDER_COLOR;
+						background = JMColor.HOVER_COLOR;
 					} else {
-						setBackground(JMColor.PRESS_COLOR);
+						border = JMColor.HOVER_BORDER_COLOR;
+						background = JMColor.PRESS_COLOR;
 					}
-
-					setBorder(JMColor.HOVER_BORDER_COLOR);
 				}
+				
+				repaint();
 			}
 		};
 	}
@@ -158,29 +173,34 @@ public class JMButton extends JLabel {
 		this.enabled = enable;
 		
 		if(this.enabled) {
-			setBorder(JMColor.DEFAULT_BORDER_COLOR);
 			setForeground(JMColor.DEFAULT_FOREGROUND);
-			setBackground(JMColor.DEFAULT_BACKGROUND);
+			
+			border = JMColor.DEFAULT_BORDER_COLOR;
+			background   = JMColor.DEFAULT_BACKGROUND;
 		} else {
-			setBorder(JMColor.DISABLED_BORDER_COLOR);
 			setForeground(JMColor.DISABLED_FOREGROUND_COLOR);
-			setBackground(JMColor.DISABLED_BACKGROUND_COLOR);
+			
+			border = JMColor.DISABLED_BORDER_COLOR;
+			background   = JMColor.DISABLED_BACKGROUND_COLOR;
 		}
 		
 		setFocusable(this.enabled);
 	}
 	
-	private void setBorder(Color color) {
-		Tools.setBorderColor(this, color);
+	private void setBorder() {
+		Tools.setBorder(this);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {		
 		Graphics2D gg = (Graphics2D) g;
 
-		gg.setColor(drawColor);
+		gg.setColor(background);
 		gg.fillRect(0, 0, getWidth(), getHeight());
 
+		gg.setColor(border);
+		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);
+		
 		if(style == JMButton.STYLE_CLOSE_BUTTON) {
 			drawCloseButton(gg);
 		}

@@ -5,6 +5,8 @@ public class JTextClose extends JTextButton {
 
 	public JTextClose(String text) {
 		super(text, " × ", false);
+		
+		
 	}
 
 	@Override

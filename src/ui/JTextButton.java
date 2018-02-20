@@ -33,19 +33,25 @@ public abstract class JTextButton extends JPanel {
 	private void setUpButton(String text, String buttonText, Boolean disabledWhenEmpty) {
 		this.disabledWhenEmpty = disabledWhenEmpty;
 		
-		textField = new JMTextField(text);
-		textField.addKeyListener(createKeyAdapter());
+		setLayout(new GridBagLayout());
 		
-		button = new JMButton(buttonText, e -> buttonAction(), e -> buttonAction());
+		textField = new JMTextField(text);
+		button    = new JMButton(buttonText);
+		
+		textField.addKeyListener(createKeyAdapter());
+		add(textField, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, 
+				GridBagConstraints.BOTH,     new Insets(0,0,0,2), 0, 0));
+		
+		button.addActionListner(e -> buttonAction());
 		button.setButtonEnabled(false);
+		add(button,  new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, 
+				GridBagConstraints.VERTICAL, new Insets(0,0,0,0), 0, 0));
 		
 		Tools.setBorderColor(button, JMColor.DEFAULT_BORDER_COLOR);
 		
-		setLayout(new GridBagLayout());
-		add(textField, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.WEST, 
-				GridBagConstraints.BOTH,     new Insets(0,0,0,2), 0, 0));
-		add(button,  new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, 
-				GridBagConstraints.VERTICAL, new Insets(0,0,0,0), 0, 0));
+		if(!disabledWhenEmpty) {
+			button.setButtonEnabled(true);
+		}
 	}
 
 	private KeyAdapter createKeyAdapter() {

@@ -29,7 +29,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class Tools {
@@ -44,6 +43,10 @@ public class Tools {
 				BorderFactory.createCompoundBorder(
 						BorderFactory.createLineBorder(borderColor, 1), 
 						BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+	}
+	
+	public static void setBorder(JComponent component) {
+		component.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 	}
 	
 	/** Creates the image icons that will be displayed on the app's taskbar **/

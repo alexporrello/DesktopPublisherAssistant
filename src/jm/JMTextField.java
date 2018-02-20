@@ -11,8 +11,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 
-import ui.Tools;
-
 public class JMTextField extends JTextField {
 	private static final long serialVersionUID = -2346021547935315452L;
 
