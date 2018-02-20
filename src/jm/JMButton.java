@@ -58,14 +58,14 @@ public class JMButton extends JLabel {
 
 		setupJMButton();
 	}
-
 	
 	public void setupJMButton() {
 		setHorizontalAlignment(SwingConstants.CENTER);
 		setFocusable(true);
 		setOpaque(false);
 		setBorder();
-		addFocusListener();
+		
+		addFocusListener(createFocusListener());
 		addMouseListener(createMouseAdapter());
 	}
 	
@@ -90,12 +90,13 @@ public class JMButton extends JLabel {
 		});
 	}
 
-	public void addFocusListener() {
-		addFocusListener(new FocusListener() {
+	public FocusListener createFocusListener() {
+		return new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if(enabled) {
 					border = JMColor.HOVER_BORDER_COLOR;
+					background = JMColor.HOVER_COLOR;
 				}
 				
 				repaint();
@@ -105,11 +106,12 @@ public class JMButton extends JLabel {
 			public void focusLost(FocusEvent arg0) {
 				if(enabled) {
 					border = JMColor.DEFAULT_BORDER_COLOR;
+					background = JMColor.DEFAULT_BACKGROUND;
 				}
 				
 				repaint();
 			}
-		});
+		};
 	}
 
 	private MouseAdapter createMouseAdapter() {
@@ -185,6 +187,7 @@ public class JMButton extends JLabel {
 		}
 		
 		setFocusable(this.enabled);
+		repaint();
 	}
 	
 	private void setBorder() {
@@ -203,9 +206,9 @@ public class JMButton extends JLabel {
 		
 		if(style == JMButton.STYLE_CLOSE_BUTTON) {
 			drawCloseButton(gg);
+		} else {
+			super.paintComponent(g);
 		}
-
-		super.paintComponent(g);
 	}
 
 	/**

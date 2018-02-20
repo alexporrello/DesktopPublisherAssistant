@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 
 import jm.JMButton;
 import jm.JMTextField;
-import jm.JMColor;
 
 public abstract class JTextButton extends JPanel {
 	private static final long serialVersionUID = -2231714098377893220L;
@@ -47,9 +46,7 @@ public abstract class JTextButton extends JPanel {
 		add(button,  new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0, GridBagConstraints.WEST, 
 				GridBagConstraints.VERTICAL, new Insets(0,0,0,0), 0, 0));
 		
-		Tools.setBorderColor(button, JMColor.DEFAULT_BORDER_COLOR);
-		
-		if(!disabledWhenEmpty) {
+		if(text.length() > 0 || !disabledWhenEmpty) {
 			button.setButtonEnabled(true);
 		}
 	}
@@ -68,13 +65,14 @@ public abstract class JTextButton extends JPanel {
 	public void setTextIfEmpty(String toSet) {
 		if(textField.getText().length() == 0) {
 			setText(toSet);
+			button.setButtonEnabled(true);
 		}
 	}
 
 	public void setText(String toSet) {
 		textField.setText(toSet);
 
-		button.setEnabled(toSet.length() > 0);
+		button.setButtonEnabled(toSet.length() > 0);
 	}
 	
 	public String getText() {
