@@ -30,7 +30,7 @@ import ui.Tools;
 public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	private static final long serialVersionUID = 4949615017530138259L;
 
-	public static final Dimension STATUS_SIZE       = new Dimension(90,  24);
+	public static final Dimension STATUS_SIZE       = new Dimension(110,  24);
 	public static final Dimension CREATED_DATE_SIZE = new Dimension(110, 24);
 	public static final Dimension PART_NUM_32_SIZE  = new Dimension(100, 24);
 	public static final Dimension PART_NUM_37_SIZE  = new Dimension(100, 24);

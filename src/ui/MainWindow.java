@@ -6,7 +6,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -15,6 +18,8 @@ import java.net.URISyntaxException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -90,6 +95,8 @@ public class MainWindow extends JMPanel {
 	public MainWindow(JFrame parent) {
 		this.parent = parent;
 
+		new ClipBoardListener().run();
+		
 		setLayout(new GridBagLayout());
 		createFields();
 	}
@@ -398,7 +405,7 @@ public class MainWindow extends JMPanel {
 
 	/**
 	 * If a given string is recognized, it is auto-added to empty fields.
-	 * @param s the string to be auto-added.d
+	 * @param s the string to be auto-added.d TODO
 	 */
 	public void autoAddString(String s) {
 		s = s.trim();
@@ -420,8 +427,16 @@ public class MainWindow extends JMPanel {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {			
 			tcisURL.setTextIfEmpty(s);
-		} else if(s.toLowerCase().contains("specifications") || s.toLowerCase().contains("user manual")) {
+		} else if(s.toLowerCase().contains("specifications") || s.toLowerCase().contains("user manual") || s.toLowerCase().contains("specs")) {
 			setTextIfEmpty(title, s);
+		}
+		
+		String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+		
+		for(String month : months) {
+			if(s.toLowerCase().contains(month.toLowerCase())) {
+				setTextIfEmpty(date, s);
+			}
 		}
 	}
 
@@ -614,5 +629,52 @@ public class MainWindow extends JMPanel {
 			g.drawLine(0, getHeight()/2, getWidth(), getHeight()/2);
 		}
 		
+	}
+	
+	public class ClipBoardListener extends Thread implements ClipboardOwner {
+		Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();  
+
+		@Override
+		public void run() {
+			Transferable trans = sysClip.getContents(this);  
+			TakeOwnership(trans);
+		}  
+
+		@Override
+		public void lostOwnership(Clipboard c, Transferable t) {  
+
+			try {  
+				ClipBoardListener.sleep(10);  //waiting e.g for loading huge elements like word's etc.
+			} catch(Exception e) {  
+				System.err.println("Exception: " + e);  
+			}  
+			Transferable contents = sysClip.getContents(this);  
+			try {
+				processClipboard(contents, c);
+			} catch (Exception ex) {
+				Logger.getLogger(ClipBoardListener.class.getName()).log(Level.SEVERE, null, ex);
+			}
+					
+			TakeOwnership(contents);
+		}  
+
+		void TakeOwnership(Transferable t) {  
+			sysClip.setContents(t, this);  
+		}  
+
+		public void processClipboard(Transferable t, Clipboard c) { //your implementation
+			String tempText;
+			Transferable trans = t;
+
+			try {
+				if (trans != null?trans.isDataFlavorSupported(DataFlavor.stringFlavor):false) {
+					tempText = (String) trans.getTransferData(DataFlavor.stringFlavor);
+					autoAddString(tempText);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 }
