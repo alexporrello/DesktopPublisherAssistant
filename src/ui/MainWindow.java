@@ -401,9 +401,7 @@ public class MainWindow extends JMPanel {
 	 * @param s the string to be auto-added.d
 	 */
 	public void autoAddString(String s) {
-		if(s.endsWith(" ")) {
-			s = s.substring(0, s.length()-1);
-		}
+		s = s.trim();
 
 		if(s.startsWith("//")) {
 			perforce.setTextIfEmpty(s);
@@ -445,7 +443,7 @@ public class MainWindow extends JMPanel {
 	 */
 	public String getSaveFileName() throws NoSuchFileException {
 		if(!Tools.isEmpty(jiraSummary)) {
-			return jiraSummary.getText() + ".log";
+			return jiraSummary.getText().trim() + ".log";
 		} else {
 			throw new NoSuchFileException("Enter the Jira Ticket Summary to save the file.");
 		}
