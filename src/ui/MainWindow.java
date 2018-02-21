@@ -10,6 +10,7 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,6 +90,9 @@ public class MainWindow extends JMPanel {
 	/** The JFrame in which this JPanel is displayed **/
 	private JFrame parent;
 
+	/** Load all of the reports the user has worked with and load them into here **/
+	private HashSet<String> reports = new HashSet<String>();
+
 	JMButton cwd;
 	JMButton cps;
 	JMButton cdpc;
@@ -96,8 +101,9 @@ public class MainWindow extends JMPanel {
 		this.parent = parent;
 
 		new ClipBoardListener().run();
-		
+
 		setLayout(new GridBagLayout());
+		updateAuthorHashSet();
 		createFields();
 	}
 
@@ -119,7 +125,7 @@ public class MainWindow extends JMPanel {
 		add(setUpText(title), Tools.createGBC(1, y, 1.0, insets));
 		add(cwd, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));
 		y++;
-		
+
 		add(createJLabel("32 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(partNum32), Tools.createGBC(1, y, 1.0, insets));
 		add(cps, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
@@ -129,14 +135,14 @@ public class MainWindow extends JMPanel {
 		add(setUpText(partNum37), Tools.createGBC(1, y, 1.0, insets));
 		add(cdpc, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		y++;
-		
+
 		add(createJLabel("Doc Date: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(date), Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
 		//add(new Separator(), Tools.createGBC(0, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 0), 2));
 		//y++;
-		
+
 		add(createJLabel("GUID: "), Tools.createGBC(0, y, 0.0, insets));
 		setUpText(GUID.getTextField());
 		add(GUID, Tools.createGBC(1, y, 1.0, insets));
@@ -149,7 +155,7 @@ public class MainWindow extends JMPanel {
 
 		//add(new Separator(), Tools.createGBC(0, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 0), 2));
 		//y++;
-		
+
 		add(createJLabel("Jira Ticket Summary: "), Tools.createGBC(0, y, 0.0, insets));
 		add(setUpText(jiraSummary), Tools.createGBC(1, y, 1.0, insets));
 		y++;
@@ -162,7 +168,7 @@ public class MainWindow extends JMPanel {
 		setUpText(jiraURL.getTextField());
 		add(jiraURL, Tools.createGBC(1, y, 1.0, insets));
 		y++;
-		
+
 		//add(new Separator(), Tools.createGBC(0, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 0), 2));
 		//y++;
 
@@ -185,7 +191,7 @@ public class MainWindow extends JMPanel {
 		cwd.setToolTipText("Enable this button by entering the doc title.");
 		cwd.setButtonEnabled(false);
 		cwd.addActionListner(e -> createWorkingDirectory());
-		
+
 		// Create the "Copy Print Spec Doc" Button
 		cps = new JMButton("  Copy Print Spec Doc  ");
 		cps.setToolTipText("Enable button by entering the 32 part number and the doc title.");
@@ -429,15 +435,24 @@ public class MainWindow extends JMPanel {
 			tcisURL.setTextIfEmpty(s);
 		} else if(s.toLowerCase().contains("specifications") || s.toLowerCase().contains("user manual") || s.toLowerCase().contains("specs")) {
 			setTextIfEmpty(title, s);
-		}
-		
-		String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
-		
-		for(String month : months) {
-			if(s.toLowerCase().contains(month.toLowerCase())) {
-				setTextIfEmpty(date, s);
+		} else {
+			String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+
+			for(String month : months) {
+				if(s.toLowerCase().contains(month.toLowerCase())) {
+					setTextIfEmpty(date, s);
+				}
+			}
+
+			for(String report : reports) {
+				if(report.toLowerCase().contains(s.toLowerCase())) {
+					setTextIfEmpty(author, s);
+				}
 			}
 		}
+
+
+
 	}
 
 	/**
@@ -600,6 +615,19 @@ public class MainWindow extends JMPanel {
 		}
 	}
 
+	/**
+	 * Loads all of the Jira reports the writer has worked with into {@link #reports}.
+	 */
+	public void updateAuthorHashSet() {
+		for(File f : Ticket.TICKET_URL.listFiles()) {
+			try {
+				reports.add(Ticket.readLogFile(f.getAbsolutePath(), TicketInfo.REPORT).trim());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
 		String toReturn = "";
@@ -619,7 +647,7 @@ public class MainWindow extends JMPanel {
 
 		return toReturn;
 	}
-	
+
 	public class Separator extends JMPanel {
 		private static final long serialVersionUID = -7433172482073590125L;
 
@@ -628,53 +656,52 @@ public class MainWindow extends JMPanel {
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawLine(0, getHeight()/2, getWidth(), getHeight()/2);
 		}
-		
+
 	}
-	
+
 	public class ClipBoardListener extends Thread implements ClipboardOwner {
 		Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();  
 
 		@Override
 		public void run() {
-			Transferable trans = sysClip.getContents(this);  
+			Transferable trans = sysClip.getContents(this);
 			TakeOwnership(trans);
 		}  
 
 		@Override
 		public void lostOwnership(Clipboard c, Transferable t) {  
-
 			try {  
-				ClipBoardListener.sleep(10);  //waiting e.g for loading huge elements like word's etc.
+				ClipBoardListener.sleep(10);
 			} catch(Exception e) {  
 				System.err.println("Exception: " + e);  
 			}  
 			Transferable contents = sysClip.getContents(this);  
+
 			try {
 				processClipboard(contents, c);
 			} catch (Exception ex) {
 				Logger.getLogger(ClipBoardListener.class.getName()).log(Level.SEVERE, null, ex);
 			}
-					
+
 			TakeOwnership(contents);
 		}  
 
-		void TakeOwnership(Transferable t) {  
-			sysClip.setContents(t, this);  
+		void TakeOwnership(Transferable t) {
+			sysClip.setContents(t, this);
 		}  
 
-		public void processClipboard(Transferable t, Clipboard c) { //your implementation
+		public void processClipboard(Transferable t, Clipboard c) {
 			String tempText;
 			Transferable trans = t;
 
 			try {
-				if (trans != null?trans.isDataFlavorSupported(DataFlavor.stringFlavor):false) {
+				if (trans != null && trans.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 					tempText = (String) trans.getTransferData(DataFlavor.stringFlavor);
 					autoAddString(tempText);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (UnsupportedFlavorException | IOException e2) {
+				System.err.println("This is an unsupported flavor. Contents from clipboard could not be read.");
 			}
 		}
-
 	}
 }

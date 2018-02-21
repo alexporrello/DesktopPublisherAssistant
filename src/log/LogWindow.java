@@ -235,6 +235,7 @@ public class LogWindow extends JMPanel {
 							for (WatchEvent<?> event : key.pollEvents()) {
 								if (event.kind() == ENTRY_CREATE || event.kind() == ENTRY_DELETE || event.kind() == ENTRY_MODIFY) {
 									addToLogEntryPanel();
+									mw.updateAuthorHashSet();
 									continue;
 								}
 							}
