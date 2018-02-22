@@ -1,4 +1,4 @@
-package ui;
+package jtext;
 
 public class JTextClose extends JTextButton {
 	private static final long serialVersionUID = -2231714098377893220L;

@@ -34,6 +34,8 @@ import com.itextpdf.text.DocumentException;
 import jm.JMButton;
 import jm.JMPanel;
 import jm.JMTextField;
+import jtext.JTextCopy;
+import jtext.JTextLink;
 import pdf.PDFPropertiesUpdater;
 import ticket.Ticket;
 import ticket.TicketInfo;

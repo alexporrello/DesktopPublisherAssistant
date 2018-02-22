@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
-encoding//src/ui/JTextButton.java=UTF-8
-encoding//src/ui/JTextClose.java=UTF-8
-encoding//src/ui/JTextCopy.java=UTF-8
-encoding//src/ui/JTextLink.java=UTF-8
+encoding//src/jtext/JTextButton.java=UTF-8
+encoding//src/jtext/JTextClose.java=UTF-8
+encoding//src/jtext/JTextCopy.java=UTF-8
+encoding//src/jtext/JTextLink.java=UTF-8

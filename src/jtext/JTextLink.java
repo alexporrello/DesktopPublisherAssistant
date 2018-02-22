@@ -1,4 +1,4 @@
-package ui;
+package jtext;
 
 import java.awt.Desktop;
 import java.io.IOException;

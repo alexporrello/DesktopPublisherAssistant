@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 
 import jm.JMPanel;
 import jm.JMScrollPane;
+import jtext.JTextClose;
 import jm.JMColor;
 
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -37,7 +38,6 @@ import java.nio.file.WatchService;
 
 import ticket.Ticket;
 import ticket.TicketInfo;
-import ui.JTextClose;
 import ui.MainWindow;
 import ui.Tools;
 
