@@ -33,14 +33,14 @@ public class JMButton extends JLabel {
 
 	/** The color of the button's background **/
 	private Color background = JMColor.DEFAULT_BACKGROUND;
-	
+
 	/** The color of the button's border **/
 	private Color border = JMColor.DEFAULT_BORDER_COLOR;
 
 	/** Determines what is displayed on the button **/
 	private int style = JMButton.STYLE_TEXT;
 
-	
+
 	public JMButton(String s) {
 		super(s);
 
@@ -58,33 +58,35 @@ public class JMButton extends JLabel {
 
 		setupJMButton();
 	}
-	
+
 	public void setupJMButton() {
 		setHorizontalAlignment(SwingConstants.CENTER);
 		setFocusable(true);
 		setOpaque(false);
 		setBorder();
-		
+
 		addFocusListener(createFocusListener());
 		addMouseListener(createMouseAdapter());
 	}
-	
+
 	public void addActionListner(Consumer<InputEvent> listener) {
-		
+
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if(arg0.getKeyCode() == KeyEvent.VK_ENTER && enabled) {
+				if((arg0.getKeyCode() == KeyEvent.VK_ENTER || arg0.getKeyCode() == KeyEvent.VK_SPACE) && enabled) {
 					listener.accept(arg0);
+					requestFocus(true);
 				}
 			}
 		});
-		
+
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
 				if(contains(arg0.getPoint()) && enabled) {
 					listener.accept(arg0);
+					requestFocus(true);
 				}
 			}
 		});
@@ -108,7 +110,7 @@ public class JMButton extends JLabel {
 					border = JMColor.DEFAULT_BORDER_COLOR;
 					background = JMColor.DEFAULT_BACKGROUND;
 				}
-				
+
 				repaint();
 			}
 		};
@@ -121,10 +123,15 @@ public class JMButton extends JLabel {
 				if(enabled) {
 					pressed = false;
 
-					border = JMColor.DEFAULT_BORDER_COLOR;
-					background   = JMColor.DEFAULT_BACKGROUND;	
+					if(!hasFocus()) {
+						border     = JMColor.DEFAULT_BORDER_COLOR;
+						background = JMColor.DEFAULT_BACKGROUND;
+					} else {
+						border = JMColor.HOVER_BORDER_COLOR;
+						background = JMColor.HOVER_COLOR;
+					}
 				}
-				
+
 				repaint();
 			}
 
@@ -134,7 +141,7 @@ public class JMButton extends JLabel {
 					background = JMColor.PRESS_COLOR;
 					pressed = true;
 				}
-				
+
 				repaint();
 			}
 
@@ -144,12 +151,12 @@ public class JMButton extends JLabel {
 					if(pressed) {
 						border = JMColor.HOVER_BORDER_COLOR;
 						background = JMColor.HOVER_COLOR;
-					} else {
+					} else if(!hasFocus()) {
 						border = JMColor.DEFAULT_BORDER_COLOR;
 						background = JMColor.DEFAULT_BACKGROUND;
 					}
 				}
-				
+
 				repaint();
 			}
 
@@ -164,7 +171,7 @@ public class JMButton extends JLabel {
 						background = JMColor.PRESS_COLOR;
 					}
 				}
-				
+
 				repaint();
 			}
 		};
@@ -173,23 +180,23 @@ public class JMButton extends JLabel {
 
 	public void setButtonEnabled(Boolean enable) {
 		this.enabled = enable;
-		
+
 		if(this.enabled) {
 			setForeground(JMColor.DEFAULT_FOREGROUND);
-			
+
 			border = JMColor.DEFAULT_BORDER_COLOR;
 			background   = JMColor.DEFAULT_BACKGROUND;
 		} else {
 			setForeground(JMColor.DISABLED_FOREGROUND_COLOR);
-			
+
 			border = JMColor.DISABLED_BORDER_COLOR;
 			background   = JMColor.DISABLED_BACKGROUND_COLOR;
 		}
-		
+
 		setFocusable(this.enabled);
 		repaint();
 	}
-	
+
 	private void setBorder() {
 		Tools.setBorder(this);
 	}
@@ -203,7 +210,7 @@ public class JMButton extends JLabel {
 
 		gg.setColor(border);
 		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);
-		
+
 		if(style == JMButton.STYLE_CLOSE_BUTTON) {
 			drawCloseButton(gg);
 		} else {
