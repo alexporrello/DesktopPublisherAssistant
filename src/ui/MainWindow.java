@@ -36,6 +36,7 @@ import jm.JMPanel;
 import jm.JMTextField;
 import jtext.JTextCopy;
 import jtext.JTextLink;
+import jtext.JTextPartNum;
 import pdf.PDFPropertiesUpdater;
 import ticket.Ticket;
 import ticket.TicketInfo;
@@ -51,10 +52,10 @@ public class MainWindow extends JMPanel {
 	private JMTextField title = new JMTextField();
 
 	/** The field for the online part number **/
-	private JMTextField partNum37 = new JMTextField();
+	private JTextPartNum partNum37 = new JTextPartNum("");
 
 	/** The field for the print part number **/
-	private JMTextField partNum32 = new JMTextField();
+	private JTextPartNum partNum32 = new JTextPartNum("");
 
 	/** The date of the document **/
 	private JMTextField date = new JMTextField();
@@ -130,12 +131,14 @@ public class MainWindow extends JMPanel {
 		y++;
 
 		add(createJLabel("32 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
-		add(setUpText(partNum32), Tools.createGBC(1, y, 1.0, insets));
+		setUpText(partNum32.getTextField());
+		add(partNum32, Tools.createGBC(1, y, 1.0, insets));
 		add(cps, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		y++;
 
 		add(createJLabel("37 Part Number: "), Tools.createGBC(0, y, 0.0, insets));
-		add(setUpText(partNum37), Tools.createGBC(1, y, 1.0, insets));
+		setUpText(partNum37.getTextField());
+		add(partNum37, Tools.createGBC(1, y, 1.0, insets));
 		add(cdpc, Tools.createGBC(2, y, 0.0, new Insets(insets.top, insets.left, insets.bottom, 5)));;
 		y++;
 
@@ -270,13 +273,13 @@ public class MainWindow extends JMPanel {
 	 */
 	private void enableButton() {
 		if(!Tools.isEmpty(title)) {
-			if(!Tools.isEmpty(partNum32)) {
+			if(!Tools.isEmpty(partNum32.getTextField())) {
 				cps.setButtonEnabled(true);
 			} else {
 				cps.setButtonEnabled(false);
 			}
 
-			if(!Tools.isEmpty(date) && (!Tools.isEmpty(partNum37) || !Tools.isEmpty(partNum32))) {
+			if(!Tools.isEmpty(date) && (!Tools.isEmpty(partNum37.getTextField()) || !Tools.isEmpty(partNum32.getTextField()))) {
 				cdpc.setButtonEnabled(true);
 			} else {
 				cdpc.setButtonEnabled(false);
@@ -379,13 +382,13 @@ public class MainWindow extends JMPanel {
 	private String getPartNumbers() {
 		String docTitle = "Document Title";
 
-		if(!Tools.isEmpty(partNum32)) {
-			if(!Tools.isEmpty(partNum37)) {
+		if(!Tools.isEmpty(partNum32.getTextField())) {
+			if(!Tools.isEmpty(partNum37.getTextField())) {
 				docTitle = partNum32.getText() + ", " + partNum37.getText();
 			} else {
 				docTitle = partNum32.getText();
 			}
-		} else if(!Tools.isEmpty(partNum37)) {
+		} else if(!Tools.isEmpty(partNum37.getTextField())) {
 			docTitle = partNum37.getText();
 		}
 
@@ -422,12 +425,20 @@ public class MainWindow extends JMPanel {
 		if(s.startsWith("//")) {
 			perforce.setTextIfEmpty(s);
 		} else if(s.contains("32") && s.contains("37") && s.split(", ").length == 2) {
-			setTextIfEmpty(partNum32, s.split(", ")[0]);
-			setTextIfEmpty(partNum37, s.split(", ")[1]);
+			String partNumA = s.split(", ")[0];
+			String partNumB = s.split(", ")[1];
+			
+			if(partNumA.startsWith("32")) {
+				partNum32.setTextIfEmpty(partNumA);
+				partNum37.setTextIfEmpty(partNumB);
+			} else {
+				partNum32.setTextIfEmpty(partNumB);
+				partNum37.setTextIfEmpty(partNumA);
+			}
 		} else if(s.startsWith("32")) {
-			setTextIfEmpty(partNum32, s);
+			partNum32.setTextIfEmpty(s);
 		} else if(s.startsWith("37")) {
-			setTextIfEmpty(partNum37, s);
+			partNum37.setTextIfEmpty(s);
 		} else if(s.contains("GUID")) {
 			GUID.setTextIfEmpty(s);
 		} else if(s.contains("nijira")) {
