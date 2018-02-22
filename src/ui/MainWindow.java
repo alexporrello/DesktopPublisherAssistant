@@ -93,14 +93,15 @@ public class MainWindow extends JMPanel {
 	/** Load all of the reports the user has worked with and load them into here **/
 	private HashSet<String> reports = new HashSet<String>();
 
+	/** Listens to the clipboard for when the user copies new text **/
+	private ClipBoardListener cbl = new ClipBoardListener();
+
 	JMButton cwd;
 	JMButton cps;
 	JMButton cdpc;
 
 	public MainWindow(JFrame parent) {
 		this.parent = parent;
-
-		new ClipBoardListener().run();
 
 		setLayout(new GridBagLayout());
 		updateAuthorHashSet();
@@ -615,6 +616,18 @@ public class MainWindow extends JMPanel {
 		}
 	}
 
+	public void startClipboardListener() {
+		cbl = new ClipBoardListener();
+		cbl.start();
+	}
+
+	public void stopClipboardListener() {
+		cbl.stop = true;
+		cbl.interrupt();
+		
+		System.out.println(cbl.isInterrupted());
+	}
+
 	/**
 	 * Loads all of the Jira reports the writer has worked with into {@link #reports}.
 	 */
@@ -660,30 +673,36 @@ public class MainWindow extends JMPanel {
 	}
 
 	public class ClipBoardListener extends Thread implements ClipboardOwner {
-		Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();  
+
+		public Clipboard sysClip = Toolkit.getDefaultToolkit().getSystemClipboard();  
+		public Boolean stop = false;
 
 		@Override
 		public void run() {
-			Transferable trans = sysClip.getContents(this);
-			TakeOwnership(trans);
+			if(!stop) {
+				Transferable trans = sysClip.getContents(this);
+				TakeOwnership(trans);
+			}
 		}  
 
 		@Override
-		public void lostOwnership(Clipboard c, Transferable t) {  
-			try {  
-				ClipBoardListener.sleep(10);
-			} catch(Exception e) {  
-				System.err.println("Exception: " + e);  
-			}  
-			Transferable contents = sysClip.getContents(this);  
+		public void lostOwnership(Clipboard c, Transferable t) {
+			if(!stop) {
+				try {  
+					ClipBoardListener.sleep(10);
+				} catch(Exception e) {  
+					System.err.println("Exception: " + e);  
+				}  
+				Transferable contents = sysClip.getContents(this);  
 
-			try {
-				processClipboard(contents, c);
-			} catch (Exception ex) {
-				Logger.getLogger(ClipBoardListener.class.getName()).log(Level.SEVERE, null, ex);
+				try {
+					processClipboard(contents, c);
+				} catch (Exception ex) {
+					Logger.getLogger(ClipBoardListener.class.getName()).log(Level.SEVERE, null, ex);
+				}
+
+				TakeOwnership(contents);
 			}
-
-			TakeOwnership(contents);
 		}  
 
 		void TakeOwnership(Transferable t) {
@@ -691,16 +710,18 @@ public class MainWindow extends JMPanel {
 		}  
 
 		public void processClipboard(Transferable t, Clipboard c) {
-			String tempText;
-			Transferable trans = t;
+			if(!stop) {
+				String tempText;
+				Transferable trans = t;
 
-			try {
-				if (trans != null && trans.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-					tempText = (String) trans.getTransferData(DataFlavor.stringFlavor);
-					autoAddString(tempText);
+				try {
+					if (trans != null && trans.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+						tempText = (String) trans.getTransferData(DataFlavor.stringFlavor);
+						autoAddString(tempText);
+					}
+				} catch (UnsupportedFlavorException | IOException e2) {
+					System.err.println("This is an unsupported flavor. Contents from clipboard could not be read.");
 				}
-			} catch (UnsupportedFlavorException | IOException e2) {
-				System.err.println("This is an unsupported flavor. Contents from clipboard could not be read.");
 			}
 		}
 	}

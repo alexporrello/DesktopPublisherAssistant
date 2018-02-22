@@ -229,6 +229,24 @@ public class MenuBar extends JMenuBar {
 				clpbrd.setContents(stringSelection, null);
 			});
 			add(copyTemplate);
+			
+			//===========================================================================
+			
+			addSeparator();
+			
+			JCheckBoxMenuItem clipboardListener = new JCheckBoxMenuItem("Start Clipboard Listener (Experimental)");
+			clipboardListener.addActionListener(e -> {
+				//clipboardListener.setSelected(!clipboardListener.isSelected());
+				
+				if(clipboardListener.isSelected()) {
+					mainWindow.startClipboardListener();
+				} else {
+					mainWindow.stopClipboardListener();
+				}
+			});
+			clipboardListener.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, java.awt.event.InputEvent.SHIFT_DOWN_MASK |Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			clipboardListener.setSelected(false);
+			add(clipboardListener);
 		}
 
 		private void openCopyDialog(String resourceName) {
