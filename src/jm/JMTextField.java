@@ -5,15 +5,21 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 
+import ui.Tools;
+
 public class JMTextField extends JTextField {
 	private static final long serialVersionUID = -2346021547935315452L;
 
+	Boolean replaceSlashWithDash = false;
+	
 	public JMTextField() {
 		setupTextField();
 	}
@@ -23,10 +29,19 @@ public class JMTextField extends JTextField {
 		setupTextField();
 	}
 	
+	public JMTextField(String s, Boolean replaceSlashWithDash) {
+		super(s);
+		
+		this.replaceSlashWithDash = replaceSlashWithDash;
+		
+		setupTextField();
+	}
+
 	private void setupTextField() {
 		copyContentsOnDoubleClick();
 		selectAllWhenFocused();
-		
+		trimPastedStrings();
+
 		createBorder(Color.LIGHT_GRAY);
 	}
 
@@ -52,6 +67,25 @@ public class JMTextField extends JTextField {
 					Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
 							new StringSelection(getText()), null);
 					select(0, 0);
+				}
+			}
+		});
+	}
+
+	/**
+	 * Trims the whitespace off of strings that are pasted into the program.
+	 */
+	private void trimPastedStrings() {
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if(arg0.isControlDown() && arg0.getKeyCode() == KeyEvent.VK_V) {					
+					arg0.consume();
+					setText(Tools.getCopiedText().trim());
+					
+					if(replaceSlashWithDash) {
+						setText(Tools.getCopiedText().replace("/", "-"));
+					}
 				}
 			}
 		});

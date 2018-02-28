@@ -49,7 +49,7 @@ public class MainWindow extends JMPanel {
 	private static final long serialVersionUID = 8053959756132135670L;
 
 	/** The title of the document **/
-	private JMTextField title = new JMTextField();
+	private JMTextField title = new JMTextField("", true);
 
 	/** The field for the online part number **/
 	private JTextPartNum partNum37 = new JTextPartNum("");
