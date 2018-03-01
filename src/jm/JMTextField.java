@@ -84,7 +84,7 @@ public class JMTextField extends JTextField {
 					setText(Tools.getCopiedText().trim());
 					
 					if(replaceSlashWithDash) {
-						setText(Tools.getCopiedText().replace("/", "-"));
+						setText(Tools.getCopiedText().trim().replace("/", "-"));
 					}
 				}
 			}
