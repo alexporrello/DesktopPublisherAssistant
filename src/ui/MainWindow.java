@@ -20,6 +20,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -443,15 +444,21 @@ public class MainWindow extends JMPanel {
 			GUID.setTextIfEmpty(s);
 		} else if(s.contains("nijira")) {
 			jiraURL.setTextIfEmpty(s);
-		} else if(s.contains("Prepare") || s.contains("Apply")) {
+		} else if(s.contains("Prepare") || s.contains("Apply") || s.contains("Signoff")) {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {			
 			tcisURL.setTextIfEmpty(s);
-		} else if(s.toLowerCase().contains("specifications") || s.toLowerCase().contains("user manual") || s.toLowerCase().contains("specs")) {
-			setTextIfEmpty(title, s);
 		} else {
+			String[] titles = {"specifications", "user manual", "specs"};
+			
+			for(String title : titles) {
+				if(contains(s, title)) {
+					setTextIfEmpty(this.title, s);
+				}
+			}
+			
 			String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
-
+			
 			for(String month : months) {
 				if(s.toLowerCase().contains(month.toLowerCase())) {
 					setTextIfEmpty(date, s);
@@ -464,11 +471,12 @@ public class MainWindow extends JMPanel {
 				}
 			}
 		}
-
-
-
 	}
 
+	private Boolean contains(String s, String ss) {
+		return s.toLowerCase().contains(ss.toLowerCase());
+	}
+	
 	/**
 	 * Sets a given JTextField's text only if it is empty.
 	 * @param field the field to be set
@@ -648,6 +656,8 @@ public class MainWindow extends JMPanel {
 		for(File f : Ticket.TICKET_URL.listFiles()) {
 			try {
 				reports.add(Ticket.readLogFile(f.getAbsolutePath(), TicketInfo.REPORT).trim());
+			} catch (NoSuchElementException e) {
+				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

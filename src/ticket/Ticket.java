@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import ui.Tools;
 import ui.MainWindow;
@@ -59,14 +60,18 @@ public class Ticket {
 	 * @return the desired entry in the log
 	 * @throws IOException if the file cannot be read
 	 */
-	public static String readLogFile(String url, TicketInfo pol) throws IOException {
+	public static String readLogFile(String url, TicketInfo pol) throws IOException, NoSuchElementException {
 		checkLogURL();
 
 		String[] log = readLogFile(url);
 
-		return log[pol.i];
+		if(log[pol.i] != null) {
+			return log[pol.i];
+		}
+
+		throw new NoSuchElementException("The ticket file (" + url + ") does not have a " + pol.name + ".");
 	}
-	
+
 	/**
 	 * Searches through all available tickets given a query string.
 	 * @param query the query to search for.
@@ -75,19 +80,19 @@ public class Ticket {
 	 */
 	public static ArrayList<File> searchThroughTickets(String query) throws IOException {
 		ArrayList<File> toReturn = new ArrayList<File>();
-		
+
 		for(File f : Ticket.TICKET_URL.listFiles()) {
 			String[] thisTicket = Ticket.readLogFile(f.getAbsolutePath()); 
-			
+
 			out:
-			for(String s : thisTicket) {
-				if(s != null && s.toLowerCase().contains(query.toLowerCase())) {
-					toReturn.add(f);
-					break out;
+				for(String s : thisTicket) {
+					if(s != null && s.toLowerCase().contains(query.toLowerCase())) {
+						toReturn.add(f);
+						break out;
+					}
 				}
-			}
 		}
-		
+
 		return toReturn;
 	}
 

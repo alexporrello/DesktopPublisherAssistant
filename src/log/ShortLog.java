@@ -9,9 +9,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -55,7 +53,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 	/** Determines if the ShortLog is open in the system editor **/
 	private boolean open;
-	
+
 	/** The date that this log file was created **/
 	private String logDate;
 
@@ -69,7 +67,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 	/** Determines if the separation line below the log is drawn **/
 	public boolean last = false;
-	
+
 	/** Displays the short log's info, such as status, date created, part numbers, and ticket report **/
 	public JLabel[] labels = {new JLabel(), new JLabel(), new JLabel(), new JLabel(), new JLabel()};
 
@@ -88,7 +86,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		this.compare      = compare;
 		this.invert       = invert;
 		this.open         = open;
-		
+
 		popupOptions = new LeftClickOptions(this.ticketURL);
 
 		getLogDates();
@@ -108,10 +106,15 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 	/** Gets the date on which the log file was created. **/
 	private void getLogDates() {
-		Long lastModified = new File(ticketURL).lastModified();
+		//Long lastModified = new File(ticketURL).lastModified();
 
-		this.logDate      = new SimpleDateFormat("M/d/yy h:mm a").format(lastModified);
-		this.dateForSort  = new SimpleDateFormat("MM/dd/yy HH:mm:SS").format(lastModified);
+		this.logDate      = Tools.getFileCreationDate(ticketURL, false);//new SimpleDateFormat("M/d/yy h:mm a").format(lastModified);
+		this.dateForSort  = Tools.getFileCreationDate(ticketURL, true);//new SimpleDateFormat("MM/dd/yy HH:mm:SS").format(lastModified);
+
+		//System.out.println();
+		//System.out.println("Modified: " + logDate);
+		//System.out.println("Created:  " + Tools.getFileCreationDate(ticketURL, false));
+		//System.out.println();
 	}
 
 	/** Sets the values of the integers that are used to pull info from {@link #labels} **/
@@ -151,11 +154,11 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 				if(contains(e.getPoint())) {
 					drawColor = JMColor.HOVER_COLOR;
-					
+
 					if(e.isPopupTrigger()) {
 						popupOptions.show(e.getComponent(), e.getX(), e.getY());
 					}
-					
+
 					repaint();
 				}
 			}
@@ -163,11 +166,11 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				mousePressed = true;
-				
+
 				if(e.isPopupTrigger()) {
 					popupOptions.show(e.getComponent(), e.getX(), e.getY());
 				}
-				
+
 				repaint();
 			}
 
@@ -189,15 +192,15 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 				repaint();
 			}
-			
-			
+
+
 		});
 	}
 
 	/** Sets up the view JTextArea **/
 	private void setUpView() {
 		setLayout(new GridBagLayout());
-		
+
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent arg0) {				
@@ -211,7 +214,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 			}
 		});
 	}
-	
+
 	/**
 	 * Sets a given label visible if the width of {@link #view} is greater than 
 	 * a given width.
@@ -266,7 +269,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		this.open = open;
 		repaint();
 	}
-	
+
 	/**
 	 * Compares two given strings.
 	 * @param oa the first string to be compared.
@@ -307,10 +310,10 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		} else {
 			g.setColor(JMColor.PRESS_COLOR);
 		}
-		
+
 		g.fillRect(0, 0, getWidth()-5, getHeight());
-		
-		
+
+
 		if(!last) {
 			g.setColor(Color.LIGHT_GRAY);
 			g.fillRect(0, getHeight()-1, getWidth()-5, getHeight());
