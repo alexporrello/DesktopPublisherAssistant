@@ -348,6 +348,7 @@ public class MenuBar extends JMenuBar {
 		public JMenuItem search() {
 			search.addActionListener(e -> {
 				logDialogScroll.search.setVisible(!logDialogScroll.search.isVisible());
+				logDialogScroll.search.getTextField().requestFocus();
 				logDialogScroll.revalidate();
 				logDialogScroll.repaint();
 			});
