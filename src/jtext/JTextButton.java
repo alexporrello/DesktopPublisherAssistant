@@ -32,6 +32,7 @@ public abstract class JTextButton extends JPanel {
 	private void setUpButton(String text, String buttonText, Boolean disabledWhenEmpty) {
 		this.disabledWhenEmpty = disabledWhenEmpty;
 		
+		setOpaque(false);
 		setLayout(new GridBagLayout());
 		
 		textField = new JMTextField(text);

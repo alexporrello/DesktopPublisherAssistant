@@ -44,6 +44,9 @@ public class JMScrollPane extends JScrollPane {
 	}
 
 	private void setScrollBarUI() {
+		
+		super.getViewport().setBackground(JMColor.DEFAULT_BACKGROUND);
+		
 		super.getHorizontalScrollBar().setUI(horizontal());
 		super.getVerticalScrollBar().setUI(vertical());
 	}

@@ -33,6 +33,7 @@ import javax.swing.filechooser.FileSystemView;
 import com.itextpdf.text.DocumentException;
 
 import jm.JMButton;
+import jm.JMColor;
 import jm.JMPanel;
 import jm.JMTextField;
 import jtext.JTextCopy;
@@ -107,6 +108,7 @@ public class MainWindow extends JMPanel {
 	public MainWindow(JFrame parent) {
 		this.parent = parent;
 
+		setBackground(JMColor.DEFAULT_BACKGROUND);
 		setLayout(new GridBagLayout());
 		updateAuthorHashSet();
 		createFields();
@@ -184,8 +186,10 @@ public class MainWindow extends JMPanel {
 		add(tcisURL, Tools.createGBC(1, y, 1.0, insets));
 		y++;
 
+		//TODO Customize this to match theme
 		add(createJLabel("Status: "), Tools.createGBC(0, y, 0.0, insets));
 		add(status, Tools.createGBC(1, y, 1.0,insets));
+		
 		y++;
 	}
 
@@ -328,6 +332,7 @@ public class MainWindow extends JMPanel {
 	 */
 	private JLabel createJLabel(String text) {
 		JLabel label = new JLabel(text);
+		label.setForeground(JMColor.DEFAULT_FONT_COLOR);
 		return label;
 	}
 

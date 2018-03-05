@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 
+import jm.JMColor;
+
 /**
  * A label that, when clicked, cycles through a set of options. (Basically, a fancy
  * version of a JComboBox<E>.
@@ -24,10 +26,9 @@ public class ClickLabel<E> extends JLabel {
 	public ClickLabel(E[] items) {
 		this.items = items;
 		
+		setForeground(JMColor.DEFAULT_FONT_COLOR);
 		setText(items[itemDisplayed] + "");
 		addMouseListener();
-		//setOpaque(true);
-		
 	}
 	
 	/**
@@ -38,10 +39,10 @@ public class ClickLabel<E> extends JLabel {
 	public ClickLabel(E[] items, int layout) {		
 		this.items = items;
 		
+		setForeground(JMColor.DEFAULT_FONT_COLOR);
 		setText(items[itemDisplayed] + "");
 		setHorizontalAlignment(layout);
 		addMouseListener();
-		//setOpaque(true);
 	}
 	
 	private void addMouseListener() {

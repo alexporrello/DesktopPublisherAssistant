@@ -74,6 +74,7 @@ public class LogWindow extends JMPanel {
 		
 		this.logWindow = new LogPanel();
 
+		setBackground(JMColor.DEFAULT_BACKGROUND);
 		setupScrollPane();
 		setupSearch();
 		setLayout(new GridBagLayout());
@@ -106,6 +107,7 @@ public class LogWindow extends JMPanel {
 	/** Sets up the search functionality **/
 	private void setupSearch() {
 		search.setVisible(false);
+		search.setForeground(JMColor.DEFAULT_FONT_COLOR);
 		search.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentHidden(ComponentEvent arg0) {
@@ -141,6 +143,7 @@ public class LogWindow extends JMPanel {
 		public HeadingPanel() {
 			setLayout(new GridBagLayout());
 
+			setOpaque(false);
 			setupAllLabels();
 
 			add(headings[HF.TICKET_DESCRIPTION], Tools.createGBC(1, 0, 1.0, new Insets(0,0,-1,0)));
@@ -158,12 +161,14 @@ public class LogWindow extends JMPanel {
 			setupJLabel(HF.STATUS,       ShortLog.STATUS_SIZE,       Compare.STATUS);
 			setupJLabel(HF.SPACER,       new Dimension(Tools.SCROLL_BAR_WIDTH, 24),      Compare.NULL);
 
+			headings[HF.TICKET_DESCRIPTION].setForeground(JMColor.DEFAULT_FONT_COLOR);
 			headings[HF.TICKET_DESCRIPTION].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
 			addActionListenerToJLabel(HF.TICKET_DESCRIPTION, Compare.JIRA_TICKET_DESCRIPTION);
 		}
 
 		/** Sets up individual JLabels that the user clicks to sort the log entries **/
 		private void setupJLabel(int label, Dimension size, Compare thisCompare) {
+			headings[label].setForeground(JMColor.DEFAULT_FONT_COLOR);
 			headings[label].setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
 			headings[label].setPreferredSize(size);
 			addActionListenerToJLabel(label, thisCompare);
@@ -211,6 +216,7 @@ public class LogWindow extends JMPanel {
 		private static final long serialVersionUID = 8218069729268454703L;
 
 		LogPanel() {
+			setOpaque(false);
 			setLayout(new GridBagLayout());
 			addToLogEntryPanel();
 			watchService();
@@ -363,9 +369,9 @@ public class LogWindow extends JMPanel {
 
 		boolean mousePressed;
 
-		Color drawColor = getBackground();
+		Color drawColor = JMColor.DEFAULT_BACKGROUND;
 
-		Color originalColor = getBackground();
+		Color originalColor = JMColor.DEFAULT_BACKGROUND;
 
 		JLabelEdge(String s) { 
 			super(s);
@@ -412,8 +418,6 @@ public class LogWindow extends JMPanel {
 
 				@Override
 				public void mouseEntered(MouseEvent arg0) {
-					originalColor = getBackground();
-
 					if(mousePressed) {
 						drawColor = JMColor.PRESS_COLOR;
 					} else {

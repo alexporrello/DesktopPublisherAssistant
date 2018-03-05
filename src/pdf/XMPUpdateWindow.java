@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -31,6 +30,8 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.itextpdf.text.DocumentException;
 
+import jm.JMButton;
+import jm.JMColor;
 import ui.Tools;
 
 public class XMPUpdateWindow extends JPanel {
@@ -55,7 +56,7 @@ public class XMPUpdateWindow extends JPanel {
 	JLabel out = new JLabel("Path to Output Folder...");
 
 	/** The button that kicks off the action **/
-	JButton go = new JButton("Update");
+	JMButton go = new JMButton("Update");
 
 	/** When selected, the initial view properties of the PDF are updated along with the tags **/
 	JRadioButton rb = new JRadioButton("Update PDF Initial View Properties");
@@ -63,14 +64,17 @@ public class XMPUpdateWindow extends JPanel {
 	Boolean showOutput = false;
 
 	public XMPUpdateWindow() {
+		setBackground(JMColor.DEFAULT_BACKGROUND);
 		setPreferredSize(new Dimension(300, 50));
 		setLayout(new BorderLayout());
-
+		
 		add(setUpDropArea(), BorderLayout.CENTER);
 		add(setUpLowerPanel(), BorderLayout.SOUTH);
 
+		rb.setOpaque(false);
 		rb.setFocusPainted(false);
 		rb.setSelected(true);
+		rb.setForeground(JMColor.DEFAULT_FONT_COLOR);
 	}
 
 	public XMPUpdateWindow(Boolean showOutput) {
@@ -99,7 +103,7 @@ public class XMPUpdateWindow extends JPanel {
 				Graphics2D g2 = (Graphics2D) g;
 				g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-				g2.setColor(Color.WHITE);
+				g2.setColor(JMColor.DEFAULT_BACKGROUND);
 				g2.fillRoundRect(5, 5, getWidth()-10, getHeight()-10, 5, 5);
 
 				g2.setColor(Color.LIGHT_GRAY);
@@ -111,6 +115,7 @@ public class XMPUpdateWindow extends JPanel {
 		display.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 		display.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0));
 		display.setPreferredSize(new Dimension(300, 75));
+		display.setForeground(JMColor.DEFAULT_FONT_COLOR);
 		setDropTarget(new DropTarget(display, new DropTargetAdapter() {
 			@Override
 			public void drop(DropTargetDropEvent e) {
@@ -152,19 +157,19 @@ public class XMPUpdateWindow extends JPanel {
 			xmpFile = new File(url);
 
 			xmp.setText("XMP:  " + url);
-			xmp.setForeground(Color.BLACK);
+			xmp.setForeground(JMColor.DEFAULT_FONT_COLOR);
 			xmp.setToolTipText(url);
 		} else if(url.endsWith(".pdf")) {
 			pdfFile = new File(url);
 
 			pdf.setText("PDF:  " + url);
-			pdf.setForeground(Color.BLACK);
+			pdf.setForeground(JMColor.DEFAULT_FONT_COLOR);
 			pdf.setToolTipText(url);
 		} else if(showOutput) {
 			outFile = new File(url);
 
 			out.setText("Output: " + url);
-			out.setForeground(Color.BLACK);
+			out.setForeground(JMColor.DEFAULT_FONT_COLOR);
 			out.setToolTipText(url);
 		}
 
@@ -177,7 +182,8 @@ public class XMPUpdateWindow extends JPanel {
 	 */
 	private JPanel setUpLowerPanel() {
 		JPanel toReturn = new JPanel();
-
+		toReturn.setOpaque(false);
+		
 		toReturn.setLayout(new GridBagLayout());
 		toReturn.add(pdf, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH,
 				GridBagConstraints.HORIZONTAL, new Insets(5, 5, 0, 5), 5, 5));	
@@ -199,11 +205,11 @@ public class XMPUpdateWindow extends JPanel {
 		setupJLabel(xmp, false, false);
 		setupJLabel(out, false, true);
 
-		pdf.setForeground(Color.DARK_GRAY);
-		xmp.setForeground(Color.DARK_GRAY);
-		out.setForeground(Color.DARK_GRAY);
+		pdf.setForeground(JMColor.DISABLED_FONT_COLOR);
+		xmp.setForeground(JMColor.DISABLED_FONT_COLOR);
+		out.setForeground(JMColor.DISABLED_FONT_COLOR);
 
-		go.setEnabled(false);
+		go.setButtonEnabled(false);
 
 		return toReturn;
 	}
@@ -214,7 +220,7 @@ public class XMPUpdateWindow extends JPanel {
 	 * @param isPDF true if the selection will be for PDF; else, false.
 	 */
 	private void setupJLabel(JLabel label, boolean isPDF, boolean isOUT) {
-		label.setOpaque(true);
+		label.setOpaque(false);
 		label.setBackground(Color.WHITE);
 		label.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createLineBorder(Color.LIGHT_GRAY), 
@@ -250,8 +256,7 @@ public class XMPUpdateWindow extends JPanel {
 	 * Sets up the button that kicks off the action.
 	 */
 	private void setupGoButton() {
-		go.setFocusPainted(false);
-		go.addActionListener(e -> {
+		go.addActionListner(e -> {
 			try {
 				if(!showOutput) {
 					XMPUpdater.updatePDFXMP(pdfFile.getAbsolutePath(), xmpFile.getAbsolutePath());
@@ -279,9 +284,9 @@ public class XMPUpdateWindow extends JPanel {
 	private void enableGoButton() {
 		if((xmpFile != null && pdfFile !=null) && (xmpFile.exists() && pdfFile.exists())) {			
 			if(showOutput) {
-				go.setEnabled(outFile != null && xmpFile.exists());
+				go.setButtonEnabled(outFile != null && xmpFile.exists());
 			} else {
-				go.setEnabled(true);
+				go.setButtonEnabled(true);
 			}
 		}
 	}

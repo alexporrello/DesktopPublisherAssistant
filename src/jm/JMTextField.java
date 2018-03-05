@@ -41,7 +41,9 @@ public class JMTextField extends JTextField {
 		copyContentsOnDoubleClick();
 		selectAllWhenFocused();
 		trimPastedStrings();
-
+		setBackground(JMColor.DEFAULT_BACKGROUND);
+		setForeground(JMColor.DEFAULT_FONT_COLOR);
+		
 		createBorder(Color.LIGHT_GRAY);
 	}
 
@@ -52,7 +54,7 @@ public class JMTextField extends JTextField {
 	private void createBorder(Color borderColor) {
 		setBorder(
 				BorderFactory.createCompoundBorder(
-						BorderFactory.createLineBorder(borderColor, 1), 
+						BorderFactory.createMatteBorder(1, 1, 1, 1, borderColor), 
 						BorderFactory.createEmptyBorder(3, 3, 3, 3)));
 	}
 

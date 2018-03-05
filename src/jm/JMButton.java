@@ -61,6 +61,7 @@ public class JMButton extends JLabel {
 
 	public void setupJMButton() {
 		setHorizontalAlignment(SwingConstants.CENTER);
+		setForeground(JMColor.DEFAULT_FONT_COLOR);
 		setFocusable(true);
 		setOpaque(false);
 		setBorder();
@@ -182,12 +183,12 @@ public class JMButton extends JLabel {
 		this.enabled = enable;
 
 		if(this.enabled) {
-			setForeground(JMColor.DEFAULT_FOREGROUND);
+			setForeground(JMColor.DEFAULT_FONT_COLOR);
 
 			border = JMColor.DEFAULT_BORDER_COLOR;
 			background   = JMColor.DEFAULT_BACKGROUND;
 		} else {
-			setForeground(JMColor.DISABLED_FOREGROUND_COLOR);
+			setForeground(JMColor.DISABLED_FONT_COLOR);
 
 			border = JMColor.DISABLED_BORDER_COLOR;
 			background   = JMColor.DISABLED_BACKGROUND_COLOR;
@@ -205,12 +206,14 @@ public class JMButton extends JLabel {
 	public void paintComponent(Graphics g) {		
 		Graphics2D gg = (Graphics2D) g;
 
+		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		gg.setColor(background);
-		gg.fillRect(0, 0, getWidth(), getHeight());
-
+		gg.fillRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//(0, 0, getWidth()-1, getHeight()-1);
+		
 		gg.setColor(border);
-		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);
-
+		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//Oval(0, 0, getWidth()-1, getHeight()-1);
+		
 		if(style == JMButton.STYLE_CLOSE_BUTTON) {
 			drawCloseButton(gg);
 		} else {

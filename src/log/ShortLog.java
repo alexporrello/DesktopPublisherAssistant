@@ -61,7 +61,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	private Boolean mousePressed = false;
 
 	/** Used when user hovers over log **/
-	private Color originalColor;
+	private Color originalColor = JMColor.DEFAULT_BACKGROUND;
 
 	// ====================== PUBLIC FIELDS ====================== //
 
@@ -100,6 +100,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 		setUpView();
 		setupStatus();
+		setOpaque(false);
 
 		createUserInterface();
 	}
@@ -127,7 +128,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 	}
 
 	Boolean mouseEntered = false;
-	Color   drawColor    = getBackground();
+	Color   drawColor    = JMColor.DEFAULT_BACKGROUND;
 
 	/** 
 	 * Sets up a JLabel.
@@ -139,7 +140,8 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		labels[label] = new JLabel(text);
 		labels[label].setOpaque(false);
 		labels[label].setHorizontalAlignment(SwingConstants.LEFT);
-
+		labels[label].setForeground(JMColor.DEFAULT_FONT_COLOR);
+		
 		if(label != TICKET_DESCRIPTION) {
 			labels[label].setPreferredSize(d);
 			labels[label].setBorder(BorderFactory.createEmptyBorder(2,10,2,2));
@@ -182,8 +184,6 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				originalColor = getBackground();
-
 				if(mousePressed) {
 					drawColor = JMColor.PRESS_COLOR;
 				} else {
