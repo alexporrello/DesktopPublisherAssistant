@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
@@ -16,6 +18,7 @@ import java.util.function.Consumer;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 
 import ui.Tools;
 
@@ -40,6 +43,8 @@ public class JMButton extends JLabel {
 	/** Determines what is displayed on the button **/
 	private int style = JMButton.STYLE_TEXT;
 
+	/** The timer that controls the fade of the buttons **/
+	Timer fadeTimer;
 
 	public JMButton(String s) {
 		super(s);
@@ -98,18 +103,16 @@ public class JMButton extends JLabel {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if(enabled) {
-					border = JMColor.HOVER_BORDER_COLOR;
-					background = JMColor.HOVER_COLOR;
+					fadeColor(JMColor.HOVER_COLOR, JMColor.HOVER_BORDER_COLOR, 3);
 				}
-				
+
 				repaint();
 			}
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				if(enabled) {
-					border = JMColor.DEFAULT_BORDER_COLOR;
-					background = JMColor.DEFAULT_BACKGROUND;
+					fadeColor(JMColor.DEFAULT_BACKGROUND, JMColor.DEFAULT_BORDER_COLOR, 7);
 				}
 
 				repaint();
@@ -122,24 +125,16 @@ public class JMButton extends JLabel {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if(enabled) {
+					fadeColor(JMColor.HOVER_COLOR, JMColor.HOVER_BORDER_COLOR, 10);
+					
 					pressed = false;
-
-					if(!hasFocus()) {
-						border     = JMColor.DEFAULT_BORDER_COLOR;
-						background = JMColor.DEFAULT_BACKGROUND;
-					} else {
-						border = JMColor.HOVER_BORDER_COLOR;
-						background = JMColor.HOVER_COLOR;
-					}
 				}
-
-				repaint();
 			}
 
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				if(enabled) {
-					background = JMColor.PRESS_COLOR;
+					fadeColor(JMColor.PRESS_COLOR, border, 7);
 					pressed = true;
 				}
 
@@ -150,11 +145,9 @@ public class JMButton extends JLabel {
 			public void mouseExited(MouseEvent arg0) {
 				if(enabled) {
 					if(pressed) {
-						border = JMColor.HOVER_BORDER_COLOR;
-						background = JMColor.HOVER_COLOR;
+						fadeColor(JMColor.HOVER_COLOR, JMColor.HOVER_BORDER_COLOR, 10);
 					} else if(!hasFocus()) {
-						border = JMColor.DEFAULT_BORDER_COLOR;
-						background = JMColor.DEFAULT_BACKGROUND;
+						fadeColor(JMColor.DEFAULT_BACKGROUND, JMColor.DEFAULT_BORDER_COLOR, 10);
 					}
 				}
 
@@ -162,14 +155,12 @@ public class JMButton extends JLabel {
 			}
 
 			@Override
-			public void mouseEntered(MouseEvent arg0) {
+			public void mouseEntered(MouseEvent arg0) {				
 				if(enabled) {
 					if(!pressed) {
-						border = JMColor.HOVER_BORDER_COLOR;
-						background = JMColor.HOVER_COLOR;
+						fadeColor(JMColor.HOVER_COLOR, JMColor.HOVER_BORDER_COLOR, 3);
 					} else {
-						border = JMColor.HOVER_BORDER_COLOR;
-						background = JMColor.PRESS_COLOR;
+						fadeColor(JMColor.PRESS_COLOR, JMColor.HOVER_BORDER_COLOR, 3);
 					}
 				}
 
@@ -177,7 +168,83 @@ public class JMButton extends JLabel {
 			}
 		};
 	}
+	
 
+	private void fadeColor(Color fadeToButton, Color fadeToBorder, int fadeSpeed) {
+		if(fadeTimer != null && fadeTimer.isRunning()) {
+			fadeTimer.stop();
+		}
+		
+		fadeTimer = new Timer(fadeSpeed, new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				colorFader(background, fadeToButton, border, fadeToBorder);
+				repaint();
+			}    
+		});
+
+		fadeTimer.start();
+	}
+
+	private void colorFader(Color buttonfadeFrom, Color buttonFadeTo, Color borderFadeFrom, Color borderFadeTo) {		
+		int[] buttonA = makeRGBArray(buttonfadeFrom);
+		int[] buttonB = makeRGBArray(buttonFadeTo);
+
+		int[] borderA = makeRGBArray(borderFadeFrom);
+		int[] borderB = makeRGBArray(borderFadeTo);
+
+		buttonA = fader(buttonA, buttonB);
+		borderA = fader(borderA, borderB);
+
+		background = arrayToColor(buttonA);
+		border     = arrayToColor(borderA);
+		
+		if((buttonA[0] + "" + buttonA[1] + "" + buttonA[2]).equals(buttonB[0] + "" + buttonB[1] + "" + buttonB[2])) {
+			border = borderFadeTo;
+			repaint();
+			fadeTimer.stop();
+		}
+	}
+
+	/**
+	 * Adds or subtracts 1 so that values of a will equal values of b.
+	 * @param a the array whose values are changed
+	 * @param b the array whose values are static
+	 * @return an updated
+	 */
+	private int[] fader(int[] a, int[] b) {
+		for(int i = 0; i < 3; i++) {
+			if(a[i] > b[i]) {
+				a[i] = a[i]-1;
+			} else if(a[i] < b[i]) {
+				a[i] = a[i]+1;
+			}
+		}
+
+		return a;
+	}
+
+	/**
+	 * Receives a color and returns the color represented as an array of integers.
+	 * @param color the color to be converted
+	 * @return an array of size three where...
+	 * <ul>
+	 * 		<li>0: Red</li>
+	 *      <li>1: Green</li>
+	 *      <li>2: Blue</li>
+	 * </ul>
+	 */
+	private int[] makeRGBArray(Color color) {
+		return new int[]{color.getRed(), color.getGreen(), color.getBlue()};
+	}
+
+	/**
+	 * Receives an array representation of a color and returns a color.
+	 * @param rgb accepts array of integers made in {@link #makeRGBArray(Color)}.
+	 * @return the Color represented by rgb.
+	 */
+	private Color arrayToColor(int[] rgb) {
+		return new Color(rgb[0], rgb[1], rgb[2]);
+	}
 
 	public void setButtonEnabled(Boolean enable) {
 		this.enabled = enable;
@@ -207,13 +274,13 @@ public class JMButton extends JLabel {
 		Graphics2D gg = (Graphics2D) g;
 
 		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
+
 		gg.setColor(background);
 		gg.fillRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//(0, 0, getWidth()-1, getHeight()-1);
-		
+
 		gg.setColor(border);
 		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//Oval(0, 0, getWidth()-1, getHeight()-1);
-		
+
 		if(style == JMButton.STYLE_CLOSE_BUTTON) {
 			drawCloseButton(gg);
 		} else {
