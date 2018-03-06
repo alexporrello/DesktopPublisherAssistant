@@ -168,8 +168,66 @@ public class JMButton extends JLabel {
 			}
 		};
 	}
-	
 
+	public void setButtonEnabled(Boolean enable) {
+		this.enabled = enable;
+
+		if(this.enabled) {
+			setForeground(JMColor.DEFAULT_FONT_COLOR);
+
+			border = JMColor.DEFAULT_BORDER_COLOR;
+			background   = JMColor.DEFAULT_BACKGROUND;
+		} else {
+			setForeground(JMColor.DISABLED_FONT_COLOR);
+
+			border = JMColor.DISABLED_BORDER_COLOR;
+			background   = JMColor.DISABLED_BACKGROUND_COLOR;
+		}
+
+		setFocusable(this.enabled);
+		repaint();
+	}
+
+	private void setBorder() {
+		Tools.setBorder(this);
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {		
+		Graphics2D gg = (Graphics2D) g;
+
+		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		gg.setColor(background);
+		gg.fillRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//(0, 0, getWidth()-1, getHeight()-1);
+
+		gg.setColor(border);
+		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//Oval(0, 0, getWidth()-1, getHeight()-1);
+
+		if(style == JMButton.STYLE_CLOSE_BUTTON) {
+			drawCloseButton(gg);
+		} else {
+			super.paintComponent(g);
+		}
+	}
+
+	/**
+	 * Draws the close button if the current style is set to {@link #STYLE_CLOSE_BUTTON}.
+	 */
+	private void drawCloseButton(Graphics2D gg) {
+		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		gg.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		gg.setColor(Color.RED);
+
+		int border = getHeight()/4;
+
+		gg.drawLine(border, border, getWidth()-border, getHeight()-border);
+		gg.drawLine(border, getWidth()-border, getHeight()-border, border);
+	}
+	
+	/** ================================== COLOR FADING CODE ================================== **/
+	
+	
 	private void fadeColor(Color fadeToButton, Color fadeToBorder, int fadeSpeed) {
 		if(fadeTimer != null && fadeTimer.isRunning()) {
 			fadeTimer.stop();
@@ -244,61 +302,5 @@ public class JMButton extends JLabel {
 	 */
 	private Color arrayToColor(int[] rgb) {
 		return new Color(rgb[0], rgb[1], rgb[2]);
-	}
-
-	public void setButtonEnabled(Boolean enable) {
-		this.enabled = enable;
-
-		if(this.enabled) {
-			setForeground(JMColor.DEFAULT_FONT_COLOR);
-
-			border = JMColor.DEFAULT_BORDER_COLOR;
-			background   = JMColor.DEFAULT_BACKGROUND;
-		} else {
-			setForeground(JMColor.DISABLED_FONT_COLOR);
-
-			border = JMColor.DISABLED_BORDER_COLOR;
-			background   = JMColor.DISABLED_BACKGROUND_COLOR;
-		}
-
-		setFocusable(this.enabled);
-		repaint();
-	}
-
-	private void setBorder() {
-		Tools.setBorder(this);
-	}
-
-	@Override
-	public void paintComponent(Graphics g) {		
-		Graphics2D gg = (Graphics2D) g;
-
-		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-		gg.setColor(background);
-		gg.fillRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//(0, 0, getWidth()-1, getHeight()-1);
-
-		gg.setColor(border);
-		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//Oval(0, 0, getWidth()-1, getHeight()-1);
-
-		if(style == JMButton.STYLE_CLOSE_BUTTON) {
-			drawCloseButton(gg);
-		} else {
-			super.paintComponent(g);
-		}
-	}
-
-	/**
-	 * Draws the close button if the current style is set to {@link #STYLE_CLOSE_BUTTON}.
-	 */
-	private void drawCloseButton(Graphics2D gg) {
-		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		gg.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-		gg.setColor(Color.RED);
-
-		int border = getHeight()/4;
-
-		gg.drawLine(border, border, getWidth()-border, getHeight()-border);
-		gg.drawLine(border, getWidth()-border, getHeight()-border, border);
 	}
 }
