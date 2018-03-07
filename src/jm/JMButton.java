@@ -103,7 +103,7 @@ public class JMButton extends JLabel {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if(enabled) {
-					fadeColor(JMColor.HOVER_COLOR, JMColor.HOVER_BORDER_COLOR, 3);
+					fadeColor(JMColor.DEFAULT_BACKGROUND, JMColor.HOVER_BORDER_COLOR, 3);
 				}
 
 				repaint();
@@ -148,6 +148,8 @@ public class JMButton extends JLabel {
 						fadeColor(JMColor.HOVER_COLOR, JMColor.HOVER_BORDER_COLOR, 10);
 					} else if(!hasFocus()) {
 						fadeColor(JMColor.DEFAULT_BACKGROUND, JMColor.DEFAULT_BORDER_COLOR, 10);
+					} else if(hasFocus()) {
+						fadeColor(JMColor.DEFAULT_BACKGROUND, JMColor.HOVER_BORDER_COLOR, 10);
 					}
 				}
 
@@ -199,10 +201,10 @@ public class JMButton extends JLabel {
 		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		gg.setColor(background);
-		gg.fillRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//(0, 0, getWidth()-1, getHeight()-1);
+		gg.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 4, 4);//(0, 0, getWidth()-1, getHeight()-1);
 
 		gg.setColor(border);
-		gg.drawRect(0, 0, getWidth()-1, getHeight()-1);//, 4, 4);//Oval(0, 0, getWidth()-1, getHeight()-1);
+		gg.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 4, 4);//Oval(0, 0, getWidth()-1, getHeight()-1);
 
 		if(style == JMButton.STYLE_CLOSE_BUTTON) {
 			drawCloseButton(gg);
