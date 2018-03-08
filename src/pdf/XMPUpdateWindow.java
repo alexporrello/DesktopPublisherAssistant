@@ -32,6 +32,7 @@ import com.itextpdf.text.DocumentException;
 
 import jm.JMButton;
 import jm.JMColor;
+import jm.JMLabel;
 import ui.Tools;
 
 public class XMPUpdateWindow extends JPanel {
@@ -47,13 +48,13 @@ public class XMPUpdateWindow extends JPanel {
 	File outFile;
 
 	/** The label on which the PDF Path will be displayed **/
-	JLabel pdf = new JLabel("Path to PDF...");
+	JMLabel pdf = new JMLabel("Locate PDF File...", SwingConstants.LEFT);
 
 	/** The label on which the XMP Path will be displayed **/
-	JLabel xmp = new JLabel("Path to XMP...");
+	JMLabel xmp = new JMLabel("Locate XMP File...", SwingConstants.LEFT);
 
 	/** The label on which the XMP Path will be displayed **/
-	JLabel out = new JLabel("Path to Output Folder...");
+	JMLabel out = new JMLabel("Locate Output Folder...", SwingConstants.LEFT);
 
 	/** The button that kicks off the action **/
 	JMButton go = new JMButton("Update");
@@ -101,7 +102,7 @@ public class XMPUpdateWindow extends JPanel {
 			@Override
 			public void paintComponent(Graphics g) {
 				Graphics2D g2 = (Graphics2D) g;
-				g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 				g2.setColor(JMColor.DEFAULT_BACKGROUND);
 				g2.fillRoundRect(5, 5, getWidth()-10, getHeight()-10, 5, 5);
@@ -219,13 +220,7 @@ public class XMPUpdateWindow extends JPanel {
 	 * @param label the label to set up
 	 * @param isPDF true if the selection will be for PDF; else, false.
 	 */
-	private void setupJLabel(JLabel label, boolean isPDF, boolean isOUT) {
-		label.setOpaque(false);
-		label.setBackground(Color.WHITE);
-		label.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(Color.LIGHT_GRAY), 
-				BorderFactory.createEmptyBorder(0, 5, 0, 5)));
-
+	private void setupJLabel(JMLabel label, boolean isPDF, boolean isOUT) {
 		String dialogName;
 
 		if(isPDF) {
@@ -300,6 +295,7 @@ public class XMPUpdateWindow extends JPanel {
 
 		pdf.setText("Locate PDF File...");
 		xmp.setText("Locate XMP File...");
+		out.setText("Locate Output Folder...");
 
 		enableGoButton();
 	}

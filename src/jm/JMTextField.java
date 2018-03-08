@@ -2,6 +2,8 @@ package jm;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -152,8 +154,12 @@ public class JMTextField extends JTextField {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		g.setColor(borderColor);
-		g.drawRect(0, 0, getWidth()-1, getHeight()-1);
+		Graphics2D gg = (Graphics2D) g;
+		
+		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		gg.setColor(borderColor);
+		gg.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 4, 4);
 	}
 	
 /** ================================== COLOR FADING CODE ================================== **/

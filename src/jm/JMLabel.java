@@ -11,12 +11,22 @@ public class JMLabel extends JMTextField {
 	public JMLabel(String s) {
 		super(s);
 
+		setupJMLabel();
+		setHorizontalAlignment(SwingConstants.CENTER);
+	}
+	
+	public JMLabel(String s, int horizontalAlignment) {
+		super(s);
+		
+		setupJMLabel();
+		setHorizontalAlignment(horizontalAlignment);
+	}
+	
+	private void setupJMLabel() {
 		setSelectionColor(getBackground());
 		setSelectedTextColor(getForeground());
 		setCaretColor(getBackground());
 		setEditable(false);
-		setHorizontalAlignment(SwingConstants.CENTER);
-		
 		setHighlighter(null);
 		
 		addFocusListener(new FocusAdapter() {
