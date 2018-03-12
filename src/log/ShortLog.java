@@ -141,7 +141,7 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		labels[label].setOpaque(false);
 		labels[label].setHorizontalAlignment(SwingConstants.LEFT);
 		labels[label].setForeground(JMColor.DEFAULT_FONT_COLOR);
-		
+
 		if(label != TICKET_DESCRIPTION) {
 			labels[label].setPreferredSize(d);
 			labels[label].setBorder(BorderFactory.createEmptyBorder(2,10,2,2));
@@ -291,13 +291,18 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		} else if(compare == Compare.JIRA_REPORT) {
 			return compareTo(ticket[TicketInfo.REPORT.i], e.ticket[TicketInfo.REPORT.i]);
 		} else if(compare == Compare.PART_NUM_32) {
-			return compareTo(ticket[TicketInfo.PART_NUM_32.i], e.ticket[TicketInfo.PART_NUM_32.i]);
+			return compareTo(ticket[TicketInfo.PART_NUM_32.i] + ticket[TicketInfo.TICKET_DESCRIPTION.i],
+					e.ticket[TicketInfo.PART_NUM_32.i] + e.ticket[TicketInfo.TICKET_DESCRIPTION.i]);
 		} else if(compare == Compare.PART_NUM_37){
-			return compareTo(ticket[TicketInfo.PART_NUM_37.i], e.ticket[TicketInfo.PART_NUM_37.i]);
+			return compareTo(
+					ticket[TicketInfo.PART_NUM_37.i] + ticket[TicketInfo.TICKET_DESCRIPTION.i], 
+					e.ticket[TicketInfo.PART_NUM_37.i] + e.ticket[TicketInfo.TICKET_DESCRIPTION.i]);
 		} else if(compare == Compare.DATE_CREATED) {
 			return compareTo(dateForSort, e.dateForSort);
 		} else {
-			return compareTo(ticket[TicketInfo.STATUS.i], e.ticket[TicketInfo.STATUS.i]);
+			return compareTo(
+					ticket[TicketInfo.STATUS.i] + ticket[TicketInfo.PART_NUM_32.i] + ticket[TicketInfo.PART_NUM_37.i],
+					e.ticket[TicketInfo.STATUS.i] + e.ticket[TicketInfo.PART_NUM_32.i] + e.ticket[TicketInfo.PART_NUM_37.i]);
 		}
 	}
 

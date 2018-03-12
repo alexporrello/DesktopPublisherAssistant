@@ -189,7 +189,7 @@ public class MainWindow extends JMPanel {
 		//TODO Customize this to match theme
 		add(createJLabel("Status: "), Tools.createGBC(0, y, 0.0, insets));
 		add(status, Tools.createGBC(1, y, 1.0,insets));
-		
+
 		y++;
 	}
 
@@ -421,6 +421,32 @@ public class MainWindow extends JMPanel {
 		title.requestFocus();
 	}
 
+	//TODO
+	private void processMultiLineClipboard(String s) {
+		
+		autoAddString(s);
+		
+//		String[] ss = s.split("\n");
+//
+//		for(String sss : ss) {
+//			if(sss.startsWith("Title\t")) {
+//				setTextIfEmpty(this.title, sss.replace("Title\t", ""));
+//			} else if(sss.startsWith("Perforce Path\t")) {
+//				perforce.setTextIfEmpty(sss.replace("Perforce Path\t", ""));
+//			} else if(sss.startsWith("GUID-")) {
+//				GUID.setTextIfEmpty(sss);
+//			} else if(sss.contains("32") || sss.contains("37")) {
+//				autoAddString(sss);
+//			} else {
+//				for(String report : reports) {
+//					if(report.toLowerCase().contains(s.toLowerCase())) {
+//						setTextIfEmpty(author, s);
+//					}
+//				}
+//			}
+//		}
+	}
+
 	/**
 	 * If a given string is recognized, it is auto-added to empty fields.
 	 * @param s the string to be auto-added.d TODO
@@ -428,12 +454,15 @@ public class MainWindow extends JMPanel {
 	public void autoAddString(String s) {
 		s = s.trim();
 
-		if(s.startsWith("//")) {
+
+		if(checkForTitle(s)) {
+			setTextIfEmpty(this.title, s);
+		} else if(s.startsWith("//")) {
 			perforce.setTextIfEmpty(s);
 		} else if(s.contains("32") && s.contains("37") && s.split(", ").length == 2) {
 			String partNumA = s.split(", ")[0];
 			String partNumB = s.split(", ")[1];
-			
+
 			if(partNumA.startsWith("32")) {
 				partNum32.setTextIfEmpty(partNumA);
 				partNum37.setTextIfEmpty(partNumB);
@@ -445,25 +474,19 @@ public class MainWindow extends JMPanel {
 			partNum32.setTextIfEmpty(s);
 		} else if(s.startsWith("37")) {
 			partNum37.setTextIfEmpty(s);
-		} else if(s.contains("GUID")) {
+		} else if(s.contains("GUID-")) {
 			GUID.setTextIfEmpty(s);
-		} else if(s.contains("nijira")) {
+		} else if(s.contains("nijira.natinst.com")) {
 			jiraURL.setTextIfEmpty(s);
 		} else if(s.contains("Prepare") || s.contains("Apply") || s.contains("Signoff")) {
 			setTextIfEmpty(jiraSummary, s);
 		} else if(s.contains("apex.natinst")) {			
 			tcisURL.setTextIfEmpty(s);
 		} else {
-			String[] titles = {"specifications", "user manual", "specs"};
-			
-			for(String title : titles) {
-				if(contains(s, title)) {
-					setTextIfEmpty(this.title, s);
-				}
-			}
-			
+
+
 			String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
-			
+
 			for(String month : months) {
 				if(s.toLowerCase().contains(month.toLowerCase())) {
 					setTextIfEmpty(date, s);
@@ -478,10 +501,20 @@ public class MainWindow extends JMPanel {
 		}
 	}
 
+	private Boolean checkForTitle(String s) {
+		String[] titles = {"specifications", "user manual", "specs", "SERI"};
+
+		for(String title : titles) {
+			return contains(s, title);
+		}
+		
+		return false;
+	}
+
 	private Boolean contains(String s, String ss) {
 		return s.toLowerCase().contains(ss.toLowerCase());
 	}
-	
+
 	/**
 	 * Sets a given JTextField's text only if it is empty.
 	 * @param field the field to be set
@@ -650,7 +683,7 @@ public class MainWindow extends JMPanel {
 	public void stopClipboardListener() {
 		cbl.stop = true;
 		cbl.interrupt();
-		
+
 		System.out.println(cbl.isInterrupted());
 	}
 
@@ -745,7 +778,12 @@ public class MainWindow extends JMPanel {
 				try {
 					if (trans != null && trans.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 						tempText = (String) trans.getTransferData(DataFlavor.stringFlavor);
-						autoAddString(tempText);
+
+						if(tempText.contains("\n")) {
+							processMultiLineClipboard(tempText);
+						} else {
+							autoAddString(tempText);
+						}
 					}
 				} catch (UnsupportedFlavorException | IOException e2) {
 					System.err.println("This is an unsupported flavor. Contents from clipboard could not be read.");

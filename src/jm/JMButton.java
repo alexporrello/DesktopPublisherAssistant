@@ -211,6 +211,12 @@ public class JMButton extends JLabel {
 		} else {
 			super.paintComponent(g);
 		}
+		
+//		TODO Possible new method for fading colors without discoloration.
+//		float opacity = 0.0f;
+//		gg.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+//		gg.setColor(Color.GREEN);
+//		gg.fillRoundRect(0, 0, getWidth()-1, getHeight()-1, 4, 4);
 	}
 
 	/**
