@@ -426,7 +426,6 @@ public class MainWindow extends JMPanel {
 		String[] ss = s.split("\n");
 		
 		for(String sss : ss) {
-
 			if(sss.startsWith("Title\t")) {
 				setTextIfEmpty(this.title, sss.replace("Title\t", ""));
 			} else if(sss.startsWith("Perforce Path\t")) {
