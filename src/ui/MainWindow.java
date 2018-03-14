@@ -421,30 +421,34 @@ public class MainWindow extends JMPanel {
 		title.requestFocus();
 	}
 
-	//TODO
 	private void processMultiLineClipboard(String s) {
 		
-		autoAddString(s);
+		String[] ss = s.split("\n");
 		
-//		String[] ss = s.split("\n");
-//
-//		for(String sss : ss) {
-//			if(sss.startsWith("Title\t")) {
-//				setTextIfEmpty(this.title, sss.replace("Title\t", ""));
-//			} else if(sss.startsWith("Perforce Path\t")) {
-//				perforce.setTextIfEmpty(sss.replace("Perforce Path\t", ""));
-//			} else if(sss.startsWith("GUID-")) {
-//				GUID.setTextIfEmpty(sss);
-//			} else if(sss.contains("32") || sss.contains("37")) {
-//				autoAddString(sss);
-//			} else {
-//				for(String report : reports) {
-//					if(report.toLowerCase().contains(s.toLowerCase())) {
-//						setTextIfEmpty(author, s);
-//					}
-//				}
-//			}
-//		}
+		for(String sss : ss) {
+
+			if(sss.startsWith("Title\t")) {
+				setTextIfEmpty(this.title, sss.replace("Title\t", ""));
+			} else if(sss.startsWith("Perforce Path\t")) {
+				perforce.setTextIfEmpty(sss.replace("Perforce Path\t", ""));
+			} else if(sss.contains("Prepare Publishing")) {
+				setTextIfEmpty(this.jiraSummary, sss);
+			} else if(sss.startsWith("GUID-")) {
+				GUID.setTextIfEmpty(sss);
+			} else if(sss.contains("32") || sss.contains("37")) {
+				autoAddString(sss);
+			} else {
+				for(String report : reports) {
+					if(s.toLowerCase().contains(report.toLowerCase())) {
+						setTextIfEmpty(author, report);
+					}
+				}
+			}
+
+			if(sss.equals("Drop files to attach, or browse.")) {
+				break;
+			}
+		}
 	}
 
 	/**
@@ -507,7 +511,7 @@ public class MainWindow extends JMPanel {
 		for(String title : titles) {
 			return contains(s, title);
 		}
-		
+
 		return false;
 	}
 
