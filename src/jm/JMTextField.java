@@ -25,11 +25,13 @@ import ui.Tools;
 public class JMTextField extends JTextField {
 	private static final long serialVersionUID = -2346021547935315452L;
 
-	Boolean replaceSlashWithDash = false;
+	private Boolean replaceSlashWithDash = false;
 	
-	Color borderColor = JMColor.DEFAULT_BORDER_COLOR;
+	private Boolean hasClicked = false;
+	
+	private Color borderColor = JMColor.DEFAULT_BORDER_COLOR;
 
-	Timer fadeTimer;
+	private Timer fadeTimer;
 	
 	public JMTextField() {
 		setupTextField();
@@ -60,11 +62,13 @@ public class JMTextField extends JTextField {
 		addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
+				hasClicked = true;
 				fadeColor(JMColor.HOVER_BORDER_COLOR, 0);
 			}
 			
 			@Override
 			public void focusLost(FocusEvent arg0) {
+				hasClicked = false;
 				fadeColor(JMColor.DEFAULT_BORDER_COLOR, 0);
 			}
 		});
@@ -92,6 +96,9 @@ public class JMTextField extends JTextField {
 					Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
 							new StringSelection(getText()), null);
 					select(0, 0);
+				} else if(hasFocus() && hasClicked) {
+					selectAll();
+					hasClicked = false;
 				}
 			}
 		});
@@ -122,32 +129,13 @@ public class JMTextField extends JTextField {
 	private void selectAllWhenFocused() {
 		addFocusListener(new FocusAdapter() {
 			@Override
-			public void focusGained(FocusEvent arg0) {
-				selectAll();
-			}
-
-			@Override
 			public void focusLost(FocusEvent arg0) {
-				select(0, 0);
-				removeEndSpace();
+				int caretPosn = getCaretPosition();
+				
+				setText(getText().trim());
+				setCaretPosition(caretPosn);
 			}
 		});
-	}
-
-	/**
-	 * If a given JTextField ends with a space, remove it.
-	 * @param toRemove the JTextField to be changed.
-	 */
-	private void removeEndSpace() {
-		String text = this.getText();
-		int carePosition = this.getCaretPosition();
-
-		if(text.endsWith(" ")) {
-			text = text.substring(0, text.length()-1);
-		}
-
-		this.setText(text);		
-		this.setCaretPosition(carePosition);
 	}
 
 	@Override
