@@ -34,6 +34,8 @@ public class JMTextField extends JTextField {
 
 	private Stack<UndoString> undoArray = new Stack<UndoString>();
 
+	private Timer fadeTimer;
+	
 	public JMTextField() {
 		setupTextField();
 	}
@@ -188,8 +190,6 @@ public class JMTextField extends JTextField {
 
 	/** Responsible for the color fading animation **/
 	private class ColorFader {
-		private Timer fadeTimer;
-
 		private void fadeColor(Color fadeToButton, int fadeSpeed) {
 			if(fadeTimer != null && fadeTimer.isRunning()) {
 				fadeTimer.stop();
