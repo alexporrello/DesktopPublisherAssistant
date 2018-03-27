@@ -24,7 +24,6 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -34,6 +33,7 @@ import com.itextpdf.text.DocumentException;
 
 import jm.JMButton;
 import jm.JMColor;
+import jm.JMComboBox;
 import jm.JMPanel;
 import jm.JMTextField;
 import jtext.JTextCopy;
@@ -81,7 +81,7 @@ public class MainWindow extends JMPanel {
 	private JTextLink tcisURL = new JTextLink("");
 
 	/** Allows user to select the current status of the Jira ticket **/
-	private JComboBox<String> status = new JComboBox<String>(Ticket.STATUS_OPTIONS);
+	private JMComboBox<String> status = new JMComboBox<String>(Ticket.STATUS_OPTIONS);
 
 	/** The URL of the local directory **/
 	private String workingDirectory = "";
