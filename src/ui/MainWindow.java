@@ -430,11 +430,11 @@ public class MainWindow extends JMPanel {
 				setTextIfEmpty(this.title, sss.replace("Title\t", ""));
 			} else if(sss.startsWith("Perforce Path\t")) {
 				perforce.setTextIfEmpty(sss.replace("Perforce Path\t", ""));
-			} else if(sss.contains("Prepare Publishing")) {
+			} else if(sss.contains("Prepare Publishing") || sss.contains("Doc Pro Signoff")) {
 				setTextIfEmpty(this.jiraSummary, sss);
 			} else if(sss.startsWith("GUID-")) {
 				GUID.setTextIfEmpty(sss);
-			} else if(sss.contains("32") || sss.contains("37")) {
+			} else if(sss.contains("32") || sss.contains("37") || sss.contains("50")) {
 				autoAddString(sss);
 			} else {
 				for(String report : reports) {
@@ -473,7 +473,7 @@ public class MainWindow extends JMPanel {
 				partNum32.setTextIfEmpty(partNumB);
 				partNum37.setTextIfEmpty(partNumA);
 			}
-		} else if(s.startsWith("32")) {
+		} else if(s.startsWith("32") || s.startsWith("50")) {
 			partNum32.setTextIfEmpty(s);
 		} else if(s.startsWith("37")) {
 			partNum37.setTextIfEmpty(s);
