@@ -10,8 +10,11 @@ import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.border.Border;
 
 import jm.JMColor;
+import jm.JMExpandablePanel;
+import jm.JMExpandablePanel.Anchor;
 import jm.JMScrollPane;
 import log.LogWindow;
 import pdf.XMPUpdateWindow;
@@ -54,12 +57,22 @@ public class DesktopPublisherAssistant extends JFrame {
 		setIconImages(Tools.imageIcon());
 		setLayout(new BorderLayout());
 		setLocationByPlatform(true);
-		
+
 		getContentPane().setBackground(JMColor.DEFAULT_BACKGROUND);
 
 		addMainWindow();
 		addXMPUpdateWindow();
-		add(logWindow, BorderLayout.SOUTH);
+
+		JMExpandablePanel expand = new JMExpandablePanel(logWindow, Anchor.SOUTH);
+		
+		Border outside = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
+		Border inside  = BorderFactory.createEmptyBorder(-1, 5, 5, 5);
+		Border compound = BorderFactory.createCompoundBorder(inside, outside);
+		expand.setBorder(compound);
+		
+		add(expand, BorderLayout.SOUTH);
+
+
 
 		addWindowListener(new WindowAdapter() {			
 			@Override
@@ -70,13 +83,15 @@ public class DesktopPublisherAssistant extends JFrame {
 	}
 
 	private void addXMPUpdateWindow() {
-		xmpUpdate.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(5,0,0,5), 
-				BorderFactory.createCompoundBorder(
-						BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-						BorderFactory.createEmptyBorder(5, 5, 5, 5))));
+		xmpUpdate.setBorder(BorderFactory.createEmptyBorder(5,0,5,5));
+		JMExpandablePanel expand = new JMExpandablePanel(xmpUpdate, Anchor.EAST);
+		
+		Border outside = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
+		Border inside  = BorderFactory.createEmptyBorder(5, -1, 0, 5);
+		Border compound = BorderFactory.createCompoundBorder(inside, outside);
+		expand.setBorder(compound);
 
-		add(xmpUpdate, BorderLayout.EAST);
+		add(expand, BorderLayout.EAST);
 	}
 
 	private void addMainWindow() {
@@ -86,9 +101,11 @@ public class DesktopPublisherAssistant extends JFrame {
 		scroll.getViewport().setBackground(JMColor.DEFAULT_BACKGROUND);
 		scroll.setOpaque(false);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(5,5,0,-1), 
-				BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)));
+
+		Border outside = BorderFactory.createMatteBorder(1, 1, 1, 1, Color.LIGHT_GRAY);
+		Border inside  = BorderFactory.createEmptyBorder(5, 5, 0, 0);
+		Border compound = BorderFactory.createCompoundBorder(inside, outside);
+		scroll.setBorder(compound);
 
 		add(scroll, BorderLayout.CENTER);
 	}

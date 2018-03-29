@@ -78,12 +78,6 @@ public class LogWindow extends JMPanel {
 		setupScrollPane();
 		setupSearch();
 		setLayout(new GridBagLayout());
-		setBorder(
-				BorderFactory.createCompoundBorder(
-						BorderFactory.createEmptyBorder(-1,5,5,5),
-						BorderFactory.createCompoundBorder(
-								BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-								BorderFactory.createEmptyBorder(5, 5, 0, 0))));
 
 		add(new HeadingPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, 
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
