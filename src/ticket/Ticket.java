@@ -15,7 +15,7 @@ import ui.MainWindow;
 public class Ticket {
 
 	/** The possible status of the current Jira ticket **/
-	public static final String[] STATUS_OPTIONS = {"Not Started", "In Progress", "Awaiting User Input", "Done"};
+	public static final String[] STATUS_OPTIONS = {"Not Started", "In Progress", "Awaiting User Input", "Sent Review Email", "Done"};
 
 	/** The URL of the location where all of the logs are stored **/
 	public static final File TICKET_URL = new File(System.getenv("APPDATA") + "\\Desktop Publisher Assistant");
