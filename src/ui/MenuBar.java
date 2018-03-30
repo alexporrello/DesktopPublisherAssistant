@@ -3,10 +3,14 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,6 +28,8 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileSystemView;
 
+import jm.JMButton;
+import jm.JMTextField;
 import log.LogWindow;
 import pdf.XMPUpdateWindow;
 import ticket.Ticket;
@@ -249,22 +255,8 @@ public class MenuBar extends JMenuBar {
 			add(clipboardListener);
 		}
 
-		private void openCopyDialog(String resourceName) {
-			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			jfc.setDialogTitle("Choose a directory to save " + resourceName);
-
-			if(jfc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {				
-				if (jfc.getSelectedFile().isDirectory()) {
-					try {
-						Tools.copyOutResource(resourceName, jfc.getSelectedFile().getAbsolutePath() + "\\" + resourceName);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
-			Tools.setComponentLocationFromParent(parent, jfc, true);
+		private void openCopyDialog(String resourceName) {		
+			new CopyFileToURLDialog(resourceName);
 		}
 
 		/**
@@ -278,6 +270,68 @@ public class MenuBar extends JMenuBar {
 			copyEmailBody.setAccelerator(
 					KeyStroke.getKeyStroke(KeyEvent.VK_E, (Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())));
 			return copyEmailBody;
+		}
+		
+		private class CopyFileToURLDialog extends JDialog {
+			private static final long serialVersionUID = -2594379393111954934L;
+
+			CopyFileToURLDialog(String resourceName) {
+				setLayout(new GridBagLayout());
+				
+				JMButton browse = new JMButton("  Browse  ");
+				JLabel copyTo = new JLabel("Copy Location:");
+				JMTextField copyURL = new JMTextField();
+				JMButton goButton = new JMButton("Copy Resource");
+				
+				add(copyTo, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.VERTICAL, new Insets(4, 4, 4, 4), 0, 0));
+				add(copyURL, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(4, 0, 4, 4), 0, 0));
+				add(browse, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(4, 0, 4, 4), 0, 0));
+				add(goButton, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 4, 4, 4), 0, 0));
+				
+				browse.addActionListner(e -> {
+					try {
+						String text = browse(resourceName);
+						copyURL.setText(text);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				});
+				goButton.addActionListner(e -> {
+					String url = copyURL.getText();
+					
+					if(new File(url).exists()) {
+						try {
+							Tools.copyOutResource(resourceName, url + "\\" + resourceName);
+							this.dispose();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
+				
+				setTitle("Resource Copying Dialog");
+				setSize(300, 100);
+				setIconImages(Tools.imageIcon());
+				setModal(true);
+				Tools.setComponentLocationFromParent(parent, this, true);
+			}
+		}
+		
+		private String browse(String resourceName) throws Exception {
+			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			jfc.setDialogTitle("Choose a directory to save " + resourceName);
+			Tools.setComponentLocationFromParent(parent, jfc, true);
+			
+			if(jfc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {				
+				if (jfc.getSelectedFile().isDirectory()) {
+					return jfc.getSelectedFile().getAbsolutePath();
+				} else {
+					throw new Exception();
+				}
+			} else {
+				throw new Exception();
+			}
 		}
 	}
 
