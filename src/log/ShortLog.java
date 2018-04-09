@@ -105,6 +105,10 @@ public class ShortLog extends JMPanel implements Comparable<ShortLog> {
 		createUserInterface();
 	}
 
+	public int getStatus() {
+		return status.getSelectedIndex();
+	}
+	
 	/** Gets the date on which the log file was created. **/
 	private void getLogDates() {
 		//Long lastModified = new File(ticketURL).lastModified();

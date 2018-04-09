@@ -46,7 +46,7 @@ public class MenuBar extends JMenuBar {
 	XMPUpdateWindow xmpUpdate;
 
 	JFrame parent;
-	
+
 	LogWindow logDialogScroll;
 
 	public MenuBar(MainWindow mainWindow, LogWindow logDialogScroll, XMPUpdateWindow xmpUpdate, JFrame parent) {
@@ -63,7 +63,7 @@ public class MenuBar extends JMenuBar {
 		add(new HelpMenu());
 		//add(new View(logDialogScroll));
 	}
-	
+
 	public class View extends JMenu {
 		private static final long serialVersionUID = -4652785373007319130L;
 
@@ -77,7 +77,7 @@ public class MenuBar extends JMenuBar {
 				mainWindow.revalidate();
 				mainWindow.repaint();
 			});
-			
+
 			JCheckBoxMenuItem  showXMPUpdate = new JCheckBoxMenuItem ("Show XMP Updater");
 			showXMPUpdate.setSelected(true);
 			showXMPUpdate.addActionListener(e -> {
@@ -85,29 +85,29 @@ public class MenuBar extends JMenuBar {
 				mainWindow.revalidate();
 				mainWindow.repaint();
 			});
-			
+
 			add(showLogDialog);
 			add(showXMPUpdate);
 		}
 	}
-	
+
 	public class HelpMenu extends JMenu {
 		private static final long serialVersionUID = 4975463837004809455L;
 
 		public HelpMenu() {
 			super("Help");
-			
+
 			JMenuItem update = new JMenuItem("Check for Updates");
 			update.addActionListener(e -> {
 				Tools.setComponentLocationFromParent(parent, makeUpdateDialog(), true);
 			});
-			
+
 			add(update);
 		}
-		
+
 		private JDialog makeUpdateDialog() {
 			JDialog updateDialog = new JDialog();
-			
+
 			updateDialog.setIconImages(Tools.imageIcon());
 			updateDialog.setLayout(new BorderLayout());
 			updateDialog.setLocationByPlatform(true);
@@ -115,26 +115,26 @@ public class MenuBar extends JMenuBar {
 			updateDialog.setModal(true);
 
 			JLabel updateLabel;
-			
+
 			if(Tools.doesUpdateExist()) {
 				updateLabel = new JLabel("An Update is Available");
-				
+
 				updateDialog.add(makeUpdateButton(updateLabel), BorderLayout.SOUTH);
 			} else {
 				updateLabel = new JLabel("No Update is Available");
 			}
-	
+
 			updateLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30));
-			
+
 			updateDialog.add(updateLabel, BorderLayout.CENTER);
 			updateDialog.pack();
-			
+
 			return updateDialog;
 		}
-		
+
 		private JButton makeUpdateButton(JLabel updateLabel) {
 			JButton updateButton = new JButton("Download Update");
-			
+
 			updateButton.setBorder(BorderFactory.createEmptyBorder(7, 15, 7, 15));
 			updateButton.setFocusPainted(false);
 			updateButton.addActionListener(f -> {
@@ -147,7 +147,7 @@ public class MenuBar extends JMenuBar {
 					}
 				}
 			});
-			
+
 			return updateButton;
 		}
 	}
@@ -189,61 +189,79 @@ public class MenuBar extends JMenuBar {
 			add(copyEmailBody());
 
 			addSeparator();
+			
+			//===========================================================================
+			
+//			JMenu wdt = new JMenu("Working Directory Tools");
+//			
+//			JMenuItem wd = new JMenuItem("Create Working Directory");
+//			
+//			JMenuItem fps = new JMenuItem("Copy Print Spec to Working Directory");
+//			
+//			JMenuItem fdpc = new JMenuItem("Copy Doc Pro Checklist to Working Directory");
+//			
+//			wdt.add(wd);
+//			wdt.add(fps);
+//			wdt.add(fdpc);
+//			
+//			add(wdt);
+//			
+//			addSeparator();
+			
+			//ctrl+shift+W
+			//ctrl+shift+P
+			//ctrl+shift+D
 
 			//===========================================================================
 
-			JMenu ppmTemplates = new JMenu("PPM Templates");
-
-			JMenuItem dpc = new JMenuItem("Copy blank DocProChecklist.pdf");
+			JMenuItem dpc = new JMenuItem("Copy Doc Pro Checklist");
 			dpc.addActionListener(e -> {
 				openCopyDialog("DocProChecklist.pdf");
 			});
-			JMenuItem psd = new JMenuItem("Copy blank Print Spec Document.pdf");
+			JMenuItem psd = new JMenuItem("Copy Doc Pro Print Spec Doc");
 			psd.addActionListener(e -> {
 				openCopyDialog("TCIS-Print-Specification_Template.pdf");
 			});
 
-			ppmTemplates.add(dpc);
-			ppmTemplates.add(psd);
-			add(ppmTemplates);
+			add(dpc);
+			add(psd);
+			
+			addSeparator();
 
 			//===========================================================================
 
-			JMenu silkscreenTemplates = new JMenu("Silkscreen Templates");
-
-			JMenuItem sc = new JMenuItem("Copy blank Silkscreen_Checklist.pdf");
+			JMenuItem sc = new JMenuItem("Copy Silkscreen Checklist");
 			sc.addActionListener(e -> {
 				openCopyDialog("Silkscreen_Checklist.pdf");
 			});
-			JMenuItem st = new JMenuItem("Copy blank Spec_Template.pdf");
+			JMenuItem st = new JMenuItem("Copy Silkscreen Print Spec Doc");
 			st.addActionListener(e -> {
 				openCopyDialog("Silkscreen-Print-Specification_Template.pdf");
 			});
 
-			silkscreenTemplates.add(sc);
-			silkscreenTemplates.add(st);
-			add(silkscreenTemplates);
+			add(sc);
+			add(st);
 
 			//===========================================================================
 
 			addSeparator();
 
-			JMenuItem copyTemplate = new JMenuItem("Copy Print Template Perforce Path");
+			JMenuItem copyTemplate = new JMenuItem("Copy Print Template Perforce Path to Clipboard");
 			copyTemplate.addActionListener(e -> {
 				StringSelection stringSelection = new StringSelection("//TechComm/Templates/Print Templates");
 				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clpbrd.setContents(stringSelection, null);
 			});
 			add(copyTemplate);
-			
+
 			//===========================================================================
-			
+
 			addSeparator();
-			
-			JCheckBoxMenuItem clipboardListener = new JCheckBoxMenuItem("Start Clipboard Listener (Experimental)");
+
+			JCheckBoxMenuItem clipboardListener = new JCheckBoxMenuItem("Start Clipboard Listener (Beta)");
 			clipboardListener.addActionListener(e -> {
 				//clipboardListener.setSelected(!clipboardListener.isSelected());
-				
+
 				if(clipboardListener.isSelected()) {
 					mainWindow.startClipboardListener();
 				} else {
@@ -271,23 +289,23 @@ public class MenuBar extends JMenuBar {
 					KeyStroke.getKeyStroke(KeyEvent.VK_E, (Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())));
 			return copyEmailBody;
 		}
-		
+
 		private class CopyFileToURLDialog extends JDialog {
 			private static final long serialVersionUID = -2594379393111954934L;
 
 			CopyFileToURLDialog(String resourceName) {
 				setLayout(new GridBagLayout());
-				
+
 				JMButton browse = new JMButton("  Browse  ");
 				JLabel copyTo = new JLabel("Copy Location:");
 				JMTextField copyURL = new JMTextField();
 				JMButton goButton = new JMButton("Copy Resource");
-				
+
 				add(copyTo, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.VERTICAL, new Insets(4, 4, 4, 4), 0, 0));
 				add(copyURL, new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(4, 0, 4, 4), 0, 0));
 				add(browse, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(4, 0, 4, 4), 0, 0));
 				add(goButton, new GridBagConstraints(0, 1, 3, 1, 1.0, 0.0, GridBagConstraints.NORTH, GridBagConstraints.BOTH, new Insets(0, 4, 4, 4), 0, 0));
-				
+
 				browse.addActionListner(e -> {
 					try {
 						String text = browse(resourceName);
@@ -298,7 +316,7 @@ public class MenuBar extends JMenuBar {
 				});
 				goButton.addActionListner(e -> {
 					String url = copyURL.getText();
-					
+
 					if(new File(url).exists()) {
 						try {
 							Tools.copyOutResource(resourceName, url + "\\" + resourceName);
@@ -308,7 +326,7 @@ public class MenuBar extends JMenuBar {
 						}
 					}
 				});
-				
+
 				setTitle("Resource Copying Dialog");
 				setSize(300, 100);
 				setIconImages(Tools.imageIcon());
@@ -316,13 +334,13 @@ public class MenuBar extends JMenuBar {
 				Tools.setComponentLocationFromParent(parent, this, true);
 			}
 		}
-		
+
 		private String browse(String resourceName) throws Exception {
 			JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			jfc.setDialogTitle("Choose a directory to save " + resourceName);
 			Tools.setComponentLocationFromParent(parent, jfc, true);
-			
+
 			if(jfc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {				
 				if (jfc.getSelectedFile().isDirectory()) {
 					return jfc.getSelectedFile().getAbsolutePath();
@@ -345,15 +363,15 @@ public class MenuBar extends JMenuBar {
 		JMenuItem open = new JMenuItem("Open Ticket");
 
 		JMenuItem search = new JMenuItem("Search through tickets...");
-		
+
 		FileMenu() {
 			super("File");
 
 			add(open());
 			add(save());
-			
+
 			addSeparator();
-			
+
 			add(search());
 		}
 
@@ -398,7 +416,7 @@ public class MenuBar extends JMenuBar {
 
 			return open;
 		}
-		
+
 		public JMenuItem search() {
 			search.addActionListener(e -> {
 				logDialogScroll.search.setVisible(!logDialogScroll.search.isVisible());
@@ -407,7 +425,7 @@ public class MenuBar extends JMenuBar {
 				logDialogScroll.repaint();
 			});
 			search.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-			
+
 			return search;
 		}
 	}

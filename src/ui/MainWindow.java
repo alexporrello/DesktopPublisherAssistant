@@ -352,6 +352,9 @@ public class MainWindow extends JMPanel {
 			tcisURL = this.tcisURL.getText();
 		}
 
+		String titlePrefix = "PUBLISHING: ";
+		String titleSuffix = "";
+		
 		if(!Tools.isEmpty(perforce.getTextField())) {
 			String perforceURL = perforce.getText();
 
@@ -362,15 +365,33 @@ public class MainWindow extends JMPanel {
 				perforceURL = perforceURL + "/";
 			}
 
-			checklistURL = perforceURL + "Checklists/DocProChecklist.pdf";
-			pdfsURL      = perforceURL + "PDFs";
+			if(!isSilkscreenTicket()) {
+				checklistURL = perforceURL + "Checklists/DocProChecklist.pdf";
+
+				if(jiraSummary.getText().contains("Signoff")) {
+					titlePrefix = "LEAD REVIEW: ";
+					titleSuffix = "  |  INSERT DUE DATE";
+					
+				}
+			} else {
+				checklistURL = perforceURL + "Checklists/Silkscreen_Checklist.pdf";
+
+				if(jiraSummary.getText().contains("Signoff")) {
+					titlePrefix = "PEER REVIEW: ";
+					titleSuffix = "  |  INSERT DUE DATE";
+				}
+			}
+
+			pdfsURL = perforceURL + "PDFs";
 		}
 
-		String subject = "PUBLISHING: " + partNumbers;
+		String subject = titlePrefix + partNumbers + titleSuffix;
 		String body    = checklistURL + "\n" + pdfsURL + "\n\n"+ tcisURL;
 
 		List<String> recips = new ArrayList<String>();
-		recips.add("Doc.Pro.Publishing.Group@ni.com");
+		if(jiraSummary.getText().contains("Prepare Publishing")) {		
+			recips.add("Doc.Pro.Publishing.Group@ni.com");
+		}
 
 		try {
 			MailTo.mailto(recips, subject, body);
@@ -422,9 +443,9 @@ public class MainWindow extends JMPanel {
 	}
 
 	private void processMultiLineClipboard(String s) {
-		
+
 		String[] ss = s.split("\n");
-		
+
 		for(String sss : ss) {
 			if(sss.startsWith("Title\t")) {
 				setTextIfEmpty(this.title, sss.replace("Title\t", ""));
@@ -705,6 +726,15 @@ public class MainWindow extends JMPanel {
 		}
 	}
 
+	/**
+	 * Determines if the current ticket is for a printed doc or a Silkscreen.
+	 * @return
+	 */
+	public Boolean isSilkscreenTicket() {
+		return (partNum32.getText().contains("50") && partNum32.getText().contains("AW")) ||
+				(partNum37.getText().contains("50") && partNum37.getText().contains("AW"));
+	}
+
 	@Override
 	public String toString() {
 		String toReturn = "";
@@ -735,6 +765,7 @@ public class MainWindow extends JMPanel {
 		}
 
 	}
+
 
 	public class ClipBoardListener extends Thread implements ClipboardOwner {
 
