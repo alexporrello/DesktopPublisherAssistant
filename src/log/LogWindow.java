@@ -60,18 +60,21 @@ public class LogWindow extends JMPanel {
 	/** Determines if the tickets are sorted from back to front or front to back **/
 	private Boolean invert = false;
 
+	/** Determines if completed tickets should be displayed **/
+	private Boolean hideFinishedTickets = true;//TODO
+
 	/** The JScrollPane that holds {@link #logWindow} **/
 	private JMScrollPane logDialogScroll;
 
 	/** The panel upon which all the logs are displayed **/
 	private LogPanel logWindow;
-	
+
 	/** The JTextFields with which the user searches through ticket information **/
 	public JTextClose search = new JTextClose("");
-
+	
 	public LogWindow(MainWindow mw) {
 		this.mw = mw;
-		
+
 		this.logWindow = new LogPanel();
 
 		setBackground(JMColor.DEFAULT_BACKGROUND);
@@ -97,7 +100,7 @@ public class LogWindow extends JMPanel {
 
 		logDialogScroll.setPreferredSize(new Dimension(900,150));
 	}
-	
+
 	/** Sets up the search functionality **/
 	private void setupSearch() {
 		search.setVisible(false);
@@ -201,6 +204,13 @@ public class LogWindow extends JMPanel {
 			public static final int SPACER = 6;
 		}
 	}
+	
+	//TODO
+	public void hideFinishedTickets(Boolean hide) {
+		this.hideFinishedTickets = hide;
+		
+		logWindow.addAllTicketsToLogEntryPanel();
+	}
 
 	/**
 	 * The panel upon which all the log entries are displayed.
@@ -302,7 +312,14 @@ public class LogWindow extends JMPanel {
 
 				for(ShortLog sl : shortLogs) {
 					sl.last = (y == tickets.length-1);
-					this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,0,0)));
+					
+					if(hideFinishedTickets) {
+						if(sl.getStatus() != Ticket.STATUS_OPTIONS.length-1) {
+							this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,0,0)));
+						}
+					} else {
+						this.add(sl, Tools.createGBC(1, y++, 1.0, new Insets(0,0,0,0)));
+					}
 				}
 
 				this.revalidate();

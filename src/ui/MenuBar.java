@@ -60,14 +60,16 @@ public class MenuBar extends JMenuBar {
 		add(new FileMenu());
 		add(new EditMenu());
 		add(new ToolsMenu());
+		add(new View());
 		add(new HelpMenu());
+		
 		//add(new View(logDialogScroll));
 	}
 
 	public class View extends JMenu {
 		private static final long serialVersionUID = -4652785373007319130L;
 
-		public View(LogWindow logDialogScroll) {
+		public View() {
 			super("View");
 
 			JCheckBoxMenuItem  showLogDialog = new JCheckBoxMenuItem ("Show Log");
@@ -85,9 +87,17 @@ public class MenuBar extends JMenuBar {
 				mainWindow.revalidate();
 				mainWindow.repaint();
 			});
+			
+			JCheckBoxMenuItem  hideFinishedTickets = new JCheckBoxMenuItem ("Hide Finished Tickets");
+			showXMPUpdate.setSelected(false);
+			showXMPUpdate.addActionListener(e -> {
+				logDialogScroll.hideFinishedTickets(hideFinishedTickets.isSelected());
+			});
 
 			add(showLogDialog);
 			add(showXMPUpdate);
+			addSeparator();
+			add(hideFinishedTickets);
 		}
 	}
 
